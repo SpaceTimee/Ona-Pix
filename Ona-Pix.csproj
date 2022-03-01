@@ -1,0 +1,92 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net5.0-windows10.0.22000.0</TargetFramework>
+    <RootNamespace>Ona_Pix</RootNamespace>
+    <Nullable>enable</Nullable>
+    <UseWPF>true</UseWPF>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
+    <UseWindowsForms>True</UseWindowsForms>
+    <IsPublishable>True</IsPublishable>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <ErrorReport>none</ErrorReport>
+    <ApplicationIcon>Ona-Pix-Logo.ico</ApplicationIcon>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <CheckForOverflowUnderflow>True</CheckForOverflowUnderflow>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Ona-Pix-Secret\**" />
+    <Compile Remove="Ona-Pix-Smms\**" />
+    <Compile Remove="Ona-Smms\**" />
+    <Compile Remove="x64\**" />
+    <EmbeddedResource Remove="Ona-Pix-Secret\**" />
+    <EmbeddedResource Remove="Ona-Pix-Smms\**" />
+    <EmbeddedResource Remove="Ona-Smms\**" />
+    <EmbeddedResource Remove="x64\**" />
+    <None Remove="Ona-Pix-Secret\**" />
+    <None Remove="Ona-Pix-Smms\**" />
+    <None Remove="Ona-Smms\**" />
+    <None Remove="x64\**" />
+    <Page Remove="Ona-Pix-Secret\**" />
+    <Page Remove="Ona-Pix-Smms\**" />
+    <Page Remove="Ona-Smms\**" />
+    <Page Remove="x64\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove=".gitattributes" />
+    <None Remove=".gitignore" />
+    <None Remove="Resources\Pixiv-Tan.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Ona-Pix-Logo.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MaterialDesignThemes" Version="4.3.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="SauceNET" Version="1.1.1" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Ona-Core">
+      <HintPath>C:\Users\Space Time\Desktop\Ona-Core\bin\Release\net5.0-windows10.0.22000.0\Ona-Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Ona-Pix-Secret">
+      <HintPath>Ona-Pix-Smms\Ona-Pix-Secret.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Pixiv-Tan.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </EmbeddedResource>
+  </ItemGroup>
+
+</Project>

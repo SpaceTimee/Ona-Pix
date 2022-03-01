@@ -1,0 +1,42 @@
+﻿<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:gif="http://wpfanimatedgif.codeplex.com" x:Name="AboutWin"
+    x:Class="Ona_Pix.AboutWindow"
+    mc:Ignorable="d"
+    WindowStartupLocation="CenterScreen" Height="300" Width="250" Title="关于" Loaded="AboutWin_Loaded">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="2*" />
+        </Grid.ColumnDefinitions>
+        <Label Style="{StaticResource AboutLabel}" Content="Ona-Pix 随时恭候主人吩咐！" Grid.Row="0" Grid.ColumnSpan="2" FontWeight="Bold" />
+        <Label Style="{StaticResource AboutLabel}" Content="开发者: Space Time" Grid.Row="1" Grid.Column="0" />
+        <Image Grid.Row="2" Grid.Column="0" gif:ImageBehavior.AnimatedSource="/Resources/Pixiv-Tan.png" />
+        <Label x:Name="VersionLabel" Style="{StaticResource AboutLabel}" Content="版本号: ?.?.?" Grid.Row="3" Grid.Column="0" />
+
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="1" Grid.Column="1">
+            <Hyperlink x:Name="HomePageLink" NavigateUri="https://www.spacetimee.xyz" Click="HomePageLink_Click" Cursor="Hand">
+                <Run Text="[作者主页]" />
+            </Hyperlink>
+        </Label>
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="2" Grid.Column="1">
+            <Hyperlink x:Name="BlogLink" NavigateUri="https://blog.spacetimee.xyz" Click="BlogLink_Click">
+                <Run Text="[作者博客]" />
+            </Hyperlink>
+        </Label>
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="3" Grid.Column="1">
+            <Hyperlink x:Name="EmailLink" NavigateUri="Zeus6_6@163.com" Click="EmailLink_Click">
+                <Run Text="[联系邮箱]" />
+            </Hyperlink>
+        </Label>
+    </Grid>
+</Window>
