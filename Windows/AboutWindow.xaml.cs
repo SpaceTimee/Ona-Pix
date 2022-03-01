@@ -16,6 +16,32 @@ namespace Ona_Pix
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); return; }
         }
 
+
+        private void PrivacyLink_Click(object sender, RoutedEventArgs e)
+        {
+            try { Define.StartProcess(PrivacyLink.NavigateUri.ToString()); }
+            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); return; }
+        }
+        private void AgreementLink_Click(object sender, RoutedEventArgs e)
+        {
+            try { Define.StartProcess(AgreementLink.NavigateUri.ToString()); }
+            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); return; }
+        }
+
+        private void OpenSourceLink_Click(object sender, RoutedEventArgs e)
+        {
+            try { Define.StartProcess(OpenSourceLink.NavigateUri.ToString()); }
+            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); return; }
+        }
+        private void LanzouLink_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                MessageBox.Show("密码: ddvs");
+                Define.StartProcess(LanzouLink.NavigateUri.ToString());
+            }
+            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); return; }
+        }
         private void HomePageLink_Click(object sender, RoutedEventArgs e)
         {
             try { Define.StartProcess(HomePageLink.NavigateUri.ToString()); }
