@@ -105,11 +105,8 @@ namespace Ona_Pix
 
             try
             {
-                HttpResponseMessage httpResponseMessage = await Http.GetAsync<HttpResponseMessage>(@"https://api.lolicon.app/setu/v2?r18=2&proxy=null");
-                httpResponseMessage.EnsureSuccessStatusCode();
-
                 //将Json转换为JObject
-                JObject LuckyImageJObject = JObject.Parse(await httpResponseMessage.Content.ReadAsStringAsync());
+                JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@"https://api.lolicon.app/setu/v2?r18=2&proxy=null"));
 
                 //提取并运行
                 SearchBox.Text = LuckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
@@ -157,7 +154,7 @@ namespace Ona_Pix
                 SearchButton.IsEnabled = false;
                 DownloadButton.IsEnabled = false;
 
-                if (Regex.IsMatch(SearchBox.Text, "^([0-9]*)-([0-9]*)?$"))
+                if (Regex.IsMatch(SearchBox.Text, "^([0-9]*)-?[0-9]*$"))
                     await IsPixivID();  //Pixiv ID
                 else if (new Regex(Define.URI_REGEX).IsMatch(SearchBox.Text))
                     await IsUri();  //Uri
@@ -183,7 +180,7 @@ namespace Ona_Pix
             if (SearchBox.Text.Contains(@"www.pixiv.net/artworks")) //Pixiv Url
             {
                 Exception exception = new();
-                foreach (string fileSuffix in Define.fileSuffixes)
+                foreach (string fileSuffix in Define.FILE_SUFFIXES)
                 {
                     try
                     {
@@ -202,7 +199,7 @@ namespace Ona_Pix
                 NameValueCollection paramCollection = GetParamCollection(new Uri(SearchBox.Text).Query);
 
                 Exception exception = new();
-                foreach (string fileSuffix in Define.fileSuffixes)
+                foreach (string fileSuffix in Define.FILE_SUFFIXES)
                 {
                     try
                     {
@@ -228,7 +225,7 @@ namespace Ona_Pix
             Title = "正在解析PixivID";
 
             Exception exception = new();
-            foreach (string fileSuffix in Define.fileSuffixes)
+            foreach (string fileSuffix in Define.FILE_SUFFIXES)
             {
                 try
                 {
@@ -267,7 +264,11 @@ namespace Ona_Pix
                 await IsUri();
             }
             catch { throw; }
-            finally { await Http.GetAsync<HttpResponseMessage>(deleteUrl); }
+            finally
+            {
+                try { (await Http.GetAsync<HttpResponseMessage>(deleteUrl)).EnsureSuccessStatusCode(); }
+                catch { MessageBox.Show("Error: 高危错误，图片清理失败，请尽快向开发者汇报此错误，谢谢配合！"); }
+            }
 
             Title = "文件解析完成";
         }
@@ -275,11 +276,8 @@ namespace Ona_Pix
         {
             Title = "正在解析关键词";
 
-            HttpResponseMessage httpResponseMessage = await Http.GetAsync<HttpResponseMessage>($@"https://api.lolicon.app/setu/v2?r18=2&proxy=null&tag={SearchBox.Text}");
-            httpResponseMessage.EnsureSuccessStatusCode();
-
             //将Json转换为JObject
-            JObject LuckyImageJObject = JObject.Parse(await httpResponseMessage.Content.ReadAsStringAsync());
+            JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>($@"https://api.lolicon.app/setu/v2?r18=2&proxy=null&tag={SearchBox.Text}"));
 
             //提取并运行
             SearchBox.Text = LuckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
@@ -311,20 +309,20 @@ namespace Ona_Pix
         {
             Title = "正在获取图片";
 
-            HttpResponseMessage httpResponseMessage = await Http.GetAsync<HttpResponseMessage>(uri, HttpCompletionOption.ResponseContentRead);
-            httpResponseMessage.EnsureSuccessStatusCode();
+            HttpResponseMessage imageMessage = await Http.GetAsync<HttpResponseMessage>(uri, HttpCompletionOption.ResponseContentRead);
+            imageMessage.EnsureSuccessStatusCode();
 
-            SetImage(httpResponseMessage);
+            SetImage(imageMessage);
 
             Title = "图片获取完成";
         }
-        private void SetImage(HttpResponseMessage httpResponseMessage)
+        private void SetImage(HttpResponseMessage imageMessage)
         {
             Title = "正在读取图片";
 
             BitmapImage bitmapImage = new();
             bitmapImage.BeginInit();
-            bitmapImage.StreamSource = httpResponseMessage.Content.ReadAsStream();
+            bitmapImage.StreamSource = imageMessage.Content.ReadAsStream();
             bitmapImage.EndInit();
             ShowImage.Margin = new Thickness(0, 0, 10, 10);
             ImageBehavior.SetAnimatedSource(ShowImage, bitmapImage);

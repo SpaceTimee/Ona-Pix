@@ -24,8 +24,16 @@
         </Grid.ColumnDefinitions>
         <Label Style="{StaticResource AboutLabel}" Content="Ona-Pix 随时恭候主人吩咐！" Grid.Row="0" Grid.ColumnSpan="2" FontWeight="Bold" />
 
-        <Label Style="{StaticResource AboutLabel}" Content="开发者: Space Time" Grid.Row="1" Grid.Column="0" />
-        <Label x:Name="VersionLabel" Style="{StaticResource AboutLabel}" Content="版本号: ?.?.?" Grid.Row="2" Grid.Column="0" />
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="1" Grid.Column="0">
+            <Hyperlink x:Name="DeveloperLink" NavigateUri="https://github.com/SpaceTimee" Click="DeveloperLink_Click">
+                <Run Text="开发者: Space Time" Foreground="#FF2196F3" />
+            </Hyperlink>
+        </Label>
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="2" Grid.Column="0">
+            <Hyperlink x:Name="UpdateLink" Click="UpdateLink_Click">
+                <Run x:Name="UpdateRun" Text="版本号: ?.?.?" Foreground="#FF2196F3" />
+            </Hyperlink>
+        </Label>
         <Label Style="{StaticResource AboutLabel}" Content="身份: 女仆" Grid.Row="3" Grid.Column="0" />
         <Label Style="{StaticResource AboutLabel}" Content="Piku★" Grid.Row="4" Grid.Column="0" />
         <Label Style="{StaticResource AboutLabel}" Content="生日: 9.10" Grid.Row="5" Grid.Column="0" />
@@ -42,7 +50,7 @@
             </Hyperlink>
         </Label>
         <Label Style="{StaticResource AboutLabel}" Grid.Row="2" Grid.Column="1">
-            <Hyperlink x:Name="LanzouLink" NavigateUri="https://spacetime.lanzouy.com/b0179uiab" Click="LanzouLink_Click">
+            <Hyperlink x:Name="LanzouLink"  NavigateUri="https://spacetime.lanzouy.com/b0179uiab" Click="LanzouLink_Click">
                 <Run Text="[手动更新]" />
             </Hyperlink>
         </Label>

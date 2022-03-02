@@ -1,6 +1,16 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
+    <Title>Ona Pix</Title>
+    <Product>Ona Pix</Product>
+    <Trademark>Ona Pix</Trademark>
+    <Description>Yet Another Pixiv Tool</Description>
+    <Company>Space Time</Company>
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0</FileVersion>
+    <InformationalVersion>1.0.0</InformationalVersion>
+    <Copyright>Copyright ©  2077</Copyright>
+    
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows10.0.22000.0</TargetFramework>
     <RootNamespace>Ona_Pix</RootNamespace>
@@ -42,7 +52,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Remove=".gitattributes" />
+    <None Remove=".gits" />
     <None Remove=".gitignore" />
     <None Remove="Resources\Pixiv-Tan.png" />
   </ItemGroup>
