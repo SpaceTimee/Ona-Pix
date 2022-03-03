@@ -7,7 +7,7 @@
     x:Name="AboutWin"
     x:Class="Ona_Pix.AboutWindow"
     mc:Ignorable="d"
-    WindowStartupLocation="CenterScreen" MinWidth="250" Height="300" Width="250" Title="关于" Loaded="AboutWin_Loaded">
+    WindowStartupLocation="CenterScreen" Height="300" Width="250" MinWidth="250" Title="关于" Loaded="AboutWin_Loaded">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
@@ -19,57 +19,60 @@
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition x:Name="ReleaseListBoxColumn" Width="Auto" />
             <ColumnDefinition Width="3*" />
             <ColumnDefinition Width="2*" />
         </Grid.ColumnDefinitions>
-        <Label Style="{StaticResource AboutLabel}" Content="Ona-Pix 随时恭候主人吩咐！" Grid.Row="0" Grid.ColumnSpan="2" FontWeight="Bold" />
+        <ListBox x:Name="ReleaseListBox" Grid.Row="1" Grid.Column="0" Grid.RowSpan="6" SelectionChanged="ReleaseListBox_SelectionChanged" HorizontalContentAlignment="Center" FontWeight="Bold" IsTextSearchCaseSensitive="True" />
 
-        <Label Style="{StaticResource AboutLabel}" Grid.Row="1" Grid.Column="0">
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Content="Ona Pix 随时恭候主人吩咐！" FontWeight="Bold" />
+
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="1" Grid.Column="1">
             <Hyperlink x:Name="DeveloperLink" NavigateUri="https://github.com/SpaceTimee" Click="DeveloperLink_Click">
                 <Run Text="开发者: Space Time" Foreground="#FF2196F3" />
             </Hyperlink>
         </Label>
-        <Label Style="{StaticResource AboutLabel}" Grid.Row="2" Grid.Column="0">
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="2" Grid.Column="1">
             <Hyperlink x:Name="UpdateLink" Click="UpdateLink_Click">
                 <Run x:Name="UpdateRun" Text="版本号: ?.?.?" Foreground="#FF2196F3" />
             </Hyperlink>
         </Label>
-        <Label Style="{StaticResource AboutLabel}" Content="身份: 女仆" Grid.Row="3" Grid.Column="0" />
-        <Label Style="{StaticResource AboutLabel}" Content="Piku★" Grid.Row="4" Grid.Column="0" />
-        <Label Style="{StaticResource AboutLabel}" Content="生日: 9.10" Grid.Row="5" Grid.Column="0" />
-        <Image Grid.Row="3" Grid.Column="0" Grid.RowSpan="3" gif:ImageBehavior.AnimatedSource="/Resources/Pixiv-Tan.png" />
-        <Label Style="{StaticResource AboutLabel}" Grid.Row="6" Grid.Column="0">
+        <Label Style="{StaticResource AboutLabel}" Content="身份: 女仆" Grid.Row="3" Grid.Column="1" />
+        <Label Style="{StaticResource AboutLabel}" Content="Piku★" Grid.Row="4" Grid.Column="1" />
+        <Label Style="{StaticResource AboutLabel}" Content="生日: 9.10" Grid.Row="5" Grid.Column="1" />
+        <Image Grid.Row="3" Grid.Column="1" Grid.RowSpan="3" gif:ImageBehavior.AnimatedSource="/Resources/Pixiv-Tan.png" />
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="6" Grid.Column="1">
             <Hyperlink x:Name="PrivacyLink" NavigateUri="https://thoughts.teambition.com/share/621ddd42c6a7bc00410f6e20#title=Ona_Pix_隐私政策" Click="PrivacyLink_Click">
                 <Run Text="[隐私政策]" />
             </Hyperlink>
         </Label>
 
-        <Label Style="{StaticResource AboutLabel}" Grid.Row="1" Grid.Column="1">
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="1" Grid.Column="2">
             <Hyperlink x:Name="OpenSourceLink" NavigateUri="https://github.com/SpaceTimee/Ona-Pix" Click="OpenSourceLink_Click">
                 <Run Text="[开源地址]" />
             </Hyperlink>
         </Label>
-        <Label Style="{StaticResource AboutLabel}" Grid.Row="2" Grid.Column="1">
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="2" Grid.Column="2">
             <Hyperlink x:Name="LanzouLink"  NavigateUri="https://spacetime.lanzouy.com/b0179uiab" Click="LanzouLink_Click">
                 <Run Text="[手动更新]" />
             </Hyperlink>
         </Label>
-        <Label Style="{StaticResource AboutLabel}" Grid.Row="3" Grid.Column="1">
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="3" Grid.Column="2">
             <Hyperlink x:Name="HomePageLink" NavigateUri="https://www.spacetimee.xyz" Click="HomePageLink_Click">
                 <Run Text="[作者主页]" />
             </Hyperlink>
         </Label>
-        <Label Style="{StaticResource AboutLabel}" Grid.Row="4" Grid.Column="1">
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="4" Grid.Column="2">
             <Hyperlink x:Name="BlogLink" NavigateUri="https://blog.spacetimee.xyz" Click="BlogLink_Click">
                 <Run Text="[作者博客]" />
             </Hyperlink>
         </Label>
-        <Label Style="{StaticResource AboutLabel}" Grid.Row="5" Grid.Column="1">
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="5" Grid.Column="2">
             <Hyperlink x:Name="EmailLink" NavigateUri="Zeus6_6@163.com" Click="EmailLink_Click">
                 <Run Text="[联系邮箱]" />
             </Hyperlink>
         </Label>
-        <Label Style="{StaticResource AboutLabel}" Grid.Row="6" Grid.Column="1">
+        <Label Style="{StaticResource AboutLabel}" Grid.Row="6" Grid.Column="2">
             <Hyperlink x:Name="AgreementLink" NavigateUri="https://thoughts.teambition.com/share/621ddd105cb4ab00411c9200#title=Ona_Pix_使用协议" Click="AgreementLink_Click">
                 <Run Text="[使用协议]" />
             </Hyperlink>

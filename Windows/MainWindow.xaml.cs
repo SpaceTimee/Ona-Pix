@@ -22,9 +22,20 @@ namespace Ona_Pix
 {
     public partial class MainWindow : Window
     {
+        private readonly HttpClient MAIN_CLIENT = new();
+
         public MainWindow()
         {
             InitializeComponent();
+        }
+        private void MainWin_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (Directory.Exists(Define.CACHE_PATH))
+                    new DirectoryInfo(Define.CACHE_PATH).Delete(true);
+            }
+            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
         }
 
         private void ViewButton_Click(object sender, RoutedEventArgs e)
@@ -90,10 +101,20 @@ namespace Ona_Pix
                 if (ShowImage.Source == null)
                     await PickInput();
 
-                PngBitmapEncoder pngBitmapEncoder = new();
-                pngBitmapEncoder.Frames.Add(BitmapFrame.Create((BitmapSource)ShowImage.Source!));
-                using FileStream fileStream = new(saveDialog.FileName.ToString(), FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite | FileShare.Delete);
-                pngBitmapEncoder.Save(fileStream);
+                dynamic bitmapEncoder = null!;
+                string imageExtension = Path.GetExtension(saveDialog.FileName);
+                if (imageExtension == ".png")
+                    bitmapEncoder = new PngBitmapEncoder();
+                else if (imageExtension == ".jpg")
+                    bitmapEncoder = new JpegBitmapEncoder();
+                else if (imageExtension == ".gif")
+                    bitmapEncoder = new GifBitmapEncoder();
+                else
+                    throw new Exception("Unexpected Extension");
+
+                bitmapEncoder.Frames.Add(BitmapFrame.Create((BitmapSource)ShowImage.Source!));
+                using FileStream imageFileStream = new(saveDialog.FileName.ToString(), FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite | FileShare.Delete);
+                bitmapEncoder.Save(imageFileStream);
             }
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
 
@@ -106,7 +127,7 @@ namespace Ona_Pix
             try
             {
                 //将Json转换为JObject
-                JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@"https://api.lolicon.app/setu/v2?r18=2&proxy=null"));
+                JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@"https://api.lolicon.app/setu/v2?r18=2&proxy=null", MAIN_CLIENT));
 
                 //提取并运行
                 SearchBox.Text = LuckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
@@ -266,7 +287,7 @@ namespace Ona_Pix
             catch { throw; }
             finally
             {
-                try { (await Http.GetAsync<HttpResponseMessage>(deleteUrl)).EnsureSuccessStatusCode(); }
+                try { (await Http.GetAsync<HttpResponseMessage>(deleteUrl, MAIN_CLIENT)).EnsureSuccessStatusCode(); }
                 catch { MessageBox.Show("Error: 高危错误，图片清理失败，请尽快向开发者汇报此错误，谢谢配合！"); }
             }
 
@@ -277,7 +298,7 @@ namespace Ona_Pix
             Title = "正在解析关键词";
 
             //将Json转换为JObject
-            JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>($@"https://api.lolicon.app/setu/v2?r18=2&proxy=null&tag={SearchBox.Text}"));
+            JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>($@"https://api.lolicon.app/setu/v2?r18=2&proxy=null&tag={SearchBox.Text}", MAIN_CLIENT));
 
             //提取并运行
             SearchBox.Text = LuckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
@@ -305,11 +326,11 @@ namespace Ona_Pix
             return SmmsProcess.StandardOutput.ReadToEnd();
         }
 
-        private async Task GetImage(string uri)
+        private async Task GetImage(string imageUri)
         {
             Title = "正在获取图片";
 
-            HttpResponseMessage imageMessage = await Http.GetAsync<HttpResponseMessage>(uri, HttpCompletionOption.ResponseContentRead);
+            HttpResponseMessage imageMessage = await Http.GetAsync<HttpResponseMessage>(imageUri, MAIN_CLIENT, HttpCompletionOption.ResponseContentRead);
             imageMessage.EnsureSuccessStatusCode();
 
             SetImage(imageMessage);
