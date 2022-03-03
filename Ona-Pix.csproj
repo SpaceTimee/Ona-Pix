@@ -5,23 +5,31 @@
     <Product>Ona Pix</Product>
     <Trademark>Ona Pix</Trademark>
     <Description>Yet Another Pixiv Tool</Description>
+    <PackageReleaseNotes>Yet Another Pixiv Tool</PackageReleaseNotes>
+    <Authors>Space Time</Authors>
     <Company>Space Time</Company>
+    <AssemblyVersion>1.0.0</AssemblyVersion>
     <Version>1.0.0</Version>
     <FileVersion>1.0.0</FileVersion>
     <InformationalVersion>1.0.0</InformationalVersion>
+    <PackageTags>Tool;Pixiv;Ona;Pix</PackageTags>
+    <ApplicationIcon>Ona-Pix-Logo.ico</ApplicationIcon>
+    <PackageIcon>Ona Pix Logo.png</PackageIcon>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageProjectUrl>https://github.com/SpaceTimee/Ona-Pix</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/SpaceTimee/Ona-Pix</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
     <Copyright>Copyright ©  2077</Copyright>
-    
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows10.0.22000.0</TargetFramework>
+    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
     <RootNamespace>Ona_Pix</RootNamespace>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
     <UseWindowsForms>True</UseWindowsForms>
     <IsPublishable>True</IsPublishable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <ErrorReport>none</ErrorReport>
-    <ApplicationIcon>Ona-Pix-Logo.ico</ApplicationIcon>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -52,6 +60,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove=".gitattributes" />
     <None Remove=".gits" />
     <None Remove=".gitignore" />
     <None Remove="Resources\Pixiv-Tan.png" />
@@ -97,6 +106,13 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
   </ItemGroup>
 
 </Project>

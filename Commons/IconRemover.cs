@@ -41,14 +41,14 @@ namespace Ona_Pix
         }
     }
 
-    public partial class MainWindow : Window
+    public partial class MainWindow
     {
         protected override void OnSourceInitialized(EventArgs e)
         {
             IconRemover.RemoveIcon(this);
         }
     }
-    public partial class AboutWindow : Window
+    public partial class AboutWindow
     {
         protected override void OnSourceInitialized(EventArgs e)
         {

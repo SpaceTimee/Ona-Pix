@@ -1,9 +1,14 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Reflection;
 
 namespace Ona_Pix
 {
     internal static class Define
     {
+        internal static readonly string CURRENT_VERSION = Assembly.GetExecutingAssembly().GetName().Version!.ToString()[0..^2];
+        internal static readonly string CACHE_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Ona Pix Cache");
         #region URL的正则表达式 (URL_REGEX)
         internal const string URI_REGEX = @"^(((ht|f)tp(s?))\://)?" +
                                         @"([a-zA-Z].)[a-zA-Z0-9\-\.]+\.(" +
