@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Specialized;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -13,8 +12,6 @@ using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Newtonsoft.Json.Linq;
 using OnaCore;
-using OnaPixSecret;
-using SauceNET;
 using WpfAnimatedGif;
 using MessageBox = System.Windows.MessageBox;
 
@@ -22,8 +19,6 @@ namespace Ona_Pix
 {
     public partial class MainWindow : Window
     {
-        private readonly HttpClient MAIN_CLIENT = new();
-
         public MainWindow()
         {
             InitializeComponent();
@@ -65,19 +60,25 @@ namespace Ona_Pix
         }
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            Title = "正在搜索图片";
+            try
+            {
+                Title = "正在搜索图片";
 
-            try { await PickInput(); }
+                await PickInput();
+
+                if (File.Exists(SearchBox.Text))
+                    return;
+
+                Title = "图片搜索完成";
+            }
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
-
-            Title = "图片搜索完成";
         }
         private async void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
-            Title = "正在下载图片";
-
             try
             {
+                Title = "正在下载图片";
+
                 SaveFileDialog saveDialog = new();
                 #region 配置saveDialog的参数
                 saveDialog.Title = "Ona Saver";
@@ -86,17 +87,13 @@ namespace Ona_Pix
                 saveDialog.Filter = "PNG (*.png)|*.png|JPG (*.jpg)|*.jpg|GIF (*.gif)|*.gif";
                 saveDialog.FilterIndex = 1; //默认png
                 saveDialog.AddExtension = true; //无后缀时自动增加后缀
-                saveDialog.CheckFileExists = false;  //不检查文件是否正确
+                saveDialog.CheckFileExists = true;  //检查文件是否正确
                 saveDialog.CheckPathExists = true;  //检查路径是否正确
                 saveDialog.SupportMultiDottedExtensions = false; //不支持多拓展名
                 saveDialog.AutoUpgradeEnabled = true;   //自动升级对话框样式
                 #endregion 配置saveDialog的参数
                 if (saveDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                {
-                    Title = "操作正常取消";
-
-                    return;
-                }
+                { Title = "操作正常取消"; return; }
 
                 if (ShowImage.Source == null)
                     await PickInput();
@@ -115,27 +112,27 @@ namespace Ona_Pix
                 bitmapEncoder.Frames.Add(BitmapFrame.Create((BitmapSource)ShowImage.Source!));
                 using FileStream imageFileStream = new(saveDialog.FileName.ToString(), FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite | FileShare.Delete);
                 bitmapEncoder.Save(imageFileStream);
+
+                Title = "图片下载完成";
             }
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
-
-            Title = "图片下载完成";
         }
         private async void LuckyButton_Click(object sender, RoutedEventArgs e)
         {
-            Title = "正在获取图片";
-
             try
             {
+                Title = "正在获取图片";
+
                 //将Json转换为JObject
-                JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@"https://api.lolicon.app/setu/v2?r18=2&proxy=null", MAIN_CLIENT));
+                JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@"https://api.lolicon.app/setu/v2?r18=2&proxy=null", Define.MAIN_CLIENT));
 
                 //提取并运行
                 SearchBox.Text = LuckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
                 await PickInput();
+
+                Title = "图片获取完成";
             }
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
-
-            Title = "图片获取完成";
         }
         private void AboutButton_Click(object sender, RoutedEventArgs e)
         {
@@ -149,51 +146,72 @@ namespace Ona_Pix
 
         private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            try
+            if (SearchBox.Text == "")
             {
-                if (SearchBox.Text == "")
-                {
-                    SearchButton.IsEnabled = false;
-                    DownloadButton.IsEnabled = false;
-                }
-                else
-                {
-                    SearchButton.IsEnabled = true;
-                    DownloadButton.IsEnabled = true;
-                }
+                SearchButton.IsEnabled = false;
+                DownloadButton.IsEnabled = false;
             }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+            else
+            {
+                SearchButton.IsEnabled = true;
+                DownloadButton.IsEnabled = true;
+            }
+        }
+
+        private async void Smms_SetImageUrl(dynamic value)
+        {
+            await Dispatcher.Invoke(async () =>
+            {
+                try
+                {
+                    SearchBox.Text = value;
+                    await PickInput();  //await IsUri();
+
+                    Title = "图片搜索完成";
+                }
+                catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+            });
+        }
+        private void Smms_SetMainWindowTitle(dynamic value)
+        {
+            Dispatcher.Invoke(() => Title = value);
+        }
+        private void Smms_SetControlsEnabled()
+        {
+            Dispatcher.Invoke(SetControlsEnabled);
         }
 
         private async Task PickInput()
         {
-            Title = "正在识别输入";
-
             try
             {
+                Title = "正在识别输入";
+
                 SearchBox.IsEnabled = false;
                 SearchButton.IsEnabled = false;
                 DownloadButton.IsEnabled = false;
 
+                if (File.Exists(SearchBox.Text))
+                { IsFilePath(); return; }
+            }
+            catch
+            { SetControlsEnabled(); throw; }
+
+            try
+            {
                 if (Regex.IsMatch(SearchBox.Text, "^([0-9]*)-?[0-9]*$"))
                     await IsPixivID();  //Pixiv ID
                 else if (new Regex(Define.URI_REGEX).IsMatch(SearchBox.Text))
                     await IsUri();  //Uri
-                else if (File.Exists(SearchBox.Text))
-                    await IsFilePath(); //文件路径
                 else
                     await IsKeyWord();  //关键词
+
+                Title = "输入识别完成";
             }
             catch { throw; }
-            finally
-            {
-                SearchBox.IsEnabled = true;
-                SearchButton.IsEnabled = true;
-                DownloadButton.IsEnabled = true;
-            }
-
-            Title = "输入识别完成";
+            finally { SetControlsEnabled(); }
         }
+
         private async Task IsUri()
         {
             Title = "正在解析链接";
@@ -260,45 +278,24 @@ namespace Ona_Pix
             }
             throw exception;
         }
-        private async Task IsFilePath()
+        private void IsFilePath()
         {
-            Title = "正在解析文件";
+            Title = "正在初始化请求";
 
-            //将Json转换为JObject
-            JObject SmmsJObject = JObject.Parse(UploadSmms(SearchBox.Text));
+            Smms smms = new();
+            smms.SetImageUrl += new Define.SET_WINDOW_HANDLER_P(Smms_SetImageUrl);
+            smms.SetMainWindowTitle += new Define.SET_WINDOW_HANDLER_P(Smms_SetMainWindowTitle);
+            smms.SetControlsEnabled += new Define.SET_WINDOW_HANDLER(Smms_SetControlsEnabled);
+            smms.ShellRun(Directory.GetCurrentDirectory(), SearchBox.Text);
 
-            if (!(bool)SmmsJObject["success"]!)
-                throw new Exception(SmmsJObject["code"]!.ToString());
-
-            //提取
-            string imageUrl = SmmsJObject["data"]!["url"]!.ToString();
-            string deleteUrl = SmmsJObject["data"]!["delete"]!.ToString();
-
-            try
-            {
-                var sauceNETClient = new SauceNETClient(Secret.GetSauceNaoApiKey());
-                //获取相似图片链接
-                var sauce = await sauceNETClient.GetSauceAsync(imageUrl);
-                //填充其中最相似的图片链接
-                Dispatcher.Invoke(() => { SearchBox.Text = sauce.Results[0].SourceURL; });
-
-                await IsUri();
-            }
-            catch { throw; }
-            finally
-            {
-                try { (await Http.GetAsync<HttpResponseMessage>(deleteUrl, MAIN_CLIENT)).EnsureSuccessStatusCode(); }
-                catch { MessageBox.Show("Error: 高危错误，图片清理失败，请尽快向开发者汇报此错误，谢谢配合！"); }
-            }
-
-            Title = "文件解析完成";
+            Title = "正在解析文件";   //此时上传工作正在后台运行
         }
         private async Task IsKeyWord()
         {
             Title = "正在解析关键词";
 
             //将Json转换为JObject
-            JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>($@"https://api.lolicon.app/setu/v2?r18=2&proxy=null&tag={SearchBox.Text}", MAIN_CLIENT));
+            JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>($@"https://api.lolicon.app/setu/v2?r18=2&proxy=null&tag={SearchBox.Text}", Define.MAIN_CLIENT));
 
             //提取并运行
             SearchBox.Text = LuckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
@@ -307,30 +304,11 @@ namespace Ona_Pix
             Title = "关键词解析完成";
         }
 
-        private string UploadSmms(string filePath)
-        {
-            Title = "正在上传图片";
-
-            using Process SmmsProcess = new();
-            SmmsProcess.StartInfo.FileName = @"Ona-Pix-Smms.exe";
-            SmmsProcess.StartInfo.Arguments = filePath;
-            SmmsProcess.StartInfo.UseShellExecute = false;
-            SmmsProcess.StartInfo.RedirectStandardInput = true;
-            SmmsProcess.StartInfo.RedirectStandardOutput = true;
-            SmmsProcess.StartInfo.CreateNoWindow = true;
-            SmmsProcess.Start();
-            SmmsProcess.WaitForExit();
-
-            Title = "图片上传完成";
-
-            return SmmsProcess.StandardOutput.ReadToEnd();
-        }
-
         private async Task GetImage(string imageUri)
         {
             Title = "正在获取图片";
 
-            HttpResponseMessage imageMessage = await Http.GetAsync<HttpResponseMessage>(imageUri, MAIN_CLIENT, HttpCompletionOption.ResponseContentRead);
+            HttpResponseMessage imageMessage = await Http.GetAsync<HttpResponseMessage>(imageUri, Define.MAIN_CLIENT, HttpCompletionOption.ResponseContentRead);
             imageMessage.EnsureSuccessStatusCode();
 
             SetImage(imageMessage);
@@ -399,6 +377,13 @@ namespace Ona_Pix
             Title = "链接解析完成";
 
             return paramCollection;
+        }
+        //解锁控件
+        private void SetControlsEnabled()
+        {
+            SearchBox.IsEnabled = true;
+            SearchButton.IsEnabled = true;
+            DownloadButton.IsEnabled = true;
         }
 
         ////检测文本编码

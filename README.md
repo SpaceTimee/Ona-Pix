@@ -9,7 +9,7 @@
 
 **Ona Pix**: 一只基于 **WPF(.Net5)** 的 Pixiv 搜图工具
 
-* 适用平台: Windows
+* 适用平台: Windows 10+
 * 推荐平台: Windows 11
 
 ## 注意事项:
@@ -34,6 +34,16 @@
 1. Setup 安装器 (推荐): 下载 Ona Pix Setup.exe 并运行 -> 按照提示设置即可安装
 2. Standalone 独立封包: 下载 Ona Pix Standalone.exe 即可直接运行
 
+## 食用文档:
+
+**[Ona Pix Docs](https://github.com/SpaceTimee/Ona-Pix/wiki/Ona-Pix-Docs)**
+
+## 项目构建:
+
+1. 构建 Ona-Pix-Smms.exe (也可参考步骤2获取): 克隆本项目 -> 使用 PyInstaller 将 Ona-Pix-Smms 项目下的 MainPy.py 打包为 Ona-Pix-Smms.exe -> 将该文件放置在 Ona-Pix.exe 的生成目录下
+2. 获取 Ona-Core.dll & Ona-Pix-Secret.dll & Sheas-Core.dll: 下载克隆文件对应版本的 Ona Pix Setup.exe 并运行 -> 在安装目录下找到所需文件 -> 在 Ona-Pix 项目的依赖项中引用这些文件
+3. 构建 Ona-Pix.exe: 还原 Ona-Pix 项目所需的 Nuget 包 -> 编译 Ona-Pix 项目并生成即可
+
 ## 开发者:
 
 **Space Time**
@@ -41,5 +51,7 @@
 ## 联系邮箱:
 
 **Zeus6_6@163.com**
+
+
 
 •ᴗ•
