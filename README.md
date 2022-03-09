@@ -1,5 +1,3 @@
-
-
 <h1 align="center">Ona 🝔 Pix</h1>
 <h3 align="center">- Yet Another Pixiv Tool -</h3>
 
@@ -51,7 +49,5 @@
 ## 联系邮箱:
 
 **Zeus6_6@163.com**
-
-
 
 •ᴗ•
