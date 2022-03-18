@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
+using Ona_Pix.Pages;
 using OnaCore;
 using OnaPixSecret;
 using SauceNET;
@@ -57,11 +58,10 @@ namespace Ona_Pix
         {
             if (!string.IsNullOrEmpty(e.Data) && !string.IsNullOrWhiteSpace(e.Data))
             {
-                MessageBox.Show("Error: " + e.Data);
+                if (!((BehaviorPage)Define.SETTING_WINDOW.Resources["behaviorPage"]).DisableExceptionToggle.IS_TOGGLED)
+                    MessageBox.Show("Error: " + e.Data);
 
                 SetMainWindowTitle!("操作执行失败");
-
-                return;
             }
         }
         public override void Process_Exited(object sender, EventArgs e)

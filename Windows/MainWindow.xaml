@@ -4,10 +4,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
+        Style="{DynamicResource {x:Type Window}}"
         SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" MinWidth="250" Title="Ona Pix" Loaded="MainWin_Loaded">
-    <Grid Margin="10,0,10,0">
+    <Grid Margin="10,10,10,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
@@ -17,8 +19,8 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
-        <Image x:Name="ShowImage" Grid.Column="0" Grid.RowSpan="5" Margin="0,0,0,10" MaxWidth="1080" />
-        <Grid Grid.Column="1" Grid.Row="0"  MaxWidth="500" Margin="0,0,0,10">
+        <Image x:Name="ShowImage" Grid.Column="0" Grid.RowSpan="6" Margin="0,0,0,10" MaxWidth="1080" />
+        <Grid Grid.Column="1" Grid.Row="0" MaxWidth="500" Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*" />
                 <ColumnDefinition Width="Auto" />
@@ -29,6 +31,7 @@
         <Button x:Name="SearchButton" Style="{StaticResource MainButton}" Grid.Column="1" Grid.Row="1" Click="SearchButton_Click" Content="搜索" IsDefault="True" IsEnabled="False" TabIndex="2" />
         <Button x:Name="DownloadButton" Style="{StaticResource MainButton}" Grid.Column="1" Grid.Row="2" Click="DownloadButton_Click"  Content="下载" IsEnabled="False" TabIndex="3" />
         <Button x:Name="LuckyButton" Style="{StaticResource MainButton}" Grid.Column="1" Grid.Row="3" Click="LuckyButton_Click" Content="一图" TabIndex="4" />
-        <Button x:Name="AboutButton" Style="{StaticResource MainButton}" Grid.Column="1" Grid.Row="4" Click="AboutButton_Click" Content="关于" TabIndex="5" />
+        <Button x:Name="SettingButton" Style="{StaticResource MainButton}" Grid.Column="1" Grid.Row="4" Click="SettingButton_Click" Content="设置" TabIndex="5" />
+        <Button x:Name="AboutButton" Style="{StaticResource MainButton}" Grid.Column="1" Grid.Row="5" Click="AboutButton_Click" Content="关于" TabIndex="6" />
     </Grid>
 </Window>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -11,6 +12,7 @@ using System.Windows.Forms;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Newtonsoft.Json.Linq;
+using Ona_Pix.Pages;
 using OnaCore;
 using WpfAnimatedGif;
 using MessageBox = System.Windows.MessageBox;
@@ -31,6 +33,11 @@ namespace Ona_Pix
                     new DirectoryInfo(Define.CACHE_PATH).Delete(true);
             }
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            Environment.Exit(0);
         }
 
         private void ViewButton_Click(object sender, RoutedEventArgs e)
@@ -134,11 +141,16 @@ namespace Ona_Pix
             }
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
         }
+        private void SettingButton_Click(object sender, RoutedEventArgs e)
+        {
+            try { Define.SETTING_WINDOW.ShowDialog(); }
+            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+        }
         private void AboutButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                AboutWindow aboutWindow = new();
+                AboutWindow aboutWindow = new(((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).DarkModeToggle.IS_TOGGLED);
                 aboutWindow.ShowDialog();
             }
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }

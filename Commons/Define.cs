@@ -11,6 +11,7 @@ namespace Ona_Pix
         internal delegate void SET_WINDOW_HANDLER();
         internal delegate void SET_WINDOW_HANDLER_P(dynamic value);
 
+        internal static readonly SettingWindow SETTING_WINDOW = new();
         internal static readonly HttpClient MAIN_CLIENT = new();
         internal static readonly string CURRENT_VERSION = Assembly.GetExecutingAssembly().GetName().Version!.ToString()[0..^2];
         internal static readonly string CACHE_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Ona Pix Cache");

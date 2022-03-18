@@ -1,14 +1,30 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
+using System.Windows.Media.Imaging;
+using WpfAnimatedGif;
 
 namespace Ona_Pix
 {
     public partial class AboutWindow : Window
     {
-        public AboutWindow()
+        public AboutWindow(bool isDarkMode)
         {
             InitializeComponent();
             PartialAboutWindow();
+
+            if (isDarkMode)
+            {
+                MemoryStream memoryStream = new();
+                Properties.Resources.Pixiv_Tan_Dark.Save(memoryStream, Properties.Resources.Pixiv_Tan_Dark.RawFormat);
+
+                BitmapImage bitmapImage = new();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memoryStream;
+                bitmapImage.EndInit();
+
+                ImageBehavior.SetAnimatedSource(TanImage, bitmapImage);
+            }
         }
         private void AboutWin_Loaded(object sender, RoutedEventArgs e)
         {

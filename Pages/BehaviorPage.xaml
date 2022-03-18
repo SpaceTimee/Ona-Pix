@@ -1,0 +1,18 @@
+﻿<UserControl x:Class="Ona_Pix.Pages.BehaviorPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:controls="clr-namespace:Ona_Pix.Controls"
+             mc:Ignorable="d">
+    <StackPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Content="禁用报错" />
+            <controls:ToggleSwitch x:Name="DisableExceptionToggle" Style="{StaticResource SettingToggle}" />
+        </Grid>
+    </StackPanel>
+</UserControl>

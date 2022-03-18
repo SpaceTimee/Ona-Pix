@@ -55,4 +55,11 @@ namespace Ona_Pix
             IconRemover.RemoveIcon(this);
         }
     }
+    public partial class SettingWindow
+    {
+        protected override void OnSourceInitialized(EventArgs e)
+        {
+            IconRemover.RemoveIcon(this);
+        }
+    }
 }
