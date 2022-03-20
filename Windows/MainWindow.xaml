@@ -4,34 +4,80 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Style="{DynamicResource {x:Type Window}}"
+        Style="{DynamicResource CommonWindow}"
         SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" MinWidth="250" Title="Ona Pix" Loaded="MainWin_Loaded">
-    <Grid Margin="10,10,10,0">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-        </Grid.RowDefinitions>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="1*" />
-        </Grid.ColumnDefinitions>
-        <Image x:Name="ShowImage" Grid.Column="0" Grid.RowSpan="6" Margin="0,0,0,10" MaxWidth="1080" />
-        <Grid Grid.Column="1" Grid.Row="0" MaxWidth="500" Margin="0,0,0,10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
-            <TextBox x:Name="SearchBox" Grid.Column="0" Margin="0,0,10,0" TextChanged="SearchBox_TextChanged" TabIndex="0" />
-            <Button x:Name="ViewButton" Grid.Column="1" Click="ViewButton_Click" Content="浏览" TabIndex="1" />
+    <Grid Margin="10,10,10,10">
+        <Rectangle MouseDown="ActiveSpace_MouseDown" Opacity="0" Fill="#0000" />
+        <Image MouseDown="ActiveSpace_MouseDown" x:Name="ShowImage" MaxWidth="1080" />
+
+        <Grid x:Name="InactiveGrid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBox x:Name="InactiveSearchBox" Grid.Column="0" MaxWidth="1080" Margin="0,0,10,0" TextChanged="SearchBox_TextChanged" TabIndex="0" />
+                <Button x:Name="InactiveViewButton" Style="{StaticResource InactiveButton}" Margin="0,0,0,0" Grid.Column="1" Click="ViewButton_Click" Content="浏览" TabIndex="1" HorizontalAlignment="Right" />
+            </Grid>
+
+            <Button x:Name="InactiveSearchButton" Style="{StaticResource InactiveButton}" Grid.Row="1" Click="SearchButton_Click" Content="搜索" IsDefault="True" IsEnabled="False" TabIndex="2" />
+            <Button x:Name="InactiveDownloadButton" Style="{StaticResource InactiveButton}" Grid.Row="2" Click="DownloadButton_Click"  Content="下载" IsEnabled="False" TabIndex="3" />
+            <Button x:Name="InactiveLuckyButton" Style="{StaticResource InactiveButton}" Grid.Row="3" Click="LuckyButton_Click" Content="一图" TabIndex="4" />
+            <Button x:Name="InactiveSettingButton" Style="{StaticResource InactiveButton}" Grid.Row="4" Click="SettingButton_Click" Content="设置" TabIndex="5" />
+            <Button x:Name="InactiveAboutButton" Style="{StaticResource InactiveButton}" Grid.Row="5" Click="AboutButton_Click" Content="关于" TabIndex="6" />
         </Grid>
-        <Button x:Name="SearchButton" Style="{StaticResource MainButton}" Grid.Column="1" Grid.Row="1" Click="SearchButton_Click" Content="搜索" IsDefault="True" IsEnabled="False" TabIndex="2" />
-        <Button x:Name="DownloadButton" Style="{StaticResource MainButton}" Grid.Column="1" Grid.Row="2" Click="DownloadButton_Click"  Content="下载" IsEnabled="False" TabIndex="3" />
-        <Button x:Name="LuckyButton" Style="{StaticResource MainButton}" Grid.Column="1" Grid.Row="3" Click="LuckyButton_Click" Content="一图" TabIndex="4" />
-        <Button x:Name="SettingButton" Style="{StaticResource MainButton}" Grid.Column="1" Grid.Row="4" Click="SettingButton_Click" Content="设置" TabIndex="5" />
-        <Button x:Name="AboutButton" Style="{StaticResource MainButton}" Grid.Column="1" Grid.Row="5" Click="AboutButton_Click" Content="关于" TabIndex="6" />
+
+        <Grid x:Name="ActiveGrid" Visibility="Hidden">
+            <Grid x:Name="ActiveTopGrid" Margin="0,-65,0,0" MouseDown="ActiveSpace_MouseIn" MouseEnter="ActiveSpace_MouseIn" VerticalAlignment="Top">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="60" />
+                </Grid.RowDefinitions>
+
+                <Rectangle Grid.RowSpan="2" Opacity="0" Fill="#0000" />
+                <Grid x:Name="ActiveTopCoreGrid" Grid.Row="0" MouseLeave="ActiveSpace_MouseOut">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Border Background="#FFA0A0A0" Grid.ColumnSpan="2" Opacity="0.5" CornerRadius="0,0,27,27" />
+                    <TextBox x:Name="ActiveSearchBox" Grid.Column="0" MaxWidth="1080" Margin="20,10,0,10" TextChanged="SearchBox_TextChanged" TabIndex="0" PreviewMouseDown="ActiveSearchBox_PreviewMouseDown" VerticalContentAlignment="Center" />
+                    <Button x:Name="ActiveViewButton" Style="{StaticResource ActiveButton}" Grid.Column="1" Margin="10,10,10,10" Click="ViewButton_Click" Content="浏览" TabIndex="1" />
+                </Grid>
+            </Grid>
+
+            <Grid x:Name="ActiveRightGrid" Grid.Row="1" Margin="0,60,-65,0" HorizontalAlignment="Right" MouseDown="ActiveSpace_MouseIn" MouseEnter="ActiveSpace_MouseIn" VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="60" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Rectangle Grid.ColumnSpan="2" Opacity="0" Fill="#0000" />
+                <Grid x:Name="ActiveRightCoreGrid" Grid.Column="1" MouseLeave="ActiveSpace_MouseOut">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Border Background="#FFA0A0A0" Grid.RowSpan="9" Opacity="0.5" CornerRadius="27,0,0,27" />
+                    <Button x:Name="ActiveSearchButton" Style="{StaticResource ActiveButton}" Margin="10,10,10,10" Grid.Row="0" Click="SearchButton_Click" Content="搜索" IsDefault="True" IsEnabled="False" TabIndex="2" />
+                    <Button x:Name="ActiveDownloadButton" Style="{StaticResource ActiveButton}" Grid.Row="1" Click="DownloadButton_Click"  Content="下载" IsEnabled="False" TabIndex="3" />
+                    <Button x:Name="ActiveLuckyButton" Style="{StaticResource ActiveButton}" Grid.Row="2" Click="LuckyButton_Click" Content="一图" TabIndex="4" />
+                    <Button x:Name="ActiveSettingButton" Style="{StaticResource ActiveButton}" Grid.Row="3" Click="SettingButton_Click" Content="设置" TabIndex="5" />
+                    <Button x:Name="AboutButtonDock" Style="{StaticResource ActiveButton}" Grid.Row="4" Click="AboutButton_Click" Content="关于" TabIndex="6" />
+                </Grid>
+            </Grid>
+        </Grid>
     </Grid>
 </Window>

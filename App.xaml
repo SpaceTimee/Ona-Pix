@@ -11,19 +11,25 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <Style TargetType="{x:Type Window}">
-                <Setter Property="Background" Value="{DynamicResource MaterialDesignBackground}" />
-            </Style>
             <Style BasedOn="{StaticResource MaterialDesignLabel}" TargetType="{x:Type Label}">
                 <Setter Property="Padding" Value="0,0,0,0" />
             </Style>
             <Style BasedOn="{StaticResource MaterialDesignRaisedButton}" TargetType="{x:Type Button}" />
             <Style BasedOn="{StaticResource MaterialDesignCaptionHyperlink}" TargetType="{x:Type Hyperlink}" />
 
-            <Style x:Key="MainButton" BasedOn="{StaticResource MaterialDesignRaisedButton}" TargetType="{x:Type Button}">
+            <Style x:Key="CommonWindow" TargetType="{x:Type Window}">
+                <Setter Property="Background" Value="{DynamicResource MaterialDesignBackground}" />
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+            </Style>
+            <Style x:Key="InactiveButton" BasedOn="{StaticResource MaterialDesignRaisedButton}" TargetType="{x:Type Button}">
                 <Setter Property="Height" Value="Auto" />
                 <Setter Property="Width" Value="Auto" />
-                <Setter Property="Margin" Value="0,0,0,10" />
+                <Setter Property="Margin" Value="0,10,0,0" />
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
+            </Style>
+            <Style x:Key="ActiveButton" BasedOn="{StaticResource MaterialDesignFloatingActionMiniButton}" TargetType="{x:Type Button}">
+                <Setter Property="Margin" Value="10,0,10,10" />
+                <Setter Property="Foreground" Value="{DynamicResource MaterialDesignBody}" />
             </Style>
             <Style x:Key="AboutLabel" BasedOn="{StaticResource MaterialDesignLabel}" TargetType="{x:Type Label}">
                 <Setter Property="HorizontalAlignment" Value="Center" />

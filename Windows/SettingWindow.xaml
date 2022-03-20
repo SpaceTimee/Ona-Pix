@@ -7,7 +7,7 @@
     x:Name="SettingWin"
     x:Class="Ona_Pix.SettingWindow"
     mc:Ignorable="d"
-    Style="{DynamicResource {x:Type Window}}"
+    Style="{DynamicResource CommonWindow}"
     WindowStartupLocation="CenterScreen" Height="300" Width="250" MinWidth="250" Title="设置" Loaded="SettingWin_Loaded">
     <Window.Resources>
         <pages:AppearancePage x:Key="appearancePage" FontWeight="Bold" FontSize="13" />

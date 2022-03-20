@@ -8,10 +8,10 @@
     <PackageReleaseNotes>Yet Another Pixiv Tool</PackageReleaseNotes>
     <Authors>Space Time</Authors>
     <Company>Space Time</Company>
-    <AssemblyVersion>1.0.2</AssemblyVersion>
-    <Version>1.0.2</Version>
-    <FileVersion>1.0.2</FileVersion>
-    <InformationalVersion>1.0.2</InformationalVersion>
+    <AssemblyVersion>1.1.0</AssemblyVersion>
+    <Version>1.1.0</Version>
+    <FileVersion>1.1.0</FileVersion>
+    <InformationalVersion>1.1.0</InformationalVersion>
     <PackageTags>Tool;Pixiv;Ona;Pix</PackageTags>
     <ApplicationIcon>Ona-Pix-Logo.ico</ApplicationIcon>
     <PackageIcon>Ona Pix Logo.png</PackageIcon>

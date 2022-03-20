@@ -7,7 +7,7 @@
     x:Name="AboutWin"
     x:Class="Ona_Pix.AboutWindow"
     mc:Ignorable="d"
-    Style="{DynamicResource {x:Type Window}}"
+    Style="{DynamicResource CommonWindow}"
     WindowStartupLocation="CenterScreen" Height="300" Width="250" MinWidth="250" Title="关于" Loaded="AboutWin_Loaded">
     <Grid Margin="0,0,0,5">
         <Grid.RowDefinitions>

@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Windows.Forms;
 using Newtonsoft.Json.Linq;
-using Ona_Pix.Pages;
 using OnaCore;
 using OnaPixSecret;
 using SauceNET;
@@ -13,7 +12,7 @@ namespace Ona_Pix
 {
     internal class Smms : Proc
     {
-        internal event Define.SET_WINDOW_HANDLER_P? SetImageUrl, SetMainWindowTitle;
+        internal event Define.SET_WINDOW_HANDLER_P? SetImageUrl, SetMainWindowTitle, ShowError;
         internal event Define.SET_WINDOW_HANDLER? SetControlsEnabled;
 
         public Smms() : base("Ona-Pix-Smms.exe")
@@ -58,9 +57,7 @@ namespace Ona_Pix
         {
             if (!string.IsNullOrEmpty(e.Data) && !string.IsNullOrWhiteSpace(e.Data))
             {
-                if (!((BehaviorPage)Define.SETTING_WINDOW.Resources["behaviorPage"]).DisableExceptionToggle.IS_TOGGLED)
-                    MessageBox.Show("Error: " + e.Data);
-
+                ShowError!(e.Data);
                 SetMainWindowTitle!("操作执行失败");
             }
         }
