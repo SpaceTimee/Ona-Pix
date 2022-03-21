@@ -21,13 +21,16 @@ namespace Ona_Pix
 {
     public partial class MainWindow : Window
     {
-        private readonly DispatcherTimer IN_TIMER = new(), OUT_TIMER = new();
+        private readonly DispatcherTimer ACTIVATE_TIMER = new(), IN_TIMER = new(), OUT_TIMER = new();
+        private HttpResponseMessage IMAGE_MESSAGE = new();
         private bool IS_ACTIVE = false, IS_FIXED = false;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            ACTIVATE_TIMER.Interval = new TimeSpan(1);
+            ACTIVATE_TIMER.Tick += ACTIVATE_TIMER_Tick;
             IN_TIMER.Interval = new TimeSpan(1);
             IN_TIMER.Tick += IN_TIMER_Tick;
             OUT_TIMER.Interval = new TimeSpan(1);
@@ -169,25 +172,39 @@ namespace Ona_Pix
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
         }
 
-        private void ActiveSearchBox_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
-            IS_FIXED = true;
+            if ((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text == "")
+            {
+                ActiveSearchButton.IsEnabled = false;
+                ActiveDownloadButton.IsEnabled = false;
+                InactiveSearchButton.IsEnabled = false;
+                InactiveDownloadButton.IsEnabled = false;
+            }
+            else
+            {
+                ActiveSearchButton.IsEnabled = true;
+                ActiveDownloadButton.IsEnabled = true;
+                InactiveSearchButton.IsEnabled = true;
+                InactiveDownloadButton.IsEnabled = true;
+            }
         }
-        private void ActiveSpace_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            IN_TIMER.Stop();
-            OUT_TIMER.Start();
 
-            ActiveSearchBox.Focus();
-
-            IS_FIXED = false;
-        }
         private void ActiveSpace_MouseIn(object sender, System.Windows.Input.MouseEventArgs e)
         {
             OUT_TIMER.Stop();
             IN_TIMER.Start();
 
             ActiveSearchBox.Focus();
+        }
+        private void ActiveSearchBox_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            OUT_TIMER.Stop();
+            IN_TIMER.Start();
+
+            ActiveSearchBox.Focus();
+
+            IS_FIXED = true;
         }
         private void ActiveSpace_MouseOut(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -197,7 +214,36 @@ namespace Ona_Pix
                 OUT_TIMER.Start();
             }
         }
+        private void InactiveSpace_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            IN_TIMER.Stop();
+            OUT_TIMER.Start();
 
+            ActiveSearchBox.Focus();
+
+            IS_FIXED = false;
+        }
+
+        private void ACTIVATE_TIMER_Tick(object? sender, EventArgs e)
+        {
+            if (InactiveRightGrid.Margin.Left < Width)
+            {
+                InactiveRightGrid.Margin = new Thickness(InactiveRightGrid.Margin.Left + 0.5, 0, InactiveRightGrid.Margin.Right - 0.5, 0);
+                InactiveTopGrid.Margin = new Thickness(0, InactiveTopGrid.Margin.Top - 0.1, 0, InactiveTopGrid.Margin.Bottom + 0.1);
+            }
+            else
+            {
+                ACTIVATE_TIMER.Stop();
+
+                SetImage();
+
+                ActiveSearchBox.Text = InactiveSearchBox.Text;
+                InactiveGrid.Visibility = Visibility.Collapsed;
+                ActiveGrid.Visibility = Visibility.Visible;
+
+                IS_ACTIVE = true;
+            }
+        }
         private void IN_TIMER_Tick(object? sender, EventArgs e)
         {
             if (ActiveRightGrid.Margin.Right < -10)
@@ -217,24 +263,6 @@ namespace Ona_Pix
             }
             else
                 OUT_TIMER.Stop();
-        }
-
-        private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            if ((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text == "")
-            {
-                ActiveSearchButton.IsEnabled = false;
-                ActiveDownloadButton.IsEnabled = false;
-                InactiveSearchButton.IsEnabled = false;
-                InactiveDownloadButton.IsEnabled = false;
-            }
-            else
-            {
-                ActiveSearchButton.IsEnabled = true;
-                ActiveDownloadButton.IsEnabled = true;
-                InactiveSearchButton.IsEnabled = true;
-                InactiveDownloadButton.IsEnabled = true;
-            }
         }
 
         private async void Smms_SetImageUrl(dynamic value)
@@ -404,28 +432,24 @@ namespace Ona_Pix
 
             HttpResponseMessage imageMessage = await Http.GetAsync<HttpResponseMessage>(imageUri, Define.MAIN_CLIENT, HttpCompletionOption.ResponseContentRead);
             imageMessage.EnsureSuccessStatusCode();
+            IMAGE_MESSAGE = imageMessage;
 
-            SetImage(imageMessage);
+            if (IS_ACTIVE)
+                SetImage();
+            else
+                ACTIVATE_TIMER.Start();
 
             Title = "图片获取完成";
         }
-        private void SetImage(HttpResponseMessage imageMessage)
+        private void SetImage()
         {
             Title = "正在读取图片";
 
             BitmapImage bitmapImage = new();
             bitmapImage.BeginInit();
-            bitmapImage.StreamSource = imageMessage.Content.ReadAsStream();
+            bitmapImage.StreamSource = IMAGE_MESSAGE.Content.ReadAsStream();
             bitmapImage.EndInit();
             ImageBehavior.SetAnimatedSource(ShowImage, bitmapImage);
-
-            if (!IS_ACTIVE)
-            {
-                ActiveSearchBox.Text = InactiveSearchBox.Text;
-                InactiveGrid.Visibility = Visibility.Hidden;
-                ActiveGrid.Visibility = Visibility.Visible;
-                IS_ACTIVE = true;
-            }
 
             Title = "图片读取完成";
         }

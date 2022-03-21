@@ -7,20 +7,16 @@
         Style="{DynamicResource CommonWindow}"
         SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" MinWidth="250" Title="Ona Pix" Loaded="MainWin_Loaded">
     <Grid Margin="10,10,10,10">
-        <Rectangle MouseDown="ActiveSpace_MouseDown" Opacity="0" Fill="#0000" />
-        <Image MouseDown="ActiveSpace_MouseDown" x:Name="ShowImage" MaxWidth="1080" />
+        <Rectangle MouseDown="InactiveSpace_MouseDown" Opacity="0" Fill="#0000" />
+        <Image MouseDown="InactiveSpace_MouseDown" x:Name="ShowImage" MaxWidth="1080" />
 
         <Grid x:Name="InactiveGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
 
-            <Grid>
+            <Grid x:Name="InactiveTopGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="Auto" />
@@ -29,14 +25,24 @@
                 <Button x:Name="InactiveViewButton" Style="{StaticResource InactiveButton}" Margin="0,0,0,0" Grid.Column="1" Click="ViewButton_Click" Content="浏览" TabIndex="1" HorizontalAlignment="Right" />
             </Grid>
 
-            <Button x:Name="InactiveSearchButton" Style="{StaticResource InactiveButton}" Grid.Row="1" Click="SearchButton_Click" Content="搜索" IsDefault="True" IsEnabled="False" TabIndex="2" />
-            <Button x:Name="InactiveDownloadButton" Style="{StaticResource InactiveButton}" Grid.Row="2" Click="DownloadButton_Click"  Content="下载" IsEnabled="False" TabIndex="3" />
-            <Button x:Name="InactiveLuckyButton" Style="{StaticResource InactiveButton}" Grid.Row="3" Click="LuckyButton_Click" Content="一图" TabIndex="4" />
-            <Button x:Name="InactiveSettingButton" Style="{StaticResource InactiveButton}" Grid.Row="4" Click="SettingButton_Click" Content="设置" TabIndex="5" />
-            <Button x:Name="InactiveAboutButton" Style="{StaticResource InactiveButton}" Grid.Row="5" Click="AboutButton_Click" Content="关于" TabIndex="6" />
+            <Grid x:Name="InactiveRightGrid" Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+
+                <Button x:Name="InactiveSearchButton" Style="{StaticResource InactiveButton}" Grid.Row="0" Click="SearchButton_Click" Content="搜索" IsDefault="True" IsEnabled="False" TabIndex="2" />
+                <Button x:Name="InactiveDownloadButton" Style="{StaticResource InactiveButton}" Grid.Row="1" Click="DownloadButton_Click"  Content="下载" IsEnabled="False" TabIndex="3" />
+                <Button x:Name="InactiveLuckyButton" Style="{StaticResource InactiveButton}" Grid.Row="2" Click="LuckyButton_Click" Content="一图" TabIndex="4" />
+                <Button x:Name="InactiveSettingButton" Style="{StaticResource InactiveButton}" Grid.Row="3" Click="SettingButton_Click" Content="设置" TabIndex="5" />
+                <Button x:Name="InactiveAboutButton" Style="{StaticResource InactiveButton}" Grid.Row="4" Click="AboutButton_Click" Content="关于" TabIndex="6" />
+            </Grid>
         </Grid>
 
-        <Grid x:Name="ActiveGrid" Visibility="Hidden">
+        <Grid x:Name="ActiveGrid" Visibility="Collapsed">
             <Grid x:Name="ActiveTopGrid" Margin="0,-65,0,0" MouseDown="ActiveSpace_MouseIn" MouseEnter="ActiveSpace_MouseIn" VerticalAlignment="Top">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
