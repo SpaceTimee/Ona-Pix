@@ -11,6 +11,7 @@ namespace Ona_Pix
         internal delegate void SET_WINDOW_HANDLER();
         internal delegate void SET_WINDOW_HANDLER_P(dynamic value);
 
+        internal static MainWindow MAIN_WINDOW = new();
         internal static readonly SettingWindow SETTING_WINDOW = new();
         internal static readonly HttpClient MAIN_CLIENT = new();
         internal static readonly string CURRENT_VERSION = Assembly.GetExecutingAssembly().GetName().Version!.ToString()[0..^2];

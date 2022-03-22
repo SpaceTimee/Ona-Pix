@@ -6,7 +6,7 @@
              xmlns:controls="clr-namespace:Ona_Pix.Controls"
              mc:Ignorable="d">
     <StackPanel>
-        <Grid>
+        <Grid Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="1*" />

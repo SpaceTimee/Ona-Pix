@@ -6,13 +6,21 @@
              xmlns:controls="clr-namespace:Ona_Pix.Controls"
              mc:Ignorable="d">
     <StackPanel>
-        <Grid>
+        <Grid Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
             <Label Content="暗色模式" />
             <controls:ToggleSwitch x:Name="DarkModeToggle" Style="{StaticResource SettingToggle}" MouseDown="DarkModeToggle_MouseDown" />
+        </Grid>
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Content="锁定动画" />
+            <controls:ToggleSwitch x:Name="LockAnimationToggle" Style="{StaticResource SettingToggle}" MouseDown="LockAnimationToggle_MouseDown" />
         </Grid>
     </StackPanel>
 </UserControl>

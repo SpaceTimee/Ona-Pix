@@ -46,7 +46,7 @@
             <Grid x:Name="ActiveTopGrid" Margin="0,-65,0,0" MouseDown="ActiveSpace_MouseIn" MouseEnter="ActiveSpace_MouseIn" VerticalAlignment="Top">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="60" />
+                    <RowDefinition Height="55" />
                 </Grid.RowDefinitions>
 
                 <Rectangle Grid.RowSpan="2" Opacity="0" Fill="#0000" />
@@ -63,7 +63,7 @@
 
             <Grid x:Name="ActiveRightGrid" Grid.Row="1" Margin="0,60,-65,0" HorizontalAlignment="Right" MouseDown="ActiveSpace_MouseIn" MouseEnter="ActiveSpace_MouseIn" VerticalAlignment="Top">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="60" />
+                    <ColumnDefinition Width="55" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 

@@ -35,6 +35,8 @@ namespace Ona_Pix
             IN_TIMER.Tick += IN_TIMER_Tick;
             OUT_TIMER.Interval = new TimeSpan(1);
             OUT_TIMER.Tick += OUT_TIMER_Tick;
+
+            Define.MAIN_WINDOW = this;
         }
         private void MainWin_Loaded(object sender, RoutedEventArgs e)
         {
@@ -190,7 +192,7 @@ namespace Ona_Pix
             }
         }
 
-        private void ActiveSpace_MouseIn(object sender, System.Windows.Input.MouseEventArgs e)
+        internal void ActiveSpace_MouseIn(object sender, System.Windows.Input.MouseEventArgs e)
         {
             OUT_TIMER.Stop();
             IN_TIMER.Start();
@@ -206,9 +208,9 @@ namespace Ona_Pix
 
             IS_FIXED = true;
         }
-        private void ActiveSpace_MouseOut(object sender, System.Windows.Input.MouseEventArgs e)
+        internal void ActiveSpace_MouseOut(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            if (!IS_FIXED)
+            if (!((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).LockAnimationToggle.IS_TOGGLED && !IS_FIXED)
             {
                 IN_TIMER.Stop();
                 OUT_TIMER.Start();
@@ -216,12 +218,13 @@ namespace Ona_Pix
         }
         private void InactiveSpace_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            IN_TIMER.Stop();
-            OUT_TIMER.Start();
+            if (!((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).LockAnimationToggle.IS_TOGGLED)
+            {
+                IN_TIMER.Stop();
+                OUT_TIMER.Start();
 
-            ActiveSearchBox.Focus();
-
-            IS_FIXED = false;
+                IS_FIXED = false;
+            }
         }
 
         private void ACTIVATE_TIMER_Tick(object? sender, EventArgs e)
