@@ -8,7 +8,7 @@
     x:Class="Ona_Pix.AboutWindow"
     mc:Ignorable="d"
     Style="{DynamicResource CommonWindow}"
-    WindowStartupLocation="CenterScreen" Height="300" Width="250" MinWidth="250" Title="关于" Loaded="AboutWin_Loaded">
+    WindowStartupLocation="CenterScreen" Height="300" Width="250" MinWidth="250" Title="关于" Loaded="AboutWin_Loaded" KeyDown="AboutWin_KeyDown">
     <Grid Margin="0,0,0,5">
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
@@ -29,7 +29,7 @@
         <Label Style="{StaticResource AboutLabel}" Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="3" Content="Ona Pix 随时恭候主人吩咐！" FontWeight="Bold" />
 
         <Label Style="{StaticResource AboutLabel}" Grid.Row="1" Grid.Column="1">
-            <Hyperlink x:Name="DeveloperLink" NavigateUri="https://github.com/SpaceTimee" Click="DeveloperLink_Click">
+            <Hyperlink x:Name="DeveloperLink" NavigateUri="https://www.spacetimee.xyz" Click="HyperLink_Click">
                 <Run Text="开发者: Space Time" Foreground="#FF2196F3" />
             </Hyperlink>
         </Label>
@@ -43,38 +43,38 @@
         <Label Style="{StaticResource AboutLabel}" Content="生日: 9.10" Grid.Row="5" Grid.Column="1" />
         <Image x:Name="TanImage" Grid.Row="3" Grid.Column="1" Grid.RowSpan="3" gif:ImageBehavior.AnimatedSource="/Resources/Pixiv-Tan.png" />
         <Label Style="{StaticResource AboutLabel}" Grid.Row="6" Grid.Column="1">
-            <Hyperlink x:Name="PrivacyLink" NavigateUri="https://thoughts.teambition.com/share/621ddd42c6a7bc00410f6e20#title=Ona_Pix_隐私政策" Click="PrivacyLink_Click">
+            <Hyperlink x:Name="PrivacyLink" NavigateUri="https://thoughts.teambition.com/share/621ddd42c6a7bc00410f6e20#title=Ona_Pix_隐私政策" Click="HyperLink_Click">
                 <Run Text="[隐私政策]" />
             </Hyperlink>
         </Label>
 
         <Label Style="{StaticResource AboutLabel}" Grid.Row="1" Grid.Column="2">
-            <Hyperlink x:Name="OpenSourceLink" NavigateUri="https://github.com/SpaceTimee/Ona-Pix" Click="OpenSourceLink_Click">
-                <Run Text="[开源地址]" />
+            <Hyperlink x:Name="HomePageLink" NavigateUri="https://github.com/SpaceTimee/Ona-Pix/wiki/Ona-Pix-Instruction" Click="HyperLink_Click">
+                <Run Text="[使用文档]" />
             </Hyperlink>
         </Label>
         <Label Style="{StaticResource AboutLabel}" Grid.Row="2" Grid.Column="2">
-            <Hyperlink x:Name="LanzouLink"  NavigateUri="https://spacetime.lanzouy.com/b0179uiab" Click="LanzouLink_Click">
+            <Hyperlink x:Name="LanzouLink"  NavigateUri="https://spacetime.lanzouy.com/b0179uiab" Click="HyperLink_Click">
                 <Run Text="[手动更新]" />
             </Hyperlink>
         </Label>
         <Label Style="{StaticResource AboutLabel}" Grid.Row="3" Grid.Column="2">
-            <Hyperlink x:Name="HomePageLink" NavigateUri="https://www.spacetimee.xyz" Click="HomePageLink_Click">
-                <Run Text="[作者主页]" />
+            <Hyperlink x:Name="OpenSourceLink" NavigateUri="https://github.com/SpaceTimee/Ona-Pix" Click="HyperLink_Click">
+                <Run Text="[开源地址]" />
             </Hyperlink>
         </Label>
         <Label Style="{StaticResource AboutLabel}" Grid.Row="4" Grid.Column="2">
-            <Hyperlink x:Name="BlogLink" NavigateUri="https://blog.spacetimee.xyz" Click="BlogLink_Click">
+            <Hyperlink x:Name="BlogLink" NavigateUri="https://blog.spacetimee.xyz" Click="HyperLink_Click">
                 <Run Text="[作者博客]" />
             </Hyperlink>
         </Label>
         <Label Style="{StaticResource AboutLabel}" Grid.Row="5" Grid.Column="2">
-            <Hyperlink x:Name="EmailLink" NavigateUri="Zeus6_6@163.com" Click="EmailLink_Click">
+            <Hyperlink x:Name="EmailLink" NavigateUri="Zeus6_6@163.com" Click="HyperLink_Click">
                 <Run Text="[联系邮箱]" />
             </Hyperlink>
         </Label>
         <Label Style="{StaticResource AboutLabel}" Grid.Row="6" Grid.Column="2">
-            <Hyperlink x:Name="AgreementLink" NavigateUri="https://thoughts.teambition.com/share/621ddd105cb4ab00411c9200#title=Ona_Pix_使用协议" Click="AgreementLink_Click">
+            <Hyperlink x:Name="AgreementLink" NavigateUri="https://thoughts.teambition.com/share/621ddd105cb4ab00411c9200#title=Ona_Pix_使用协议" Click="HyperLink_Click">
                 <Run Text="[使用协议]" />
             </Hyperlink>
         </Label>

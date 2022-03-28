@@ -14,6 +14,14 @@
             <Label Content="暗色模式" />
             <controls:ToggleSwitch x:Name="DarkModeToggle" Style="{StaticResource SettingToggle}" MouseDown="DarkModeToggle_MouseDown" />
         </Grid>
+        <Grid x:Name="IconButtonGrid" Margin="0,0,0,10" IsEnabled="False">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Content="图标按钮" />
+            <controls:ToggleSwitch x:Name="IconButtonToggle" Style="{StaticResource SettingToggle}" MouseDown="IconButtonToggle_MouseDown" />
+        </Grid>
         <Grid Margin="0,0,0,10">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
@@ -21,6 +29,14 @@
             </Grid.ColumnDefinitions>
             <Label Content="锁定动画" />
             <controls:ToggleSwitch x:Name="LockAnimationToggle" Style="{StaticResource SettingToggle}" MouseDown="LockAnimationToggle_MouseDown" />
+        </Grid>
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
+            <Label Content="隐藏边框" />
+            <controls:ToggleSwitch x:Name="HideBorderToggle" Style="{StaticResource SettingToggle}" MouseDown="HideBorderToggle_MouseDown" />
         </Grid>
     </StackPanel>
 </UserControl>

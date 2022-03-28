@@ -50,7 +50,7 @@ namespace Ona_Pix
                         //接下来的正常流程: 等待用户反馈后转至 ReleaseListBox_SelectionChanged()
                     }
                     else if (messageBoxResult == MessageBoxResult.No)
-                        LanzouLink_Click(UpdateLink, new RoutedEventArgs());
+                        HyperLink_Click(LanzouLink, new RoutedEventArgs());
                 }
                 else
                     Title = "当前是最新版本";

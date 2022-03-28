@@ -9,12 +9,15 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
 using System.Windows.Forms;
+using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Newtonsoft.Json.Linq;
 using Ona_Pix.Pages;
 using OnaCore;
 using WpfAnimatedGif;
+using DataFormats = System.Windows.DataFormats;
+using DragDropEffects = System.Windows.DragDropEffects;
 using MessageBox = System.Windows.MessageBox;
 
 namespace Ona_Pix
@@ -25,18 +28,28 @@ namespace Ona_Pix
         private HttpResponseMessage IMAGE_MESSAGE = new();
         private bool IS_ACTIVE = false, IS_FIXED = false;
 
-        public MainWindow()
+        public MainWindow(string[] args)
         {
-            InitializeComponent();
+            try
+            {
+                InitializeComponent();
 
-            ACTIVATE_TIMER.Interval = new TimeSpan(1);
-            ACTIVATE_TIMER.Tick += ACTIVATE_TIMER_Tick;
-            IN_TIMER.Interval = new TimeSpan(1);
-            IN_TIMER.Tick += IN_TIMER_Tick;
-            OUT_TIMER.Interval = new TimeSpan(1);
-            OUT_TIMER.Tick += OUT_TIMER_Tick;
+                if (args.Length >= 1 && File.Exists(args[0]))
+                {
+                    if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(args[0])) != -1)
+                        InactiveSearchBox.Text = args[0];
+                    else
+                        throw new Exception("里面被塞入了奇怪的东西...");
+                }
 
-            Define.MAIN_WINDOW = this;
+                ACTIVATE_TIMER.Interval = new TimeSpan(1);
+                ACTIVATE_TIMER.Tick += ACTIVATE_TIMER_Tick;
+                IN_TIMER.Interval = new TimeSpan(1);
+                IN_TIMER.Tick += IN_TIMER_Tick;
+                OUT_TIMER.Interval = new TimeSpan(1);
+                OUT_TIMER.Tick += OUT_TIMER_Tick;
+            }
+            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; }
         }
         private void MainWin_Loaded(object sender, RoutedEventArgs e)
         {
@@ -63,7 +76,7 @@ namespace Ona_Pix
                 openDialog.Multiselect = false; //不允许选择多个文件
                 openDialog.RestoreDirectory = true; //自动填充用户上次选择的目录
                 openDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                openDialog.Filter = "PNG (*.png)|*.png|JPG (*.jpg)|*.jpg|GIF (*.gif)|*.gif|所有文件 (*.*)|*.*";
+                openDialog.Filter = "PNG (*.png)|*.png|JPG (*.jpg)|*.jpg|GIF (*.gif)|*.gif";
                 openDialog.FilterIndex = 1; //默认png
                 openDialog.AddExtension = true; //无后缀时自动增加后缀
                 openDialog.CheckFileExists = true;  //检查文件是否正确
@@ -227,6 +240,39 @@ namespace Ona_Pix
             }
         }
 
+        private void ReveivingSpace_DragEnter(object sender, System.Windows.DragEventArgs e)
+        {
+            try
+            {
+                e.Handled = true;
+
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                    e.Effects = DragDropEffects.Copy;
+                else
+                    e.Effects = DragDropEffects.None;
+            }
+            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+        }
+        private void ReveivingSpace_Drop(object sender, System.Windows.DragEventArgs e)
+        {
+            try
+            {
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    string[] path = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                    if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(path[0])) != -1)
+                    {
+                        ActiveSearchBox.Text = path[0];
+                        InactiveSearchBox.Text = path[0];
+                    }
+                    else
+                        throw new Exception("里面被塞入了奇怪的东西...");
+                }
+            }
+            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+        }
+
         private void ACTIVATE_TIMER_Tick(object? sender, EventArgs e)
         {
             if (InactiveRightGrid.Margin.Left < Width)
@@ -243,6 +289,7 @@ namespace Ona_Pix
                 ActiveSearchBox.Text = InactiveSearchBox.Text;
                 InactiveGrid.Visibility = Visibility.Collapsed;
                 ActiveGrid.Visibility = Visibility.Visible;
+                ((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).IconButtonGrid.IsEnabled = true;
 
                 IS_ACTIVE = true;
             }
@@ -523,5 +570,11 @@ namespace Ona_Pix
         //    //将原文本与用utf-8解码再编码的文本对比
         //    return str == HttpUtility.UrlEncode(HttpUtility.UrlDecode(str.ToUpper(), Encoding.UTF8), Encoding.UTF8) ? Encoding.UTF8 : Encoding.GetEncoding("gb2312");
         //}
+
+        private void MainWin_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.W)
+                Close();    //关闭窗口
+        }
     }
 }
