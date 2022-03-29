@@ -28,7 +28,7 @@ namespace Ona_Pix.Controls
             SwitchStatus();
         }
 
-        private void SwitchStatus()
+        internal void SwitchStatus()
         {
             if (!IS_TOGGLED)
             {

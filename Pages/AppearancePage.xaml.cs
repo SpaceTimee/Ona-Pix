@@ -14,23 +14,48 @@ namespace Ona_Pix.Pages
             InitializeComponent();
         }
 
-        private void DarkModeToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        internal void DarkModeToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            ((BundledTheme)Application.Current.Resources.MergedDictionaries[0]).BaseTheme =
-                DarkModeToggle.IS_TOGGLED ? BaseTheme.Dark : BaseTheme.Light;
+            if (DarkModeToggle.IS_TOGGLED)
+            {
+                ((BundledTheme)Application.Current.Resources.MergedDictionaries[0]).BaseTheme = BaseTheme.Dark;
+                Properties.Settings.Default.IsDarkMode = true;
+            }
+            else
+            {
+                ((BundledTheme)Application.Current.Resources.MergedDictionaries[0]).BaseTheme = BaseTheme.Light;
+                Properties.Settings.Default.IsDarkMode = false;
+            }
+
+            Properties.Settings.Default.Save();
 
             SetButtonContent();
         }
-        private void IconButtonToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        internal void IconButtonToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            if (IconButtonToggle.IS_TOGGLED)
+                Properties.Settings.Default.IsIconButton = true;
+            else
+                Properties.Settings.Default.IsIconButton = false;
+
+            Properties.Settings.Default.Save();
+
             SetButtonContent();
         }
-        private void LockAnimationToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        internal void LockAnimationToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (LockAnimationToggle.IS_TOGGLED)
+            {
                 Define.MAIN_WINDOW!.ActiveSpace_MouseIn(this, null!);
+                Properties.Settings.Default.IsAnimationLocked = true;
+            }
             else
+            {
                 Define.MAIN_WINDOW!.ActiveSpace_MouseOut(this, null!);
+                Properties.Settings.Default.IsAnimationLocked = false;
+            }
+
+            Properties.Settings.Default.Save();
         }
         private void HideBorderToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {

@@ -55,10 +55,59 @@ namespace Ona_Pix
         {
             try
             {
+                if (Properties.Settings.Default.IsFirstRun)
+                    Welcome();
+                else
+                    RestoreSettings();
+
                 if (Directory.Exists(Define.CACHE_PATH))
                     new DirectoryInfo(Define.CACHE_PATH).Delete(true);
             }
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+        }
+        private void Welcome()
+        {
+            //第一次运行
+            MessageBox.Show
+            (
+@"欢迎回家，主人! 我是 Ona Pix，你的专属女仆★
+关于我的所有信息都可以在接下来的关于窗口中找到噢！随便逛逛吧，主人。
+参观结束后就可以关闭关于窗口啦，我会在主窗口等你!"
+            );
+
+            AboutWindow aboutWindow = new(false);
+            aboutWindow.ShowDialog();
+
+            Properties.Settings.Default.IsFirstRun = false;
+            Properties.Settings.Default.Save();
+        }
+        private void RestoreSettings()
+        {
+            if (Properties.Settings.Default.IsDarkMode)
+            {
+                ((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).DarkModeToggle.SwitchStatus();
+                ((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).DarkModeToggle_MouseDown(this, null!);
+            }
+            if (Properties.Settings.Default.IsIconButton)
+            {
+                ((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).IconButtonToggle.SwitchStatus();
+                ((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).IconButtonToggle_MouseDown(this, null!);
+            }
+            if (Properties.Settings.Default.IsAnimationLocked)
+            {
+                ((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).LockAnimationToggle.SwitchStatus();
+                ((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).LockAnimationToggle_MouseDown(this, null!);
+            }
+            if (Properties.Settings.Default.IsExceptionDisabled)
+            {
+                ((BehaviorPage)Define.SETTING_WINDOW.Resources["behaviorPage"]).DisableExceptionToggle.SwitchStatus();
+                ((BehaviorPage)Define.SETTING_WINDOW.Resources["behaviorPage"]).DisableExceptionToggle_MouseDown(this, null!);
+            }
+            if (Properties.Settings.Default.IsExceptionDisabled)
+            {
+                ((BehaviorPage)Define.SETTING_WINDOW.Resources["behaviorPage"]).DisableTipsToggle.SwitchStatus();
+                ((BehaviorPage)Define.SETTING_WINDOW.Resources["behaviorPage"]).DisableTipsToggle_MouseDown(this, null!);
+            }
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -289,7 +338,6 @@ namespace Ona_Pix
                 ActiveSearchBox.Text = InactiveSearchBox.Text;
                 InactiveGrid.Visibility = Visibility.Collapsed;
                 ActiveGrid.Visibility = Visibility.Visible;
-                ((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).IconButtonGrid.IsEnabled = true;
 
                 IS_ACTIVE = true;
             }
