@@ -14,8 +14,10 @@ namespace Ona_Pix.Pages
             InitializeComponent();
         }
 
+        //Toggle点击事件
         internal void DarkModeToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            //暗色模式
             if (DarkModeToggle.IS_TOGGLED)
             {
                 ((BundledTheme)Application.Current.Resources.MergedDictionaries[0]).BaseTheme = BaseTheme.Dark;
@@ -33,6 +35,7 @@ namespace Ona_Pix.Pages
         }
         internal void IconButtonToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            //按钮图标
             if (IconButtonToggle.IS_TOGGLED)
                 Properties.Settings.Default.IsIconButton = true;
             else
@@ -44,6 +47,7 @@ namespace Ona_Pix.Pages
         }
         internal void LockAnimationToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            //固定菜单
             if (LockAnimationToggle.IS_TOGGLED)
             {
                 Define.MAIN_WINDOW!.ActiveSpace_MouseIn(this, null!);
@@ -59,6 +63,7 @@ namespace Ona_Pix.Pages
         }
         private void HideBorderToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+            //隐藏边框
             Define.MAIN_WINDOW!.SizeToContent = SizeToContent.Manual;
 
             if (HideBorderToggle.IS_TOGGLED)
@@ -72,6 +77,7 @@ namespace Ona_Pix.Pages
             Define.MAIN_WINDOW!.SizeToContent = SizeToContent.WidthAndHeight;
         }
 
+        //为按钮应用暗色模式和图标按钮
         private void SetButtonContent()
         {
             if (IconButtonToggle.IS_TOGGLED)

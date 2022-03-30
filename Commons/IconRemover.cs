@@ -5,6 +5,7 @@ using System.Windows.Interop;
 
 namespace Ona_Pix
 {
+    //定义IconRemover
     internal static class IconRemover
     {
         private const int GWL_EXSTYLE = -20;
@@ -41,6 +42,7 @@ namespace Ona_Pix
         }
     }
 
+    //使用IconRemover
     public partial class MainWindow
     {
         protected override void OnSourceInitialized(EventArgs e)

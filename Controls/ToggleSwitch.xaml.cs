@@ -19,6 +19,7 @@ namespace Ona_Pix.Controls
             InitializeComponent();
         }
 
+        //点击事件
         private void ForeDot_MouseDown(object sender, MouseButtonEventArgs e)
         {
             SwitchStatus();
@@ -28,6 +29,7 @@ namespace Ona_Pix.Controls
             SwitchStatus();
         }
 
+        //切换Toggle状态
         internal void SwitchStatus()
         {
             if (!IS_TOGGLED)

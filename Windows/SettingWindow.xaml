@@ -19,7 +19,7 @@
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
 
-        <ListBox x:Name="PaneListBox" Grid.Column="0" FontWeight="Bold" IsTextSearchCaseSensitive="True" SelectionChanged="ListBox_SelectionChanged">
+        <ListBox x:Name="PaneListBox" Grid.Column="0" FontWeight="Bold" IsTextSearchCaseSensitive="True" SelectionChanged="PaneListBox_SelectionChanged">
             <Label Content="外观" />
             <Label Content="行为" />
         </ListBox>

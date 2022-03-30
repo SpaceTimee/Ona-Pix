@@ -4,7 +4,6 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
-using Ona_Pix.Pages;
 using WpfAnimatedGif;
 
 namespace Ona_Pix
@@ -31,6 +30,7 @@ namespace Ona_Pix
             InitializeComponent();
             PartialAboutWindow();
 
+            //检查暗色模式
             if (isDarkMode)
             {
                 MemoryStream memoryStream = new();
@@ -44,7 +44,8 @@ namespace Ona_Pix
                 ImageBehavior.SetAnimatedSource(TanImage, bitmapImage);
             }
 
-            if (!((BehaviorPage)Define.SETTING_WINDOW.Resources["behaviorPage"]).DisableTipsToggle.IS_TOGGLED)
+            //显示随机一言(Tips)
+            if (!Define.BEHAVIOR_PAGE.DisableTipsToggle.IS_TOGGLED)
             {
                 Random random = new(Convert.ToInt32(DateTime.Now.Ticks & 0x0000FFFF));
                 Title = $"关于: {TIPS[random.Next(0, TIPS.Length)]}";
@@ -70,8 +71,10 @@ namespace Ona_Pix
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
         }
 
+        //链接点击事件
         private void HyperLink_Click(object sender, RoutedEventArgs e)
         {
+            //打开链接
             try
             {
                 Title = "正在打开链接";

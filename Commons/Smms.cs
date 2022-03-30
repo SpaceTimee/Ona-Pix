@@ -20,8 +20,10 @@ namespace Ona_Pix
             //Control.CheckForIllegalCrossThreadCalls = false;
         }
 
+        //Smms程序调用事件
         public override async void Process_OutputDataReceived(object sender, DataReceivedEventArgs e)
         {
+            //输出事件(输出结果)
             try
             {
                 if (!string.IsNullOrEmpty(e.Data) && !string.IsNullOrWhiteSpace(e.Data))
@@ -55,6 +57,7 @@ namespace Ona_Pix
         }
         public override void Process_ErrorDataReceived(object sender, DataReceivedEventArgs e)
         {
+            //报错事件(输出错误)
             if (!string.IsNullOrEmpty(e.Data) && !string.IsNullOrWhiteSpace(e.Data))
             {
                 ShowError!(e.Data);
@@ -63,6 +66,7 @@ namespace Ona_Pix
         }
         public override void Process_Exited(object sender, EventArgs e)
         {
+            //退出事件
             SetControlsEnabled!();
         }
     }
