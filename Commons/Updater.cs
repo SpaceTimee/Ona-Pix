@@ -19,8 +19,10 @@ namespace Ona_Pix
             GITHUB_CLIENT.DefaultRequestHeaders.Add("User-Agent", Define.USER_AGENT_HEADER);
         }
 
+        //用户交互流程
         private async void UpdateLink_Click(object sender, RoutedEventArgs e)
         {
+            //用户点击关于页面的版本号
             try
             {
                 Title = "正在获取更新";
@@ -59,6 +61,7 @@ namespace Ona_Pix
         }
         private async void ReleaseListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+            //用户选择下载内容
             Title = "继续执行更新";
 
             try

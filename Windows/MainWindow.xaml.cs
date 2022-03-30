@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Text;
@@ -13,7 +14,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Newtonsoft.Json.Linq;
-using Ona_Pix.Pages;
+using Ona_Pix.Controls;
 using OnaCore;
 using WpfAnimatedGif;
 using DataFormats = System.Windows.DataFormats;
@@ -34,6 +35,7 @@ namespace Ona_Pix
             {
                 InitializeComponent();
 
+                //填充拖入图标的文件路径
                 if (args.Length >= 1 && File.Exists(args[0]))
                 {
                     if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(args[0])) != -1)
@@ -55,19 +57,22 @@ namespace Ona_Pix
         {
             try
             {
+                //检查是否是第一次运行
                 if (Properties.Settings.Default.IsFirstRun)
                     Welcome();
                 else
-                    RestoreSettings();
+                    PickSettings();
 
-                if (Directory.Exists(Define.CACHE_PATH))
-                    new DirectoryInfo(Define.CACHE_PATH).Delete(true);
+                //清理安装包
+                ClearCache();
             }
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
         }
-        private void Welcome()
+
+        //部分初始化操作
+        private static void Welcome()
         {
-            //第一次运行
+            //第一次运行显示提示和关于窗口
             MessageBox.Show
             (
 @"欢迎回家，主人! 我是 Ona Pix，你的专属女仆★
@@ -81,42 +86,60 @@ namespace Ona_Pix
             Properties.Settings.Default.IsFirstRun = false;
             Properties.Settings.Default.Save();
         }
-        private void RestoreSettings()
+        private void PickSettings()
         {
+            //检查是否需要还原设置
             if (Properties.Settings.Default.IsDarkMode)
-            {
-                ((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).DarkModeToggle.SwitchStatus();
-                ((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).DarkModeToggle_MouseDown(this, null!);
-            }
+                RestoreSettings(Define.APPEARANCE_PAGE.DarkModeToggle, Define.APPEARANCE_PAGE.DarkModeToggle_MouseDown);
             if (Properties.Settings.Default.IsIconButton)
-            {
-                ((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).IconButtonToggle.SwitchStatus();
-                ((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).IconButtonToggle_MouseDown(this, null!);
-            }
+                RestoreSettings(Define.APPEARANCE_PAGE.IconButtonToggle, Define.APPEARANCE_PAGE.IconButtonToggle_MouseDown);
             if (Properties.Settings.Default.IsAnimationLocked)
-            {
-                ((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).LockAnimationToggle.SwitchStatus();
-                ((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).LockAnimationToggle_MouseDown(this, null!);
-            }
+                RestoreSettings(Define.APPEARANCE_PAGE.LockAnimationToggle, Define.APPEARANCE_PAGE.LockAnimationToggle_MouseDown);
             if (Properties.Settings.Default.IsExceptionDisabled)
+                RestoreSettings(Define.BEHAVIOR_PAGE.DisableExceptionToggle, Define.BEHAVIOR_PAGE.DisableExceptionToggle_MouseDown);
+            if (Properties.Settings.Default.IsTipsDisabled)
+                RestoreSettings(Define.BEHAVIOR_PAGE.DisableTipsToggle, Define.BEHAVIOR_PAGE.DisableTipsToggle_MouseDown);
+        }
+        private void RestoreSettings(ToggleSwitch toggle, Action<object, MouseButtonEventArgs> Toggle_MouseDown)
+        {
+            //还原设置
+            toggle.SwitchStatus();
+            Toggle_MouseDown(this, null!);
+        }
+        private static void ClearCache()
+        {
+            //清理更新时下载的安装包
+            try
             {
-                ((BehaviorPage)Define.SETTING_WINDOW.Resources["behaviorPage"]).DisableExceptionToggle.SwitchStatus();
-                ((BehaviorPage)Define.SETTING_WINDOW.Resources["behaviorPage"]).DisableExceptionToggle_MouseDown(this, null!);
+                if (Directory.Exists(Define.CACHE_PATH))
+                    new DirectoryInfo(Define.CACHE_PATH).Delete(true);
             }
-            if (Properties.Settings.Default.IsExceptionDisabled)
+            catch
             {
-                ((BehaviorPage)Define.SETTING_WINDOW.Resources["behaviorPage"]).DisableTipsToggle.SwitchStatus();
-                ((BehaviorPage)Define.SETTING_WINDOW.Resources["behaviorPage"]).DisableTipsToggle_MouseDown(this, null!);
+                //Ona Pix自己在里面，清理不了
+                if (AppDomain.CurrentDomain.SetupInformation.ApplicationBase == Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Ona Pix Cache\\"))
+                {
+                    if (MessageBox.Show("主人，我被困在 " + Environment.CurrentDirectory + " 临时文件夹里了，主人能帮我离开这个地方吗?", "求助", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    {
+                        Process.Start("explorer", "/select," + Process.GetCurrentProcess().MainModule!.FileName);
+                        Environment.Exit(0);
+                    }
+                }
+                else throw;
             }
         }
 
+        //窗口关闭事件
         protected override void OnClosing(CancelEventArgs e)
         {
+            //强制结束
             Environment.Exit(0);
         }
 
+        //按钮点击事件
         private void ViewButton_Click(object sender, RoutedEventArgs e)
         {
+            //浏览
             try
             {
                 OpenFileDialog openDialog = new();
@@ -145,6 +168,7 @@ namespace Ona_Pix
         }
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
+            //搜索
             try
             {
                 Title = "正在搜索图片";
@@ -160,6 +184,7 @@ namespace Ona_Pix
         }
         private async void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
+            //下载
             try
             {
                 Title = "正在下载图片";
@@ -204,6 +229,7 @@ namespace Ona_Pix
         }
         private async void LuckyButton_Click(object sender, RoutedEventArgs e)
         {
+            //一图
             try
             {
                 Title = "正在获取图片";
@@ -223,179 +249,22 @@ namespace Ona_Pix
         }
         private void SettingButton_Click(object sender, RoutedEventArgs e)
         {
+            //设置
             try { Define.SETTING_WINDOW.ShowDialog(); }
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
         }
         private void AboutButton_Click(object sender, RoutedEventArgs e)
         {
+            //关于
             try
             {
-                AboutWindow aboutWindow = new(((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).DarkModeToggle.IS_TOGGLED);
+                AboutWindow aboutWindow = new(Define.APPEARANCE_PAGE.DarkModeToggle.IS_TOGGLED);
                 aboutWindow.ShowDialog();
             }
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
         }
 
-        private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
-        {
-            if ((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text == "")
-            {
-                ActiveSearchButton.IsEnabled = false;
-                ActiveDownloadButton.IsEnabled = false;
-                InactiveSearchButton.IsEnabled = false;
-                InactiveDownloadButton.IsEnabled = false;
-            }
-            else
-            {
-                ActiveSearchButton.IsEnabled = true;
-                ActiveDownloadButton.IsEnabled = true;
-                InactiveSearchButton.IsEnabled = true;
-                InactiveDownloadButton.IsEnabled = true;
-            }
-        }
-
-        internal void ActiveSpace_MouseIn(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            OUT_TIMER.Stop();
-            IN_TIMER.Start();
-
-            ActiveSearchBox.Focus();
-        }
-        private void ActiveSearchBox_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            OUT_TIMER.Stop();
-            IN_TIMER.Start();
-
-            ActiveSearchBox.Focus();
-
-            IS_FIXED = true;
-        }
-        internal void ActiveSpace_MouseOut(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            if (!((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).LockAnimationToggle.IS_TOGGLED && !IS_FIXED)
-            {
-                IN_TIMER.Stop();
-                OUT_TIMER.Start();
-            }
-        }
-        private void InactiveSpace_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (!((AppearancePage)Define.SETTING_WINDOW.Resources["appearancePage"]).LockAnimationToggle.IS_TOGGLED)
-            {
-                IN_TIMER.Stop();
-                OUT_TIMER.Start();
-
-                IS_FIXED = false;
-            }
-        }
-
-        private void ReveivingSpace_DragEnter(object sender, System.Windows.DragEventArgs e)
-        {
-            try
-            {
-                e.Handled = true;
-
-                if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                    e.Effects = DragDropEffects.Copy;
-                else
-                    e.Effects = DragDropEffects.None;
-            }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
-        }
-        private void ReveivingSpace_Drop(object sender, System.Windows.DragEventArgs e)
-        {
-            try
-            {
-                if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                {
-                    string[] path = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-                    if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(path[0])) != -1)
-                    {
-                        ActiveSearchBox.Text = path[0];
-                        InactiveSearchBox.Text = path[0];
-                    }
-                    else
-                        throw new Exception("里面被塞入了奇怪的东西...");
-                }
-            }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
-        }
-
-        private void ACTIVATE_TIMER_Tick(object? sender, EventArgs e)
-        {
-            if (InactiveRightGrid.Margin.Left < Width)
-            {
-                InactiveRightGrid.Margin = new Thickness(InactiveRightGrid.Margin.Left + 0.5, 0, InactiveRightGrid.Margin.Right - 0.5, 0);
-                InactiveTopGrid.Margin = new Thickness(0, InactiveTopGrid.Margin.Top - 0.1, 0, InactiveTopGrid.Margin.Bottom + 0.1);
-            }
-            else
-            {
-                ACTIVATE_TIMER.Stop();
-
-                SetImage();
-
-                ActiveSearchBox.Text = InactiveSearchBox.Text;
-                InactiveGrid.Visibility = Visibility.Collapsed;
-                ActiveGrid.Visibility = Visibility.Visible;
-
-                IS_ACTIVE = true;
-            }
-        }
-        private void IN_TIMER_Tick(object? sender, EventArgs e)
-        {
-            if (ActiveRightGrid.Margin.Right < -10)
-            {
-                ActiveRightGrid.Margin = new Thickness(0, 60, ActiveRightGrid.Margin.Right + 0.3, 0);
-                ActiveTopGrid.Margin = new Thickness(0, ActiveTopGrid.Margin.Top + 0.3, 0, 0);
-            }
-            else
-                IN_TIMER.Stop();
-        }
-        private void OUT_TIMER_Tick(object? sender, EventArgs e)
-        {
-            if (ActiveRightGrid.Margin.Right > -65)
-            {
-                ActiveRightGrid.Margin = new Thickness(0, 60, ActiveRightGrid.Margin.Right - 0.3, 0);
-                ActiveTopGrid.Margin = new Thickness(0, ActiveTopGrid.Margin.Top - 0.3, 0, 0);
-            }
-            else
-                OUT_TIMER.Stop();
-        }
-
-        private async void Smms_SetImageUrl(dynamic value)
-        {
-            await Dispatcher.Invoke(async () =>
-            {
-                try
-                {
-                    ActiveSearchBox.Text = value;
-                    InactiveSearchBox.Text = value;
-
-                    await PickInput();  //await IsUri();
-
-                    Title = "图片搜索完成";
-                }
-                catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
-            });
-        }
-        private void Smms_SetMainWindowTitle(dynamic value)
-        {
-            Dispatcher.Invoke(() => Title = value);
-        }
-        private void Smms_SetControlsEnabled()
-        {
-            Dispatcher.Invoke(SetControlsEnabled);
-        }
-        private void Smms_ShowError(dynamic value)
-        {
-            Dispatcher.Invoke(() =>
-            {
-                if (!((BehaviorPage)Define.SETTING_WINDOW.Resources["behaviorPage"]).DisableExceptionToggle.IS_TOGGLED)
-                    MessageBox.Show("Error: " + value);
-            });
-        }
-
+        //判断输入内容
         private async Task PickInput()
         {
             try
@@ -412,8 +281,7 @@ namespace Ona_Pix
                 if (File.Exists((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text))
                 { IsFilePath(); return; }
             }
-            catch
-            { SetControlsEnabled(); throw; }
+            catch { SetControlsEnabled(); throw; }
 
             try
             {
@@ -430,6 +298,7 @@ namespace Ona_Pix
             finally { SetControlsEnabled(); }
         }
 
+        //不同输入内容的处理
         private async Task IsUri()
         {
             Title = "正在解析链接";
@@ -524,8 +393,48 @@ namespace Ona_Pix
             Title = "关键词解析完成";
         }
 
+        //Smms线程委托事件
+        private async void Smms_SetImageUrl(dynamic value)
+        {
+            //Smms查找到图片链接后引发的事件
+            await Dispatcher.Invoke(async () =>
+            {
+                try
+                {
+                    ActiveSearchBox.Text = value;
+                    InactiveSearchBox.Text = value;
+
+                    await PickInput();  //await IsUri();
+
+                    Title = "图片搜索完成";
+                }
+                catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+            });
+        }
+        private void Smms_SetMainWindowTitle(dynamic value)
+        {
+            //设置主窗口标题
+            Dispatcher.Invoke(() => Title = value);
+        }
+        private void Smms_SetControlsEnabled()
+        {
+            //激活临时禁用的按钮
+            Dispatcher.Invoke(SetControlsEnabled);
+        }
+        private void Smms_ShowError(dynamic value)
+        {
+            //报告异常
+            Dispatcher.Invoke(() =>
+            {
+                if (!Define.BEHAVIOR_PAGE.DisableExceptionToggle.IS_TOGGLED)
+                    MessageBox.Show("Error: " + value);
+            });
+        }
+
+        //图片获取和显示
         private async Task GetImage(string imageUri)
         {
+            //获取图片
             Title = "正在获取图片";
 
             HttpResponseMessage imageMessage = await Http.GetAsync<HttpResponseMessage>(imageUri, Define.MAIN_CLIENT, HttpCompletionOption.ResponseContentRead);
@@ -541,6 +450,7 @@ namespace Ona_Pix
         }
         private void SetImage()
         {
+            //显示图片
             Title = "正在读取图片";
 
             BitmapImage bitmapImage = new();
@@ -601,9 +511,29 @@ namespace Ona_Pix
 
             return paramCollection;
         }
-        //解锁控件
+
+        //切换控件禁用状态
+        private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            //切换按钮禁用状态(无内容时禁用按钮)
+            if ((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text == "")
+            {
+                ActiveSearchButton.IsEnabled = false;
+                ActiveDownloadButton.IsEnabled = false;
+                InactiveSearchButton.IsEnabled = false;
+                InactiveDownloadButton.IsEnabled = false;
+            }
+            else
+            {
+                ActiveSearchButton.IsEnabled = true;
+                ActiveDownloadButton.IsEnabled = true;
+                InactiveSearchButton.IsEnabled = true;
+                InactiveDownloadButton.IsEnabled = true;
+            }
+        }
         private void SetControlsEnabled()
         {
+            //解锁搜索时临时禁用的控件
             ActiveSearchBox.IsEnabled = true;
             ActiveSearchButton.IsEnabled = true;
             ActiveDownloadButton.IsEnabled = true;
@@ -612,17 +542,131 @@ namespace Ona_Pix
             InactiveDownloadButton.IsEnabled = true;
         }
 
-        ////检测文本编码
-        //private static Encoding MyUrlDeCode(string str)
-        //{
-        //    //将原文本与用utf-8解码再编码的文本对比
-        //    return str == HttpUtility.UrlEncode(HttpUtility.UrlDecode(str.ToUpper(), Encoding.UTF8), Encoding.UTF8) ? Encoding.UTF8 : Encoding.GetEncoding("gb2312");
-        //}
+        //动画激活事件
+        internal void ActiveSpace_MouseIn(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            //激活悬浮菜单栏弹出
+            OUT_TIMER.Stop();
+            IN_TIMER.Start();
+
+            ActiveSearchBox.Focus();
+        }
+        private void ActiveSearchBox_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            //点击搜索框后临时固定悬浮菜单栏
+            OUT_TIMER.Stop();
+            IN_TIMER.Start();
+
+            ActiveSearchBox.Focus();
+
+            IS_FIXED = true;
+        }
+        internal void ActiveSpace_MouseOut(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            //激活悬浮菜单栏收回
+            if (!Define.APPEARANCE_PAGE.LockAnimationToggle.IS_TOGGLED && !IS_FIXED)
+            {
+                IN_TIMER.Stop();
+                OUT_TIMER.Start();
+            }
+        }
+        private void InactiveSpace_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            //点击空白区域后激活悬浮菜单栏收回
+            if (!Define.APPEARANCE_PAGE.LockAnimationToggle.IS_TOGGLED)
+            {
+                IN_TIMER.Stop();
+                OUT_TIMER.Start();
+
+                IS_FIXED = false;
+            }
+        }
+
+        //动画播放事件
+        private void ACTIVATE_TIMER_Tick(object? sender, EventArgs e)
+        {
+            //初始界面切换至图片界面的动画事件
+            if (InactiveRightGrid.Margin.Left < Width)
+            {
+                InactiveRightGrid.Margin = new Thickness(InactiveRightGrid.Margin.Left + 0.5, 0, InactiveRightGrid.Margin.Right - 0.5, 0);
+                InactiveTopGrid.Margin = new Thickness(0, InactiveTopGrid.Margin.Top - 0.1, 0, InactiveTopGrid.Margin.Bottom + 0.1);
+            }
+            else
+            {
+                ACTIVATE_TIMER.Stop();
+
+                SetImage();
+
+                ActiveSearchBox.Text = InactiveSearchBox.Text;
+                InactiveGrid.Visibility = Visibility.Collapsed;
+                ActiveGrid.Visibility = Visibility.Visible;
+
+                IS_ACTIVE = true;
+            }
+        }
+        private void IN_TIMER_Tick(object? sender, EventArgs e)
+        {
+            //悬浮菜单栏弹出的动画事件
+            if (ActiveRightGrid.Margin.Right < -10)
+            {
+                ActiveRightGrid.Margin = new Thickness(0, 60, ActiveRightGrid.Margin.Right + 0.3, 0);
+                ActiveTopGrid.Margin = new Thickness(0, ActiveTopGrid.Margin.Top + 0.3, 0, 0);
+            }
+            else
+                IN_TIMER.Stop();
+        }
+        private void OUT_TIMER_Tick(object? sender, EventArgs e)
+        {
+            //悬浮菜单栏收回的动画事件
+            if (ActiveRightGrid.Margin.Right > -65)
+            {
+                ActiveRightGrid.Margin = new Thickness(0, 60, ActiveRightGrid.Margin.Right - 0.3, 0);
+                ActiveTopGrid.Margin = new Thickness(0, ActiveTopGrid.Margin.Top - 0.3, 0, 0);
+            }
+            else
+                OUT_TIMER.Stop();
+        }
+
+        //文件拖入事件
+        private void ReveivingSpace_DragEnter(object sender, System.Windows.DragEventArgs e)
+        {
+            //文件拖入主窗口时的鼠标变化
+            try
+            {
+                e.Handled = true;
+
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                    e.Effects = DragDropEffects.Copy;
+                else
+                    e.Effects = DragDropEffects.None;
+            }
+            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+        }
+        private void ReveivingSpace_Drop(object sender, System.Windows.DragEventArgs e)
+        {
+            //文件拖入主窗口后的文件路径处理
+            try
+            {
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    string[] path = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                    if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(path[0])) != -1)
+                    {
+                        ActiveSearchBox.Text = path[0];
+                        InactiveSearchBox.Text = path[0];
+                    }
+                    else
+                        throw new Exception("里面被塞入了奇怪的东西...");
+                }
+            }
+            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+        }
 
         private void MainWin_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.W)
-                Close();    //关闭窗口
+                Environment.Exit(0);
         }
     }
 }

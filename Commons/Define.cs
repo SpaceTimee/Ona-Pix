@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Reflection;
+using Ona_Pix.Pages;
 
 namespace Ona_Pix
 {
@@ -15,6 +16,10 @@ namespace Ona_Pix
         //窗口
         internal static MainWindow? MAIN_WINDOW;
         internal static readonly SettingWindow SETTING_WINDOW = new();
+
+        //页面
+        internal static readonly AppearancePage APPEARANCE_PAGE = (AppearancePage)SETTING_WINDOW.Resources["appearancePage"];
+        internal static readonly BehaviorPage BEHAVIOR_PAGE = (BehaviorPage)SETTING_WINDOW.Resources["behaviorPage"];
 
         //字段
         internal static readonly HttpClient MAIN_CLIENT = new();

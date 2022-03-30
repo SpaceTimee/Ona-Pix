@@ -27,7 +27,7 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
-            <Label Content="锁定动画" />
+            <Label Content="固定菜单" />
             <controls:ToggleSwitch x:Name="LockAnimationToggle" Style="{StaticResource SettingToggle}" MouseDown="LockAnimationToggle_MouseDown" />
         </Grid>
         <Grid Margin="0,0,0,10">
