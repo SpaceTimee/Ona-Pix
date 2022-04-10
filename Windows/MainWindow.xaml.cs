@@ -28,6 +28,7 @@ namespace Ona_Pix
         private readonly DispatcherTimer ACTIVATE_TIMER = new(), IN_TIMER = new(), OUT_TIMER = new();
         private HttpResponseMessage IMAGE_MESSAGE = new();
         private bool IS_ACTIVE = false, IS_FIXED = false;
+        internal char R18 = '2';
 
         public MainWindow(string[] args)
         {
@@ -95,6 +96,8 @@ namespace Ona_Pix
                 RestoreSettings(Define.APPEARANCE_PAGE.IconButtonToggle, Define.APPEARANCE_PAGE.IconButtonToggle_MouseDown);
             if (Properties.Settings.Default.IsAnimationLocked)
                 RestoreSettings(Define.APPEARANCE_PAGE.LockAnimationToggle, Define.APPEARANCE_PAGE.LockAnimationToggle_MouseDown);
+            if (Properties.Settings.Default.IsR18Disabled)
+                RestoreSettings(Define.BEHAVIOR_PAGE.DisableR18Toggle, Define.BEHAVIOR_PAGE.DisableR18Toggle_MouseDown);
             if (Properties.Settings.Default.IsExceptionDisabled)
                 RestoreSettings(Define.BEHAVIOR_PAGE.DisableExceptionToggle, Define.BEHAVIOR_PAGE.DisableExceptionToggle_MouseDown);
             if (Properties.Settings.Default.IsTipsDisabled)
@@ -234,8 +237,19 @@ namespace Ona_Pix
             {
                 Title = "正在获取图片";
 
+                //选择瑟瑟等级
+                if (InactiveSearchBox.Text == "只要瑟瑟" || InactiveSearchBox.Text == "只要色色")
+                {
+                    if (MessageBox.Show("啊...真的要这样吗...", "彩蛋: ONLY R18", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                    {
+                        if (Define.BEHAVIOR_PAGE.DisableR18Toggle.IS_TOGGLED)
+                            RestoreSettings(Define.BEHAVIOR_PAGE.DisableR18Toggle, Define.BEHAVIOR_PAGE.DisableR18Toggle_MouseDown);
+                        R18 = '1';
+                    }
+                }
+
                 //将Json转换为JObject
-                JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@"https://api.lolicon.app/setu/v2?r18=2&proxy=null", Define.MAIN_CLIENT));
+                JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@$"https://api.lolicon.app/setu/v2?r18={R18}&proxy=null", Define.MAIN_CLIENT));
 
                 //提取并运行
                 ActiveSearchBox.Text = LuckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
@@ -374,7 +388,7 @@ namespace Ona_Pix
             smms.SetMainWindowTitle += Smms_SetMainWindowTitle;
             smms.SetControlsEnabled += Smms_SetControlsEnabled;
             smms.ShowError += Smms_ShowError;
-            smms.ShellRun(Directory.GetCurrentDirectory(), (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text);
+            smms.ShellRun(Directory.GetCurrentDirectory(), "\"" + (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text + "\"");
 
             Title = "正在解析文件";   //此时上传工作正在后台运行
         }

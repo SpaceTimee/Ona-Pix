@@ -11,6 +11,14 @@
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="1*" />
             </Grid.ColumnDefinitions>
+            <Label Content="禁用瑟瑟" />
+            <controls:ToggleSwitch x:Name="DisableR18Toggle" Style="{StaticResource SettingToggle}" MouseDown="DisableR18Toggle_MouseDown" />
+        </Grid>
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1*" />
+            </Grid.ColumnDefinitions>
             <Label Content="禁用报错" />
             <controls:ToggleSwitch x:Name="DisableExceptionToggle" Style="{StaticResource SettingToggle}" MouseDown="DisableExceptionToggle_MouseDown" />
         </Grid>

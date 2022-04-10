@@ -25,30 +25,6 @@ namespace Ona_Pix.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsDarkMode {
-            get {
-                return ((bool)(this["IsDarkMode"]));
-            }
-            set {
-                this["IsDarkMode"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool IsAnimationLocked {
-            get {
-                return ((bool)(this["IsAnimationLocked"]));
-            }
-            set {
-                this["IsAnimationLocked"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool IsFirstRun {
             get {
@@ -62,12 +38,36 @@ namespace Ona_Pix.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsDarkMode {
+            get {
+                return ((bool)(this["IsDarkMode"]));
+            }
+            set {
+                this["IsDarkMode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool IsIconButton {
             get {
                 return ((bool)(this["IsIconButton"]));
             }
             set {
                 this["IsIconButton"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsAnimationLocked {
+            get {
+                return ((bool)(this["IsAnimationLocked"]));
+            }
+            set {
+                this["IsAnimationLocked"] = value;
             }
         }
         
@@ -92,6 +92,18 @@ namespace Ona_Pix.Properties {
             }
             set {
                 this["IsTipsDisabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsR18Disabled {
+            get {
+                return ((bool)(this["IsR18Disabled"]));
+            }
+            set {
+                this["IsR18Disabled"] = value;
             }
         }
     }

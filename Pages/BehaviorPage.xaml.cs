@@ -10,6 +10,22 @@ namespace Ona_Pix.Pages
         }
 
         //Toggle点击事件
+        internal void DisableR18Toggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            //禁用瑟瑟
+            if (DisableR18Toggle.IS_TOGGLED)
+            {
+                Define.MAIN_WINDOW!.R18 = '0';
+                Properties.Settings.Default.IsR18Disabled = true;
+            }
+            else
+            {
+                Define.MAIN_WINDOW!.R18 = '2';
+                Properties.Settings.Default.IsR18Disabled = false;
+            }
+
+            Properties.Settings.Default.Save();
+        }
         internal void DisableExceptionToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             //禁用报错
