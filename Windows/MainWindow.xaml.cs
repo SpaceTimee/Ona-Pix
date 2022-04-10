@@ -98,6 +98,8 @@ namespace Ona_Pix
                 RestoreSettings(Define.APPEARANCE_PAGE.LockAnimationToggle, Define.APPEARANCE_PAGE.LockAnimationToggle_MouseDown);
             if (Properties.Settings.Default.IsR18Disabled)
                 RestoreSettings(Define.BEHAVIOR_PAGE.DisableR18Toggle, Define.BEHAVIOR_PAGE.DisableR18Toggle_MouseDown);
+            if (Properties.Settings.Default.IsPixivCat)
+                RestoreSettings(Define.BEHAVIOR_PAGE.PixivCatToggle, Define.BEHAVIOR_PAGE.PixivCatToggle_MouseDown);
             if (Properties.Settings.Default.IsExceptionDisabled)
                 RestoreSettings(Define.BEHAVIOR_PAGE.DisableExceptionToggle, Define.BEHAVIOR_PAGE.DisableExceptionToggle_MouseDown);
             if (Properties.Settings.Default.IsTipsDisabled)
@@ -302,7 +304,11 @@ namespace Ona_Pix
                 if (Regex.IsMatch((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text, "^([0-9]*)-?[0-9]*$"))
                     await IsPixivID();  //Pixiv ID
                 else if (new Regex(Define.URI_REGEX).IsMatch((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text))
+                {
+                    if (!(IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.StartsWith("https://") && !(IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.StartsWith("http://"))
+                        (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text = "https://" + (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text;
                     await IsUri();  //Uri
+                }
                 else
                     await IsKeyWord();  //关键词
 
@@ -318,45 +324,14 @@ namespace Ona_Pix
             Title = "正在解析链接";
 
             if ((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Contains(@"www.pixiv.net/artworks")) //Pixiv Url
-            {
-                Exception exception = new();
-                foreach (string fileSuffix in Define.FILE_SUFFIXES)
-                {
-                    try
-                    {
-                        await GetImage((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Replace(@"www.pixiv.net/artworks", @"pixiv.re") + fileSuffix);
-
-                        Title = "链接解析完成";
-
-                        return;
-                    }
-                    catch (Exception ex) { exception = ex; }
-                }
-                throw exception;
-            }
+                await GetImage((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Replace(@"www.pixiv.net/artworks", @"pixiv.re") + ".png");
             else if ((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Contains(@"www.pixiv.net/member_illust.php?") && (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Contains("illust_id"))  //Pixiv Illust Url
             {
                 NameValueCollection paramCollection = GetParamCollection(new Uri((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text).Query);
-
-                Exception exception = new();
-                foreach (string fileSuffix in Define.FILE_SUFFIXES)
-                {
-                    try
-                    {
-                        await GetImage(@"https://pixiv.re/" + paramCollection["illust_id"]! + fileSuffix);
-
-                        Title = "链接解析完成";
-
-                        return;
-                    }
-                    catch (Exception ex) { exception = ex; }
-                }
-                throw exception;
+                await GetImage(@"https://pixiv.re/" + paramCollection["illust_id"]! + ".png");
             }
             else    //其他Uri(包括Pximg Url)
-            {
-                await GetImage((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Replace(@"pximg.net", @"pixiv.re"));
-            }
+                await GetImage((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Replace(@"i.pximg.net", Define.BEHAVIOR_PAGE.PixivCatToggle.IS_TOGGLED ? @"i.pixiv.re" : @"pximg.moezx.cc"));
 
             Title = "链接解析完成";
         }
@@ -364,20 +339,9 @@ namespace Ona_Pix
         {
             Title = "正在解析PixivID";
 
-            Exception exception = new();
-            foreach (string fileSuffix in Define.FILE_SUFFIXES)
-            {
-                try
-                {
-                    await GetImage(@"https://pixiv.re/" + (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text + fileSuffix);
+            await GetImage(@"https://pixiv.re/" + (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text + ".png");
 
-                    Title = "PixivID解析完成";
-
-                    return;
-                }
-                catch (Exception ex) { exception = ex; }
-            }
-            throw exception;
+            Title = "PixivID解析完成";
         }
         private void IsFilePath()
         {

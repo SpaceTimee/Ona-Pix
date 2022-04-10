@@ -106,5 +106,17 @@ namespace Ona_Pix.Properties {
                 this["IsR18Disabled"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool IsPixivCat {
+            get {
+                return ((bool)(this["IsPixivCat"]));
+            }
+            set {
+                this["IsPixivCat"] = value;
+            }
+        }
     }
 }

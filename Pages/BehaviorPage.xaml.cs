@@ -26,6 +26,16 @@ namespace Ona_Pix.Pages
 
             Properties.Settings.Default.Save();
         }
+        internal void PixivCatToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            //使用PixivCat接口
+            if (PixivCatToggle.IS_TOGGLED)
+                Properties.Settings.Default.IsPixivCat = true;
+            else
+                Properties.Settings.Default.IsPixivCat = false;
+
+            Properties.Settings.Default.Save();
+        }
         internal void DisableExceptionToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             //禁用报错
