@@ -38,5 +38,14 @@
             <Label Content="隐藏边框" />
             <controls:ToggleSwitch x:Name="HideBorderToggle" Style="{StaticResource SettingToggle}" MouseDown="HideBorderToggle_MouseDown" />
         </Grid>
+        <Grid Margin="0,0,0,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="1*" />
+                <ColumnDefinition Width="55" />
+            </Grid.ColumnDefinitions>
+            <Label Content="菜单透明度" />
+            <Slider x:Name="OpacitySlider" Style="{StaticResource SettingSlider}" Maximum="100" Value="50" ValueChanged="OpacitySlider_ValueChanged" SmallChange="1" />
+        </Grid>
     </StackPanel>
 </UserControl>

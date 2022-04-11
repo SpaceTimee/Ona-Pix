@@ -40,6 +40,10 @@
                 <Setter Property="HorizontalAlignment" Value="Right" />
                 <Setter Property="Grid.Column" Value="1" />
             </Style>
+            <Style x:Key="SettingSlider" BasedOn="{StaticResource MaterialDesignSlider}" TargetType="{x:Type Slider}">
+                <Setter Property="Grid.Column" Value="2" />
+                <Setter Property="AutoToolTipPlacement" Value="BottomRight" />
+            </Style>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

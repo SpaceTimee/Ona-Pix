@@ -76,6 +76,18 @@ namespace Ona_Pix.Pages
 
             Define.MAIN_WINDOW!.SizeToContent = SizeToContent.WidthAndHeight;
         }
+        private void OpacitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (Define.MAIN_WINDOW != null)
+            {
+                double opacity = 1 - OpacitySlider.Value / 100;
+                Define.MAIN_WINDOW!.ActiveRightBorder.Opacity = opacity;
+                Define.MAIN_WINDOW!.ActiveTopBorder.Opacity = opacity;
+
+                Properties.Settings.Default.MenuOpacity = OpacitySlider.Value;
+                Properties.Settings.Default.Save();
+            }
+        }
 
         //为按钮应用暗色模式和图标按钮
         private void SetButtonContent()

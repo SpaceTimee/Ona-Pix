@@ -11,8 +11,8 @@ namespace Ona_Pix.Controls
 
         private readonly Thickness LEFT_SIDE_MARGIN = new(-11, 0, 0, 0);
         private readonly Thickness RIGHT_SIDE_MARGIN = new(0, 0, -11, 0);
-        private readonly SolidColorBrush OFF_COLOR_BRUSH = new(Color.FromRgb(160, 160, 160));
-        private readonly SolidColorBrush ON_COLOR_BRUSH = new(Color.FromRgb(33, 150, 243));
+        private readonly SolidColorBrush OFF_COLOR_BRUSH = new(Color.FromRgb(200, 200, 200));
+        private readonly SolidColorBrush ON_COLOR_BRUSH = new(Color.FromRgb(171, 215, 250));
 
         public ToggleSwitch()
         {

@@ -118,5 +118,17 @@ namespace Ona_Pix.Properties {
                 this["IsPixivCat"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public double MenuOpacity {
+            get {
+                return ((double)(this["MenuOpacity"]));
+            }
+            set {
+                this["MenuOpacity"] = value;
+            }
+        }
     }
 }

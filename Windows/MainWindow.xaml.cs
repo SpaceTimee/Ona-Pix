@@ -104,6 +104,7 @@ namespace Ona_Pix
                 RestoreSettings(Define.BEHAVIOR_PAGE.DisableExceptionToggle, Define.BEHAVIOR_PAGE.DisableExceptionToggle_MouseDown);
             if (Properties.Settings.Default.IsTipsDisabled)
                 RestoreSettings(Define.BEHAVIOR_PAGE.DisableTipsToggle, Define.BEHAVIOR_PAGE.DisableTipsToggle_MouseDown);
+            Define.APPEARANCE_PAGE.OpacitySlider.Value = Properties.Settings.Default.MenuOpacity;
         }
         private void RestoreSettings(ToggleSwitch toggle, Action<object, MouseButtonEventArgs> Toggle_MouseDown)
         {

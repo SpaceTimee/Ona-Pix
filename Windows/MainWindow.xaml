@@ -55,7 +55,7 @@
                         <ColumnDefinition Width="1*" />
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Border Background="#FFA0A0A0" Grid.ColumnSpan="2" Opacity="0.5" CornerRadius="0,0,27,27" />
+                    <Border x:Name="ActiveTopBorder" Background="#FFA0A0A0" Grid.ColumnSpan="2" Opacity="0.5" CornerRadius="0,0,27,27" />
                     <TextBox x:Name="ActiveSearchBox" Grid.Column="0" MaxWidth="1080" Margin="20,10,0,10" TextChanged="SearchBox_TextChanged" TabIndex="0" PreviewMouseDown="ActiveSearchBox_PreviewMouseDown" PreviewDragOver="ReveivingSpace_DragEnter" VerticalContentAlignment="Center" />
                     <Button x:Name="ActiveViewButton" Style="{StaticResource ActiveButton}" Grid.Column="1" Margin="10,10,10,10" Click="ViewButton_Click" Content="浏览" TabIndex="1" />
                 </Grid>
@@ -76,7 +76,7 @@
                         <RowDefinition Height="1*" />
                         <RowDefinition Height="1*" />
                     </Grid.RowDefinitions>
-                    <Border Background="#FFA0A0A0" Grid.RowSpan="9" Opacity="0.5" CornerRadius="27,0,0,27" />
+                    <Border x:Name="ActiveRightBorder" Background="#FFA0A0A0" Grid.RowSpan="9" Opacity="0.5" CornerRadius="27,0,0,27" />
                     <Button x:Name="ActiveSearchButton" Style="{StaticResource ActiveButton}" Margin="10,10,10,10" Grid.Row="0" Click="SearchButton_Click" Content="搜索" IsDefault="True" IsEnabled="False" TabIndex="2" />
                     <Button x:Name="ActiveDownloadButton" Style="{StaticResource ActiveButton}" Grid.Row="1" Click="DownloadButton_Click"  Content="下载" IsEnabled="False" TabIndex="3" />
                     <Button x:Name="ActiveLuckyButton" Style="{StaticResource ActiveButton}" Grid.Row="2" Click="LuckyButton_Click" Content="一图" TabIndex="4" />

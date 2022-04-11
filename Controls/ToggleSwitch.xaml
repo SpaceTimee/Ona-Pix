@@ -6,7 +6,7 @@
              mc:Ignorable="d"
              Height="16.5" Width="27.5">
     <Grid>
-        <Rectangle x:Name="BackRec" Fill="#FFA0A0A0" Height="16.5" Width="27.5" RadiusY="8.25" RadiusX="8.25" MouseDown="BackRec_MouseDown" />
-        <Ellipse x:Name="ForeDot" Fill="White" Height="14" Width="14" MouseDown="ForeDot_MouseDown" Margin="-11,0,0,0" />
+        <Rectangle x:Name="BackRec" Fill="#FFC8C8C8" Height="16.5" Width="27.5" RadiusY="8.25" RadiusX="8.25" MouseDown="BackRec_MouseDown" />
+        <Ellipse x:Name="ForeDot" Fill="#FF2196F3" Height="14" Width="14" MouseDown="ForeDot_MouseDown" Margin="-11,0,0,0" />
     </Grid>
 </UserControl>
