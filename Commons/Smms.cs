@@ -17,7 +17,6 @@ namespace Ona_Pix
 
         public Smms() : base("Ona-Pix-Smms.exe")
         {
-            //Control.CheckForIllegalCrossThreadCalls = false;
         }
 
         //Smms程序调用事件
@@ -64,10 +63,6 @@ namespace Ona_Pix
                 SetMainWindowTitle!("操作执行失败");
             }
         }
-        public override void Process_Exited(object sender, EventArgs e)
-        {
-            //退出事件
-            SetControlsEnabled!();
-        }
+        public override void Process_Exited(object sender, EventArgs e) => SetControlsEnabled!();   //退出事件
     }
 }

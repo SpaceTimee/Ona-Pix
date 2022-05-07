@@ -9,10 +9,7 @@ namespace Ona_Pix.Pages
 {
     public partial class AppearancePage : UserControl
     {
-        public AppearancePage()
-        {
-            InitializeComponent();
-        }
+        public AppearancePage() => InitializeComponent();
 
         //Toggle点击事件
         internal void DarkModeToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

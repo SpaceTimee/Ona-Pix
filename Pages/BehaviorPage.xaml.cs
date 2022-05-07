@@ -4,10 +4,7 @@ namespace Ona_Pix.Pages
 {
     public partial class BehaviorPage : UserControl
     {
-        public BehaviorPage()
-        {
-            InitializeComponent();
-        }
+        public BehaviorPage() => InitializeComponent();
 
         //Toggle点击事件
         internal void DisableR18Toggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

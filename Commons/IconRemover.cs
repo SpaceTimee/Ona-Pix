@@ -45,23 +45,14 @@ namespace Ona_Pix
     //使用IconRemover
     public partial class MainWindow
     {
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            IconRemover.RemoveIcon(this);
-        }
+        protected override void OnSourceInitialized(EventArgs e) => IconRemover.RemoveIcon(this);
     }
     public partial class AboutWindow
     {
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            IconRemover.RemoveIcon(this);
-        }
+        protected override void OnSourceInitialized(EventArgs e) => IconRemover.RemoveIcon(this);
     }
     public partial class SettingWindow
     {
-        protected override void OnSourceInitialized(EventArgs e)
-        {
-            IconRemover.RemoveIcon(this);
-        }
+        protected override void OnSourceInitialized(EventArgs e) => IconRemover.RemoveIcon(this);
     }
 }

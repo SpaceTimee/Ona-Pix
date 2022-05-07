@@ -45,12 +45,15 @@ namespace Ona_Pix
                         throw new Exception("里面被塞入了奇怪的东西...");
                 }
 
-                ACTIVATE_TIMER.Interval = new TimeSpan(1);
-                ACTIVATE_TIMER.Tick += ACTIVATE_TIMER_Tick;
-                IN_TIMER.Interval = new TimeSpan(1);
-                IN_TIMER.Tick += IN_TIMER_Tick;
-                OUT_TIMER.Interval = new TimeSpan(1);
-                OUT_TIMER.Tick += OUT_TIMER_Tick;
+                Task.Run(() =>
+                {
+                    ACTIVATE_TIMER.Interval = new TimeSpan(1);
+                    ACTIVATE_TIMER.Tick += ACTIVATE_TIMER_Tick;
+                    IN_TIMER.Interval = new TimeSpan(1);
+                    IN_TIMER.Tick += IN_TIMER_Tick;
+                    OUT_TIMER.Interval = new TimeSpan(1);
+                    OUT_TIMER.Tick += OUT_TIMER_Tick;
+                });
             }
             catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; }
         }
@@ -136,11 +139,7 @@ namespace Ona_Pix
         }
 
         //窗口关闭事件
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            //强制结束
-            Environment.Exit(0);
-        }
+        protected override void OnClosing(CancelEventArgs e) => Environment.Exit(0);    //强制结束
 
         //按钮点击事件
         private void ViewButton_Click(object sender, RoutedEventArgs e)
@@ -373,42 +372,30 @@ namespace Ona_Pix
         }
 
         //Smms线程委托事件
-        private async void Smms_SetImageUrl(dynamic value)
+        private async void Smms_SetImageUrl(dynamic value) =>
+        await Dispatcher.Invoke(async () =>
         {
             //Smms查找到图片链接后引发的事件
-            await Dispatcher.Invoke(async () =>
+            try
             {
-                try
-                {
-                    ActiveSearchBox.Text = value;
-                    InactiveSearchBox.Text = value;
+                ActiveSearchBox.Text = value;
+                InactiveSearchBox.Text = value;
 
-                    await PickInput();  //await IsUri();
+                await PickInput();  //await IsUri();
 
-                    Title = "图片搜索完成";
-                }
-                catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
-            });
-        }
-        private void Smms_SetMainWindowTitle(dynamic value)
-        {
-            //设置主窗口标题
-            Dispatcher.Invoke(() => Title = value);
-        }
-        private void Smms_SetControlsEnabled()
-        {
-            //激活临时禁用的按钮
-            Dispatcher.Invoke(SetControlsEnabled);
-        }
-        private void Smms_ShowError(dynamic value)
+                Title = "图片搜索完成";
+            }
+            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+        });
+        private void Smms_SetMainWindowTitle(dynamic value) => Dispatcher.Invoke(() => Title = value);  //设置主窗口标题
+        private void Smms_SetControlsEnabled() => Dispatcher.Invoke(SetControlsEnabled);    //激活临时禁用的按钮
+        private void Smms_ShowError(dynamic value) =>
+        Dispatcher.Invoke(() =>
         {
             //报告异常
-            Dispatcher.Invoke(() =>
-            {
-                if (!Define.BEHAVIOR_PAGE.DisableExceptionToggle.IS_TOGGLED)
-                    MessageBox.Show("Error: " + value);
-            });
-        }
+            if (!Define.BEHAVIOR_PAGE.DisableExceptionToggle.IS_TOGGLED)
+                MessageBox.Show("Error: " + value);
+        });
 
         //图片获取和显示
         private async Task GetImage(string imageUri)

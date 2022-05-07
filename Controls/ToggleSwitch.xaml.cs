@@ -14,20 +14,11 @@ namespace Ona_Pix.Controls
         private readonly SolidColorBrush OFF_COLOR_BRUSH = new(Color.FromRgb(200, 200, 200));
         private readonly SolidColorBrush ON_COLOR_BRUSH = new(Color.FromRgb(171, 215, 250));
 
-        public ToggleSwitch()
-        {
-            InitializeComponent();
-        }
+        public ToggleSwitch() => InitializeComponent();
 
         //点击事件
-        private void ForeDot_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            SwitchStatus();
-        }
-        private void BackRec_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            SwitchStatus();
-        }
+        private void ForeDot_MouseDown(object sender, MouseButtonEventArgs e) => SwitchStatus();
+        private void BackRec_MouseDown(object sender, MouseButtonEventArgs e) => SwitchStatus();
 
         //切换Toggle状态
         internal void SwitchStatus()
