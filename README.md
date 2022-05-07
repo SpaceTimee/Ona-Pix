@@ -4,8 +4,6 @@
 </br>
 
 ## 自我介绍
-[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FSpaceTimee%2FOna-Pix.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FSpaceTimee%2FOna-Pix?ref=badge_shield)
-
 **Ona Pix**: 一只基于 **WPF(.Net5)** 的 Pixiv 直连搜图工具
 
 * 适用平台: Windows 10+
@@ -42,8 +40,5 @@
 1. **新 QQ 群: 338919498**
 2. **邮箱: Zeus6_6@163.com**
 
-•ᴗ•
-
-
-## License
+## 许可证
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FSpaceTimee%2FOna-Pix.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FSpaceTimee%2FOna-Pix?ref=badge_large)
