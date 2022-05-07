@@ -40,4 +40,5 @@
 1. **新 QQ 群: 338919498**
 2. **邮箱: Zeus6_6@163.com**
 
-•ᴗ•
+## 许可证
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FSpaceTimee%2FOna-Pix.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FSpaceTimee%2FOna-Pix?ref=badge_large)
