@@ -27,48 +27,52 @@ namespace Ona_Pix
 
         public AboutWindow(bool isDarkMode)
         {
-            InitializeComponent();
-            PartialAboutWindow();
-
-            //检查暗色模式
-            if (isDarkMode)
+            try
             {
-                MemoryStream memoryStream = new();
-                Properties.Resources.Pixiv_Tan_Dark.Save(memoryStream, Properties.Resources.Pixiv_Tan_Dark.RawFormat);
+                InitializeComponent();
+                PartialAboutWindow();
 
-                BitmapImage bitmapImage = new();
-                bitmapImage.BeginInit();
-                bitmapImage.StreamSource = memoryStream;
-                bitmapImage.EndInit();
+                //检查暗色模式
+                if (isDarkMode)
+                {
+                    MemoryStream memoryStream = new();
+                    Properties.Resources.Pixiv_Tan_Dark.Save(memoryStream, Properties.Resources.Pixiv_Tan_Dark.RawFormat);
 
-                ImageBehavior.SetAnimatedSource(TanImage, bitmapImage);
+                    BitmapImage bitmapImage = new();
+                    bitmapImage.BeginInit();
+                    bitmapImage.StreamSource = memoryStream;
+                    bitmapImage.EndInit();
+
+                    ImageBehavior.SetAnimatedSource(TanImage, bitmapImage);
+                }
+
+                //显示随机一言(Tips)
+                if (!Define.BEHAVIOR_PAGE.DisableTipsToggle.IS_TOGGLED)
+                {
+                    Random random = new(Convert.ToInt32(DateTime.Now.Ticks & 0x0000FFFF));
+                    Title = $"关于: {TIPS[random.Next(0, TIPS.Length)]}";
+
+                    #region Tips 测试代码
+                    //System.Threading.Tasks.Task.Run(() =>
+                    //{
+                    //    Dispatcher.Invoke(() =>
+                    //    {
+                    //        for (int i = 0; i < TIPS.Length; i++)
+                    //        {
+                    //            Title = $"关于: {TIPS[i]}";
+                    //            System.Threading.Thread.Sleep(1000);
+                    //        }
+                    //    });
+                    //});
+                    #endregion Tips 测试代码
+                }
             }
-
-            //显示随机一言(Tips)
-            if (!Define.BEHAVIOR_PAGE.DisableTipsToggle.IS_TOGGLED)
-            {
-                Random random = new(Convert.ToInt32(DateTime.Now.Ticks & 0x0000FFFF));
-                Title = $"关于: {TIPS[random.Next(0, TIPS.Length)]}";
-
-                #region Tips 测试代码
-                //System.Threading.Tasks.Task.Run(() =>
-                //{
-                //    Dispatcher.Invoke(() =>
-                //    {
-                //        for (int i = 0; i < TIPS.Length; i++)
-                //        {
-                //            Title = $"关于: {TIPS[i]}";
-                //            System.Threading.Thread.Sleep(1000);
-                //        }
-                //    });
-                //});
-                #endregion Tips 测试代码
-            }
+            catch (Exception ex) { HandleException(ex); }
         }
         private void AboutWin_Loaded(object sender, RoutedEventArgs e)
         {
             try { UpdateRun.Text = "版本号: " + Define.CURRENT_VERSION; }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+            catch (Exception ex) { HandleException(ex); }
         }
 
         //链接点击事件
@@ -79,7 +83,7 @@ namespace Ona_Pix
             {
                 Title = "正在打开链接";
 
-                string prefix = "";
+                string prefix = string.Empty;
 
                 if (sender == EmailLink)
                     prefix = "mailto:";
@@ -90,14 +94,23 @@ namespace Ona_Pix
 
                 Title = "链接打开完成";
             }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+            catch (Exception ex) { HandleException(ex); }
         }
         //private async void UpdateLink_Click(object sender, RoutedEventArgs e) 位于Updater.cs
 
+        //窗口热键
         private void AboutWin_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
                 Close();    //关闭窗口
+        }
+
+        //处理异常
+        private void HandleException(Exception ex)
+        {
+            Title = "操作执行失败";
+
+            MessageBox.Show("Error: " + ex.Message);
         }
     }
 }

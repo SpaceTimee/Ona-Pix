@@ -3,19 +3,23 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
-using System.Windows.Threading;
+using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using Ona_Pix.Controls;
 using OnaCore;
+using OnaPixSecret;
+using SauceNET;
+using SauceNET.Model;
 using WpfAnimatedGif;
 using DataFormats = System.Windows.DataFormats;
 using DragDropEffects = System.Windows.DragDropEffects;
@@ -25,10 +29,8 @@ namespace Ona_Pix
 {
     public partial class MainWindow : Window
     {
-        private readonly DispatcherTimer ACTIVATE_TIMER = new(), IN_TIMER = new(), OUT_TIMER = new();
-        private HttpResponseMessage IMAGE_MESSAGE = new();
-        private bool IS_ACTIVE = false, IS_FIXED = false;
-        internal char R18 = '2';
+        private HttpResponseMessage IMAGE_MESSAGE = new();  //当前窗口显示的图片数据 (便于以后改为图片缓存形式)
+        private bool IS_ACTIVE = false, IS_FIXED = false;   //当前窗口的状态信息
 
         public MainWindow(string[] args)
         {
@@ -36,7 +38,7 @@ namespace Ona_Pix
             {
                 InitializeComponent();
 
-                //填充拖入图标的文件路径
+                //填充被拖入到图标打开的文件的路径
                 if (args.Length >= 1 && File.Exists(args[0]))
                 {
                     if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(args[0])) != -1)
@@ -44,18 +46,8 @@ namespace Ona_Pix
                     else
                         throw new Exception("里面被塞入了奇怪的东西...");
                 }
-
-                Task.Run(() =>
-                {
-                    ACTIVATE_TIMER.Interval = new TimeSpan(1);
-                    ACTIVATE_TIMER.Tick += ACTIVATE_TIMER_Tick;
-                    IN_TIMER.Interval = new TimeSpan(1);
-                    IN_TIMER.Tick += IN_TIMER_Tick;
-                    OUT_TIMER.Interval = new TimeSpan(1);
-                    OUT_TIMER.Tick += OUT_TIMER_Tick;
-                });
             }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; }
+            catch (Exception ex) { HandleException(ex); }
         }
         private void MainWin_Loaded(object sender, RoutedEventArgs e)
         {
@@ -67,13 +59,11 @@ namespace Ona_Pix
                 else
                     PickSettings();
 
-                //清理安装包
+                //清理自动更新留下的安装包
                 ClearCache();
             }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+            catch (Exception ex) { HandleException(ex); }
         }
-
-        //部分初始化操作
         private static void Welcome()
         {
             //第一次运行显示提示和关于窗口
@@ -81,11 +71,10 @@ namespace Ona_Pix
             (
 @"欢迎回家，主人! 我是 Ona Pix，你的专属女仆★
 关于我的所有信息都可以在接下来的关于窗口中找到噢！随便逛逛吧，主人。
-参观结束后就可以关闭关于窗口啦，我会在主窗口等你!"
+参观结束后就可以关闭关于窗口啦，我在主窗口等你!"
             );
 
-            AboutWindow aboutWindow = new(false);
-            aboutWindow.ShowDialog();
+            new AboutWindow(false).ShowDialog();
 
             Properties.Settings.Default.IsFirstRun = false;
             Properties.Settings.Default.Save();
@@ -107,6 +96,7 @@ namespace Ona_Pix
                 RestoreSettings(Define.BEHAVIOR_PAGE.DisableExceptionToggle, Define.BEHAVIOR_PAGE.DisableExceptionToggle_MouseDown);
             if (Properties.Settings.Default.IsTipsDisabled)
                 RestoreSettings(Define.BEHAVIOR_PAGE.DisableTipsToggle, Define.BEHAVIOR_PAGE.DisableTipsToggle_MouseDown);
+
             Define.APPEARANCE_PAGE.OpacitySlider.Value = Properties.Settings.Default.MenuOpacity;
         }
         private void RestoreSettings(ToggleSwitch toggle, Action<object, MouseButtonEventArgs> Toggle_MouseDown)
@@ -126,7 +116,7 @@ namespace Ona_Pix
             catch
             {
                 //Ona Pix自己在里面，清理不了
-                if (AppDomain.CurrentDomain.SetupInformation.ApplicationBase == Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Ona Pix Cache\\"))
+                if (AppDomain.CurrentDomain.SetupInformation.ApplicationBase == Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), @"Ona Pix Cache\"))
                 {
                     if (MessageBox.Show("主人，我被困在 " + AppDomain.CurrentDomain.SetupInformation.ApplicationBase + " 临时文件夹里了，主人能帮我离开这个地方吗?", "求助", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                     {
@@ -138,8 +128,79 @@ namespace Ona_Pix
             }
         }
 
-        //窗口关闭事件
-        protected override void OnClosing(CancelEventArgs e) => Environment.Exit(0);    //强制结束
+        //动画激活事件
+        internal void ActiveSpace_MouseIn(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            //悬浮菜单栏浮出
+            AnimateActiveGrid(new Thickness(0, 60, -10, 0), new Thickness(0, -10, 0, 0));
+            ActiveSearchBox.Focus();
+        }
+        private void ActiveSearchBox_PreviewMouseDown(object sender, MouseButtonEventArgs e) => IS_FIXED = true;
+        internal void ActiveSpace_MouseOut(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            //悬浮菜单栏收回
+            if (!Define.APPEARANCE_PAGE.LockAnimationToggle.IS_TOGGLED && !IS_FIXED)
+                AnimateActiveGrid(new Thickness(0, 60, -65, 0), new Thickness(0, -65, 0, 0));
+        }
+        private void InactiveSpace_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            //点击空白区域后悬浮菜单栏收回
+            if (!Define.APPEARANCE_PAGE.LockAnimationToggle.IS_TOGGLED)
+            {
+                AnimateActiveGrid(new Thickness(0, 60, -65, 0), new Thickness(0, -65, 0, 0));
+                IS_FIXED = false;
+            }
+        }
+
+        //其他动画事件
+        private void AnimateActiveGrid(Thickness activeRightGridThickness, Thickness activeTopGridThickness)
+        {
+            ActiveRightGrid.BeginAnimation(MarginProperty, new ThicknessAnimation(activeRightGridThickness, TimeSpan.FromSeconds(0.25)));
+            ActiveTopGrid.BeginAnimation(MarginProperty, new ThicknessAnimation(activeTopGridThickness, TimeSpan.FromSeconds(0.25)));
+        }
+        private void ThicknessAnimation_Completed(object? sender, EventArgs e)
+        {
+            SetImage();
+
+            ActiveSearchBox.Text = InactiveSearchBox.Text;
+            InactiveGrid.Visibility = Visibility.Collapsed;
+            ActiveGrid.Visibility = Visibility.Visible;
+
+            IS_ACTIVE = true;
+        }
+
+        //文件拖入事件
+        private void ReveivingSpace_DragEnter(object sender, System.Windows.DragEventArgs e)
+        {
+            //文件拖入主窗口时的鼠标变化
+            try
+            {
+                e.Handled = true;
+
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                    e.Effects = DragDropEffects.Copy;
+                else
+                    e.Effects = DragDropEffects.None;
+            }
+            catch (Exception ex) { HandleException(ex); }
+        }
+        private void ReveivingSpace_Drop(object sender, System.Windows.DragEventArgs e)
+        {
+            //文件拖入主窗口后的文件路径处理
+            try
+            {
+                if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                {
+                    string[] path = (string[])e.Data.GetData(DataFormats.FileDrop);
+
+                    if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(path[0])) != -1)
+                        ActiveSearchBox.Text = InactiveSearchBox.Text = path[0];
+                    else
+                        throw new Exception("里面被塞入了奇怪的东西...");
+                }
+            }
+            catch (Exception ex) { HandleException(ex); }
+        }
 
         //按钮点击事件
         private void ViewButton_Click(object sender, RoutedEventArgs e)
@@ -160,16 +221,11 @@ namespace Ona_Pix
                 openDialog.CheckPathExists = true;  //检查路径是否正确
                 openDialog.ReadOnlyChecked = true; //设定只读
                 openDialog.ShowReadOnly = false;    //不向用户显示只读选项
-                openDialog.SupportMultiDottedExtensions = false; //不支持多拓展名
-                openDialog.AutoUpgradeEnabled = true;   //自动升级对话框样式
                 #endregion 配置openDialog的参数
-                if (openDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-                {
-                    ActiveSearchBox.Text = openDialog.FileName.ToString();
-                    InactiveSearchBox.Text = openDialog.FileName.ToString();
-                }
+                if (openDialog.ShowDialog() == true)
+                    ActiveSearchBox.Text = InactiveSearchBox.Text = openDialog.FileName.ToString();
             }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+            catch (Exception ex) { HandleException(ex); }
         }
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
@@ -180,12 +236,9 @@ namespace Ona_Pix
 
                 await PickInput();
 
-                if (File.Exists((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text))
-                    return;
-
                 Title = "图片搜索完成";
             }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+            catch (Exception ex) { HandleException(ex); }
         }
         private async void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
@@ -204,11 +257,13 @@ namespace Ona_Pix
                 saveDialog.AddExtension = true; //无后缀时自动增加后缀
                 saveDialog.CheckFileExists = false;  //不检查文件是否正确
                 saveDialog.CheckPathExists = true;  //检查路径是否正确
-                saveDialog.SupportMultiDottedExtensions = false; //不支持多拓展名
-                saveDialog.AutoUpgradeEnabled = true;   //自动升级对话框样式
                 #endregion 配置saveDialog的参数
-                if (saveDialog.ShowDialog() != System.Windows.Forms.DialogResult.OK)
-                { Title = "操作正常取消"; return; }
+
+                if (saveDialog.ShowDialog() != true)
+                {
+                    Title = "操作正常取消";
+                    return;
+                }
 
                 if (ShowImage.Source == null)
                     await PickInput();
@@ -222,7 +277,7 @@ namespace Ona_Pix
                 else if (imageExtension == ".gif")
                     bitmapEncoder = new GifBitmapEncoder();
                 else
-                    throw new Exception("Unexpected Extension");
+                    throw new Exception("图片保存后缀不合法");
 
                 bitmapEncoder.Frames.Add(BitmapFrame.Create((BitmapSource)ShowImage.Source!));
                 using FileStream imageFileStream = new(saveDialog.FileName.ToString(), FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite | FileShare.Delete);
@@ -230,7 +285,7 @@ namespace Ona_Pix
 
                 Title = "图片下载完成";
             }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+            catch (Exception ex) { HandleException(ex); }
         }
         private async void LuckyButton_Click(object sender, RoutedEventArgs e)
         {
@@ -239,19 +294,17 @@ namespace Ona_Pix
             {
                 Title = "正在获取图片";
 
-                //选择瑟瑟等级
-                if (InactiveSearchBox.Text == "只要瑟瑟" || InactiveSearchBox.Text == "只要色色")
+                //触发瑟瑟彩蛋
+                if (InactiveSearchBox.Text == "只要瑟瑟" || InactiveSearchBox.Text == "只要色色" && MessageBox.Show("啊...真的要这样吗...", "彩蛋: ONLY R18", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    if (MessageBox.Show("啊...真的要这样吗...", "彩蛋: ONLY R18", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                    {
-                        if (Define.BEHAVIOR_PAGE.DisableR18Toggle.IS_TOGGLED)
-                            RestoreSettings(Define.BEHAVIOR_PAGE.DisableR18Toggle, Define.BEHAVIOR_PAGE.DisableR18Toggle_MouseDown);
-                        R18 = '1';
-                    }
+                    if (Define.BEHAVIOR_PAGE.DisableR18Toggle.IS_TOGGLED)
+                        RestoreSettings(Define.BEHAVIOR_PAGE.DisableR18Toggle, Define.BEHAVIOR_PAGE.DisableR18Toggle_MouseDown);
+
+                    Define.R18 = '1';
                 }
 
                 //将Json转换为JObject
-                JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@$"https://api.lolicon.app/setu/v2?r18={R18}&proxy=null", Define.MAIN_CLIENT));
+                JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@$"https://api.lolicon.app/setu/v2?r18={Define.R18}&proxy=null", Define.MAIN_CLIENT));
 
                 //提取并运行
                 ActiveSearchBox.Text = LuckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
@@ -261,64 +314,46 @@ namespace Ona_Pix
 
                 Title = "图片获取完成";
             }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+            catch (Exception ex) { HandleException(ex); }
         }
         private void SettingButton_Click(object sender, RoutedEventArgs e)
         {
             //设置
             try { Define.SETTING_WINDOW.ShowDialog(); }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+            catch (Exception ex) { HandleException(ex); }
         }
         private void AboutButton_Click(object sender, RoutedEventArgs e)
         {
             //关于
-            try
-            {
-                AboutWindow aboutWindow = new(Define.APPEARANCE_PAGE.DarkModeToggle.IS_TOGGLED);
-                aboutWindow.ShowDialog();
-            }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
+            try { new AboutWindow(Define.APPEARANCE_PAGE.DarkModeToggle.IS_TOGGLED).ShowDialog(); }
+            catch (Exception ex) { HandleException(ex); }
         }
 
         //判断输入内容
         private async Task PickInput()
         {
-            try
+            Title = "正在识别输入";
+
+            ActiveSearchBox.IsEnabled = ActiveSearchButton.IsEnabled = ActiveDownloadButton.IsEnabled =
+            InactiveSearchBox.IsEnabled = InactiveSearchButton.IsEnabled = InactiveDownloadButton.IsEnabled = false;
+
+            if (File.Exists((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text))
+                await IsFilePath(); //图片路径
+            else if (Regex.IsMatch((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text, "^([0-9]*)-?[0-9]*$"))
+                await IsPixivID();  //Pixiv ID
+            else if (new Regex(Define.URI_REGEX).IsMatch((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text))
             {
-                Title = "正在识别输入";
-
-                ActiveSearchBox.IsEnabled = false;
-                ActiveSearchButton.IsEnabled = false;
-                ActiveDownloadButton.IsEnabled = false;
-                InactiveSearchBox.IsEnabled = false;
-                InactiveSearchButton.IsEnabled = false;
-                InactiveDownloadButton.IsEnabled = false;
-
-                if (File.Exists((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text))
-                { IsFilePath(); return; }
+                if (!(IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.StartsWith("https://") && !(IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.StartsWith("http://"))
+                    (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text = "https://" + (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text;
+                await IsUri();  //Uri
             }
-            catch { SetControlsEnabled(); throw; }
+            else
+                await IsKeyWord();  //关键词
 
-            try
-            {
-                if (Regex.IsMatch((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text, "^([0-9]*)-?[0-9]*$"))
-                    await IsPixivID();  //Pixiv ID
-                else if (new Regex(Define.URI_REGEX).IsMatch((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text))
-                {
-                    if (!(IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.StartsWith("https://") && !(IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.StartsWith("http://"))
-                        (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text = "https://" + (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text;
-                    await IsUri();  //Uri
-                }
-                else
-                    await IsKeyWord();  //关键词
-
-                Title = "输入识别完成";
-            }
-            catch { throw; }
-            finally { SetControlsEnabled(); }
+            Title = "输入识别完成";
         }
 
-        //不同输入内容的处理
+        //处理输入内容
         private async Task IsUri()
         {
             Title = "正在解析链接";
@@ -337,120 +372,76 @@ namespace Ona_Pix
         }
         private async Task IsPixivID()
         {
-            Title = "正在解析PixivID";
+            Title = "正在解析 PixivID";
 
             await GetImage(@"https://pixiv.re/" + (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text + ".png");
 
-            Title = "PixivID解析完成";
+            Title = "PixivID 解析完成";
         }
-        private void IsFilePath()
+        private async Task IsFilePath()
         {
-            Title = "正在初始化请求";
+            Title = "正在解析图片";
 
-            Smms smms = new();
-            smms.SetImageUrl += Smms_SetImageUrl;
-            smms.SetMainWindowTitle += Smms_SetMainWindowTitle;
-            smms.SetControlsEnabled += Smms_SetControlsEnabled;
-            smms.ShowError += Smms_ShowError;
-            smms.ShellRun(Directory.GetCurrentDirectory(), "\"" + (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text + "\"");
+            string smmsJson = await UploadFile((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text);
+            if (string.IsNullOrWhiteSpace(smmsJson))
+                throw new Exception("未接收到有效响应");
 
-            Title = "正在解析文件";   //此时上传工作正在后台运行
+            //将smms响应的Json数据转换为JObject
+            JObject smmsJObject = JObject.Parse(smmsJson!);
+            if (!(bool)smmsJObject["success"]!)
+                throw new Exception(smmsJObject["code"]!.ToString());
+
+            //提取所需数据
+            string imageUrl = smmsJObject["data"]!["url"]!.ToString();
+            string deleteUrl = smmsJObject["data"]!["delete"]!.ToString();
+
+            try
+            {
+                SauceNETClient sauceNETClient = new(Secret.GetSauceNaoApiKey());
+                //获取相似图片的链接
+                Sauce sauce = await sauceNETClient.GetSauceAsync(imageUrl);
+                //填充最相似图片的链接并再次搜索响应结果
+                ActiveSearchBox.Text = InactiveSearchBox.Text = sauce.Results[0].SourceURL;
+                await PickInput();  //await IsUri();
+            }
+            catch { throw; }
+            finally
+            {
+                try { (await Http.GetAsync<HttpResponseMessage>(deleteUrl, Define.MAIN_CLIENT)).EnsureSuccessStatusCode(); }
+                catch { MessageBox.Show("Error: 图片清理失败，该图片可能暂时无法再次解析"); }
+            }
+
+            Title = "图片解析完成";
         }
         private async Task IsKeyWord()
         {
             Title = "正在解析关键词";
 
-            //将Json转换为JObject
-            JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>($@"https://api.lolicon.app/setu/v2?r18=2&proxy=null&tag={(IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text}", Define.MAIN_CLIENT));
+            //将Lolicon响应的Json数据转换为JObject
+            JObject luckyImageJObject = JObject.Parse(await Http.GetAsync<string>($@"https://api.lolicon.app/setu/v2?r18=2&proxy=null&tag={(IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text}", Define.MAIN_CLIENT));
 
-            //提取并运行
-            ActiveSearchBox.Text = LuckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
-            InactiveSearchBox.Text = LuckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
+            //提取和填充所需数据并再次搜索响应结果
+            ActiveSearchBox.Text = InactiveSearchBox.Text = luckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
             await PickInput();
 
             Title = "关键词解析完成";
         }
 
-        //Smms线程委托事件
-        private async void Smms_SetImageUrl(dynamic value) =>
-        await Dispatcher.Invoke(async () =>
+        //将URL的参数分离成键值对集合(待优化)
+        private static NameValueCollection GetParamCollection(string queryString)
         {
-            //Smms查找到图片链接后引发的事件
-            try
-            {
-                ActiveSearchBox.Text = value;
-                InactiveSearchBox.Text = value;
-
-                await PickInput();  //await IsUri();
-
-                Title = "图片搜索完成";
-            }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
-        });
-        private void Smms_SetMainWindowTitle(dynamic value) => Dispatcher.Invoke(() => Title = value);  //设置主窗口标题
-        private void Smms_SetControlsEnabled() => Dispatcher.Invoke(SetControlsEnabled);    //激活临时禁用的按钮
-        private void Smms_ShowError(dynamic value) =>
-        Dispatcher.Invoke(() =>
-        {
-            //报告异常
-            if (!Define.BEHAVIOR_PAGE.DisableExceptionToggle.IS_TOGGLED)
-                MessageBox.Show("Error: " + value);
-        });
-
-        //图片获取和显示
-        private async Task GetImage(string imageUri)
-        {
-            //获取图片
-            Title = "正在获取图片";
-
-            HttpResponseMessage imageMessage = await Http.GetAsync<HttpResponseMessage>(imageUri, Define.MAIN_CLIENT, HttpCompletionOption.ResponseContentRead);
-            imageMessage.EnsureSuccessStatusCode();
-            IMAGE_MESSAGE = imageMessage;
-
-            if (IS_ACTIVE)
-                SetImage();
-            else
-                ACTIVATE_TIMER.Start();
-
-            Title = "图片获取完成";
-        }
-        private void SetImage()
-        {
-            //显示图片
-            Title = "正在读取图片";
-
-            BitmapImage bitmapImage = new();
-            bitmapImage.BeginInit();
-            bitmapImage.StreamSource = IMAGE_MESSAGE.Content.ReadAsStream();
-            bitmapImage.EndInit();
-            ImageBehavior.SetAnimatedSource(ShowImage, bitmapImage);
-
-            Title = "图片读取完成";
-        }
-
-        //将URL参数分离为键值对集合
-        private NameValueCollection GetParamCollection(string queryString)
-        {
-            Title = "正在解析链接";
-
-            queryString = queryString.Replace("?", "");
+            queryString = queryString.Replace("?", string.Empty);
             NameValueCollection paramCollection = new(StringComparer.OrdinalIgnoreCase);
-            if (!string.IsNullOrEmpty(queryString))
+            if (!string.IsNullOrWhiteSpace(queryString))
             {
-                int count = queryString.Length;
-                for (int i = 0; i < count; ++i)
+                for (int i = 0; i < queryString.Length; ++i)
                 {
-                    int startIndex = i;
-                    int index = -1;
-                    while (i < count)
+                    int startIndex = i, index = -1;
+                    while (i < queryString.Length)
                     {
-                        char item = queryString[i];
-                        if (item == '=')
-                        {
-                            if (index < 0)
-                                index = i;
-                        }
-                        else if (item == '&')
+                        if (queryString[i] == '=' && index < 0)
+                            index = i;
+                        else if (queryString[i] == '&')
                             break;
 
                         ++i;
@@ -467,172 +458,125 @@ namespace Ona_Pix
                     {
                         key = queryString[startIndex..i];
                     }
+
                     paramCollection[HttpUtility.UrlDecode(key, Encoding.UTF8)] = HttpUtility.UrlDecode(value, Encoding.UTF8);
-                    if ((i == (count - 1)) && (queryString[i] == '&'))
+                    if (i == queryString.Length - 1 && queryString[i] == '&')
                         paramCollection[key] = string.Empty;
                 }
             }
 
-            Title = "链接解析完成";
-
             return paramCollection;
         }
 
-        //切换控件禁用状态
-        private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        //上传图片文件至smms
+        public static async Task<string> UploadFile(string filePath)
         {
-            //切换按钮禁用状态(无内容时禁用按钮)
-            if ((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text == "")
-            {
-                ActiveSearchButton.IsEnabled = false;
-                ActiveDownloadButton.IsEnabled = false;
-                InactiveSearchButton.IsEnabled = false;
-                InactiveDownloadButton.IsEnabled = false;
-            }
+            //将数据写入数据流
+            string boundary = "------WebKitFormBoundary" + DateTime.Now.Ticks.ToString("x");
+            string header = $"Content-Disposition: form-data; name=\"smfile\"; filename=\"{filePath}\"\r\n" + "Content-Type: application/octet-stream\r\n\r\n";
+            byte[] boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+            byte[] headerBytes = Encoding.UTF8.GetBytes(header);
+            byte[] fileBytes = new byte[81920];    //最优80kb文件读取缓存
+            byte[] endBoundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--");
+            int fileBytesLength;
+            using FileStream fileStream = new(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
+            using MemoryStream memoryStream = new();
+            memoryStream.Write(boundaryBytes, 0, boundaryBytes.Length);
+            memoryStream.Write(headerBytes, 0, headerBytes.Length);
+            while ((fileBytesLength = fileStream.Read(fileBytes, 0, fileBytes.Length)) != 0)
+                memoryStream.Write(fileBytes, 0, fileBytesLength);
+            memoryStream.Write(endBoundaryBytes, 0, endBoundaryBytes.Length);
+
+            //配置图片上传请求的参数
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create("https://sm.ms/api/v2/upload");
+            webRequest.Method = "POST";
+            webRequest.Headers.Add("Authorization", Secret.GetSmmsApiKey());
+            webRequest.ContentType = "multipart/form-data; boundary=" + boundary;
+            webRequest.ContentLength = memoryStream.Length;
+
+            //将数据流写入图片上传请求
+            byte[] tempBytes = new byte[memoryStream.Length];
+            using Stream requestStream = webRequest.GetRequestStream();
+            memoryStream.Position = 0;
+            memoryStream.Read(tempBytes, 0, tempBytes.Length);
+            requestStream.Write(tempBytes, 0, tempBytes.Length);
+
+            //返回smms响应结果
+            return new StreamReader((await webRequest.GetResponseAsync()).GetResponseStream()).ReadToEnd();
+        }
+
+        //获取和显示图片
+        private async Task GetImage(string imageUri)
+        {
+            Title = "正在获取图片";
+
+            IMAGE_MESSAGE = await Http.GetAsync<HttpResponseMessage>(imageUri, Define.MAIN_CLIENT, HttpCompletionOption.ResponseContentRead);
+            IMAGE_MESSAGE.EnsureSuccessStatusCode();
+
+            if (IS_ACTIVE)
+                SetImage();
             else
             {
-                ActiveSearchButton.IsEnabled = true;
-                ActiveDownloadButton.IsEnabled = true;
-                InactiveSearchButton.IsEnabled = true;
-                InactiveDownloadButton.IsEnabled = true;
+                ThicknessAnimation inactiveRightGridAnimation = new(new Thickness(Width - 10, 0, -(Width - 10), 0), TimeSpan.FromSeconds(0.3));
+                ThicknessAnimation inactiveTopGridAnimation = new(new Thickness(0, -(InactiveTopGrid.ActualHeight + 10), 0, InactiveTopGrid.ActualHeight + 10), TimeSpan.FromSeconds(0.3));
+                inactiveRightGridAnimation.Completed += ThicknessAnimation_Completed;
+                InactiveRightGrid.BeginAnimation(MarginProperty, inactiveRightGridAnimation);
+                InactiveTopGrid.BeginAnimation(MarginProperty, inactiveTopGridAnimation);
             }
+
+            Title = "图片获取完成";
+        }
+        private void SetImage()
+        {
+            Title = "正在读取图片";
+
+            BitmapImage bitmapImage = new();
+            bitmapImage.BeginInit();
+            bitmapImage.StreamSource = IMAGE_MESSAGE.Content.ReadAsStream();
+            bitmapImage.EndInit();
+            ImageBehavior.SetAnimatedSource(ShowImage, bitmapImage);
+
+            SetControlsEnabled();
+
+            Title = "图片读取完成";
+        }
+
+        //切换输入框和按钮的IsEnabled属性
+        private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            //输入框中无内容时禁用搜索和下载按钮，否则启用
+            if (string.IsNullOrWhiteSpace((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text))
+                ActiveSearchButton.IsEnabled = ActiveDownloadButton.IsEnabled =
+                InactiveSearchButton.IsEnabled = InactiveDownloadButton.IsEnabled = false;
+            else
+                ActiveSearchButton.IsEnabled = ActiveDownloadButton.IsEnabled =
+                InactiveSearchButton.IsEnabled = InactiveDownloadButton.IsEnabled = true;
         }
         private void SetControlsEnabled()
         {
-            //解锁搜索时临时禁用的控件
-            ActiveSearchBox.IsEnabled = true;
-            ActiveSearchButton.IsEnabled = true;
-            ActiveDownloadButton.IsEnabled = true;
-            InactiveSearchBox.IsEnabled = true;
-            InactiveSearchButton.IsEnabled = true;
-            InactiveDownloadButton.IsEnabled = true;
+            //启用在搜索时被临时禁用的搜索框和按钮
+            ActiveSearchBox.IsEnabled = ActiveSearchButton.IsEnabled = ActiveDownloadButton.IsEnabled =
+            InactiveSearchBox.IsEnabled = InactiveSearchButton.IsEnabled = InactiveDownloadButton.IsEnabled = true;
         }
 
-        //动画激活事件
-        internal void ActiveSpace_MouseIn(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            //激活悬浮菜单栏弹出
-            OUT_TIMER.Stop();
-            IN_TIMER.Start();
+        //窗口关闭事件
+        protected override void OnClosing(CancelEventArgs e) => Environment.Exit(0);    //强制关闭
 
-            ActiveSearchBox.Focus();
-        }
-        private void ActiveSearchBox_PreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            //点击搜索框后临时固定悬浮菜单栏
-            OUT_TIMER.Stop();
-            IN_TIMER.Start();
-
-            ActiveSearchBox.Focus();
-
-            IS_FIXED = true;
-        }
-        internal void ActiveSpace_MouseOut(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            //激活悬浮菜单栏收回
-            if (!Define.APPEARANCE_PAGE.LockAnimationToggle.IS_TOGGLED && !IS_FIXED)
-            {
-                IN_TIMER.Stop();
-                OUT_TIMER.Start();
-            }
-        }
-        private void InactiveSpace_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            //点击空白区域后激活悬浮菜单栏收回
-            if (!Define.APPEARANCE_PAGE.LockAnimationToggle.IS_TOGGLED)
-            {
-                IN_TIMER.Stop();
-                OUT_TIMER.Start();
-
-                IS_FIXED = false;
-            }
-        }
-
-        //动画播放事件
-        private void ACTIVATE_TIMER_Tick(object? sender, EventArgs e)
-        {
-            //初始界面切换至图片界面的动画事件
-            if (InactiveRightGrid.Margin.Left < Width)
-            {
-                InactiveRightGrid.Margin = new Thickness(InactiveRightGrid.Margin.Left + 0.5, 0, InactiveRightGrid.Margin.Right - 0.5, 0);
-                InactiveTopGrid.Margin = new Thickness(0, InactiveTopGrid.Margin.Top - 0.1, 0, InactiveTopGrid.Margin.Bottom + 0.1);
-            }
-            else
-            {
-                ACTIVATE_TIMER.Stop();
-
-                SetImage();
-
-                ActiveSearchBox.Text = InactiveSearchBox.Text;
-                InactiveGrid.Visibility = Visibility.Collapsed;
-                ActiveGrid.Visibility = Visibility.Visible;
-
-                IS_ACTIVE = true;
-            }
-        }
-        private void IN_TIMER_Tick(object? sender, EventArgs e)
-        {
-            //悬浮菜单栏弹出的动画事件
-            if (ActiveRightGrid.Margin.Right < -10)
-            {
-                ActiveRightGrid.Margin = new Thickness(0, 60, ActiveRightGrid.Margin.Right + 0.3, 0);
-                ActiveTopGrid.Margin = new Thickness(0, ActiveTopGrid.Margin.Top + 0.3, 0, 0);
-            }
-            else
-                IN_TIMER.Stop();
-        }
-        private void OUT_TIMER_Tick(object? sender, EventArgs e)
-        {
-            //悬浮菜单栏收回的动画事件
-            if (ActiveRightGrid.Margin.Right > -65)
-            {
-                ActiveRightGrid.Margin = new Thickness(0, 60, ActiveRightGrid.Margin.Right - 0.3, 0);
-                ActiveTopGrid.Margin = new Thickness(0, ActiveTopGrid.Margin.Top - 0.3, 0, 0);
-            }
-            else
-                OUT_TIMER.Stop();
-        }
-
-        //文件拖入事件
-        private void ReveivingSpace_DragEnter(object sender, System.Windows.DragEventArgs e)
-        {
-            //文件拖入主窗口时的鼠标变化
-            try
-            {
-                e.Handled = true;
-
-                if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                    e.Effects = DragDropEffects.Copy;
-                else
-                    e.Effects = DragDropEffects.None;
-            }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
-        }
-        private void ReveivingSpace_Drop(object sender, System.Windows.DragEventArgs e)
-        {
-            //文件拖入主窗口后的文件路径处理
-            try
-            {
-                if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                {
-                    string[] path = (string[])e.Data.GetData(DataFormats.FileDrop);
-
-                    if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(path[0])) != -1)
-                    {
-                        ActiveSearchBox.Text = path[0];
-                        InactiveSearchBox.Text = path[0];
-                    }
-                    else
-                        throw new Exception("里面被塞入了奇怪的东西...");
-                }
-            }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; return; }
-        }
-
+        //窗口热键
         private void MainWin_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.W)
                 Environment.Exit(0);
+        }
+
+        //处理异常
+        private void HandleException(Exception ex)
+        {
+            Title = "操作执行失败";
+
+            MessageBox.Show("Error: " + ex.Message);
+
+            SetControlsEnabled();
         }
     }
 }

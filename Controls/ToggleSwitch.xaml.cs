@@ -7,7 +7,7 @@ namespace Ona_Pix.Controls
 {
     public partial class ToggleSwitch : UserControl
     {
-        public bool IS_TOGGLED = false;
+        internal bool IS_TOGGLED = false;
 
         private readonly Thickness LEFT_SIDE_MARGIN = new(-11, 0, 0, 0);
         private readonly Thickness RIGHT_SIDE_MARGIN = new(0, 0, -11, 0);

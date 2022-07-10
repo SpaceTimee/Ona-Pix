@@ -9,10 +9,6 @@ namespace Ona_Pix
 {
     internal static class Define
     {
-        //委托
-        internal delegate void SET_WINDOW_HANDLER();
-        internal delegate void SET_WINDOW_HANDLER_P(dynamic value);
-
         //窗口
         internal static MainWindow? MAIN_WINDOW;
         internal static readonly SettingWindow SETTING_WINDOW = new();
@@ -21,7 +17,7 @@ namespace Ona_Pix
         internal static readonly AppearancePage APPEARANCE_PAGE = (AppearancePage)SETTING_WINDOW.Resources["appearancePage"];
         internal static readonly BehaviorPage BEHAVIOR_PAGE = (BehaviorPage)SETTING_WINDOW.Resources["behaviorPage"];
 
-        //字段
+        //常量
         internal static readonly HttpClient MAIN_CLIENT = new();
         internal static readonly string CURRENT_VERSION = Assembly.GetExecutingAssembly().GetName().Version!.ToString()[0..^2];
         internal static readonly string CACHE_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Ona Pix Cache");
@@ -34,7 +30,10 @@ namespace Ona_Pix
         internal static readonly string[] FILE_SUFFIXES = { ".png", ".jpg", ".gif" };
         internal const string GITHUB_RELEASE_API_URL = @"https://api.github.com/repos/SpaceTimee/Ona-Pix/releases/latest";
         internal const string ACCEPT_HEADER = @"application/vnd.github.v3+json";
-        internal const string USER_AGENT_HEADER = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36";
+        internal const string USER_AGENT_HEADER = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36";
+
+        //变量
+        internal static char R18 = '2';    //当前限制等级
 
         //方法
         internal static void StartProcess(string fileName)

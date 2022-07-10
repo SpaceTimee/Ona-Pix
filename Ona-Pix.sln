@@ -5,13 +5,9 @@ VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ona-Pix", "Ona-Pix.csproj", "{F43EF5C4-7A23-479D-BB48-04182F712E30}"
 EndProject
-Project("{888888A0-9F3D-457C-B088-3A5042F75D52}") = "Ona-Pix-Smms", "Ona-Pix-Smms\Ona-Pix-Smms.pyproj", "{26AB8192-178B-45A7-BD34-746D37ACA947}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ona-Pix-Secret", "Ona-Pix-Secret\Ona-Pix-Secret.csproj", "{D5F709F0-DCBD-4C0A-8F9B-B6DE0C70C29F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ona-Core", "..\Ona-Core\Ona-Core.csproj", "{D098B0DA-DB72-41A7-8CD9-9DDE34F22649}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sheas-Core", "..\Sheas-Core\Sheas-Core.csproj", "{42491572-0050-4CDA-9189-DFC98BDBBF73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,12 +31,6 @@ Global
 		{F43EF5C4-7A23-479D-BB48-04182F712E30}.Release|x64.Build.0 = Release|Any CPU
 		{F43EF5C4-7A23-479D-BB48-04182F712E30}.Release|x86.ActiveCfg = Release|Any CPU
 		{F43EF5C4-7A23-479D-BB48-04182F712E30}.Release|x86.Build.0 = Release|Any CPU
-		{26AB8192-178B-45A7-BD34-746D37ACA947}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{26AB8192-178B-45A7-BD34-746D37ACA947}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{26AB8192-178B-45A7-BD34-746D37ACA947}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{26AB8192-178B-45A7-BD34-746D37ACA947}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{26AB8192-178B-45A7-BD34-746D37ACA947}.Release|x64.ActiveCfg = Release|Any CPU
-		{26AB8192-178B-45A7-BD34-746D37ACA947}.Release|x86.ActiveCfg = Release|Any CPU
 		{D5F709F0-DCBD-4C0A-8F9B-B6DE0C70C29F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D5F709F0-DCBD-4C0A-8F9B-B6DE0C70C29F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5F709F0-DCBD-4C0A-8F9B-B6DE0C70C29F}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -65,18 +55,6 @@ Global
 		{D098B0DA-DB72-41A7-8CD9-9DDE34F22649}.Release|x64.Build.0 = Release|Any CPU
 		{D098B0DA-DB72-41A7-8CD9-9DDE34F22649}.Release|x86.ActiveCfg = Release|Any CPU
 		{D098B0DA-DB72-41A7-8CD9-9DDE34F22649}.Release|x86.Build.0 = Release|Any CPU
-		{42491572-0050-4CDA-9189-DFC98BDBBF73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{42491572-0050-4CDA-9189-DFC98BDBBF73}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{42491572-0050-4CDA-9189-DFC98BDBBF73}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{42491572-0050-4CDA-9189-DFC98BDBBF73}.Debug|x64.Build.0 = Debug|Any CPU
-		{42491572-0050-4CDA-9189-DFC98BDBBF73}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{42491572-0050-4CDA-9189-DFC98BDBBF73}.Debug|x86.Build.0 = Debug|Any CPU
-		{42491572-0050-4CDA-9189-DFC98BDBBF73}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{42491572-0050-4CDA-9189-DFC98BDBBF73}.Release|Any CPU.Build.0 = Release|Any CPU
-		{42491572-0050-4CDA-9189-DFC98BDBBF73}.Release|x64.ActiveCfg = Release|Any CPU
-		{42491572-0050-4CDA-9189-DFC98BDBBF73}.Release|x64.Build.0 = Release|Any CPU
-		{42491572-0050-4CDA-9189-DFC98BDBBF73}.Release|x86.ActiveCfg = Release|Any CPU
-		{42491572-0050-4CDA-9189-DFC98BDBBF73}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

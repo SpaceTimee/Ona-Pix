@@ -69,7 +69,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MaterialDesignThemes" Version="4.4.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SauceNET" Version="1.1.1" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
@@ -81,9 +81,6 @@
     </Reference>
     <Reference Include="Ona-Pix-Secret">
       <HintPath>Ona-Pix-Smms\Ona-Pix-Secret.dll</HintPath>
-    </Reference>
-    <Reference Include="Sheas-Core">
-      <HintPath>..\Sheas-Core\bin\Release\Sheas-Core.dll</HintPath>
     </Reference>
   </ItemGroup>
 

@@ -33,7 +33,7 @@ namespace Ona_Pix
                 {
                     Title = "有可用更新";
 
-                    MessageBoxResult messageBoxResult = MessageBox.Show("有可用更新，是否自动更新 (否: 手动更新)", "", MessageBoxButton.YesNoCancel);
+                    MessageBoxResult messageBoxResult = MessageBox.Show("有可用更新，是否自动更新 (否: 手动更新)", string.Empty, MessageBoxButton.YesNoCancel);
                     if (messageBoxResult == MessageBoxResult.Yes)
                     {
                         foreach (var releaseList in releaseJObject["assets"]!)
@@ -57,7 +57,7 @@ namespace Ona_Pix
                 else
                     Title = "当前是最新版本";
             }
-            catch (Exception ex) { MessageBox.Show("Error: " + ex.Message); Title = "操作执行失败"; Close(); }
+            catch (Exception ex) { HandleException(ex); Close(); }
         }
         private async void ReleaseListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {

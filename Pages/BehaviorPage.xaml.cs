@@ -12,12 +12,12 @@ namespace Ona_Pix.Pages
             //禁用瑟瑟
             if (DisableR18Toggle.IS_TOGGLED)
             {
-                Define.MAIN_WINDOW!.R18 = '0';
+                Define.R18 = '0';
                 Properties.Settings.Default.IsR18Disabled = true;
             }
             else
             {
-                Define.MAIN_WINDOW!.R18 = '2';
+                Define.R18 = '2';
                 Properties.Settings.Default.IsR18Disabled = false;
             }
 
