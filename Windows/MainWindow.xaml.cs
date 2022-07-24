@@ -29,6 +29,7 @@ namespace Ona_Pix
 {
     public partial class MainWindow : Window
     {
+        private readonly HttpClient MAIN_CLIENT = new();    //当前窗口使用的唯一的 HttpClient
         private HttpResponseMessage IMAGE_MESSAGE = new();  //当前窗口显示的图片数据 (便于以后改为图片缓存形式)
         private bool IS_ACTIVE = false, IS_FIXED = false;   //当前窗口的状态信息
 
@@ -304,7 +305,7 @@ namespace Ona_Pix
                 }
 
                 //将Json转换为JObject
-                JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@$"https://api.lolicon.app/setu/v2?r18={Define.R18}&proxy=null", Define.MAIN_CLIENT));
+                JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@$"https://api.lolicon.app/setu/v2?r18={Define.R18}&proxy=null", MAIN_CLIENT));
 
                 //提取并运行
                 ActiveSearchBox.Text = LuckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
@@ -407,7 +408,7 @@ namespace Ona_Pix
             catch { throw; }
             finally
             {
-                try { (await Http.GetAsync<HttpResponseMessage>(deleteUrl, Define.MAIN_CLIENT)).EnsureSuccessStatusCode(); }
+                try { (await Http.GetAsync<HttpResponseMessage>(deleteUrl, MAIN_CLIENT)).EnsureSuccessStatusCode(); }
                 catch { MessageBox.Show("Error: 图片清理失败，该图片可能暂时无法再次解析"); }
             }
 
@@ -418,7 +419,7 @@ namespace Ona_Pix
             Title = "正在解析关键词";
 
             //将Lolicon响应的Json数据转换为JObject
-            JObject luckyImageJObject = JObject.Parse(await Http.GetAsync<string>($@"https://api.lolicon.app/setu/v2?r18=2&proxy=null&tag={(IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text}", Define.MAIN_CLIENT));
+            JObject luckyImageJObject = JObject.Parse(await Http.GetAsync<string>($@"https://api.lolicon.app/setu/v2?r18=2&proxy=null&tag={(IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text}", MAIN_CLIENT));
 
             //提取和填充所需数据并再次搜索响应结果
             ActiveSearchBox.Text = InactiveSearchBox.Text = luckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
@@ -427,7 +428,7 @@ namespace Ona_Pix
             Title = "关键词解析完成";
         }
 
-        //将URL的参数分离成键值对集合(待优化)
+        //将URL的参数分离成键值对集合 (待优化)
         private static NameValueCollection GetParamCollection(string queryString)
         {
             queryString = queryString.Replace("?", string.Empty);
@@ -468,7 +469,7 @@ namespace Ona_Pix
             return paramCollection;
         }
 
-        //上传图片文件至smms
+        //上传图片文件至 smms
         public static async Task<string> UploadFile(string filePath)
         {
             //将数据写入数据流
@@ -476,7 +477,7 @@ namespace Ona_Pix
             string header = $"Content-Disposition: form-data; name=\"smfile\"; filename=\"{filePath}\"\r\n" + "Content-Type: application/octet-stream\r\n\r\n";
             byte[] boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
             byte[] headerBytes = Encoding.UTF8.GetBytes(header);
-            byte[] fileBytes = new byte[81920];    //最优80kb文件读取缓存
+            byte[] fileBytes = new byte[81920];    //最优 80kb 文件读取缓存
             byte[] endBoundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--");
             int fileBytesLength;
             using FileStream fileStream = new(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
@@ -501,7 +502,7 @@ namespace Ona_Pix
             memoryStream.Read(tempBytes, 0, tempBytes.Length);
             requestStream.Write(tempBytes, 0, tempBytes.Length);
 
-            //返回smms响应结果
+            //返回 smms 响应结果
             return new StreamReader((await webRequest.GetResponseAsync()).GetResponseStream()).ReadToEnd();
         }
 
@@ -510,7 +511,7 @@ namespace Ona_Pix
         {
             Title = "正在获取图片";
 
-            IMAGE_MESSAGE = await Http.GetAsync<HttpResponseMessage>(imageUri, Define.MAIN_CLIENT, HttpCompletionOption.ResponseContentRead);
+            IMAGE_MESSAGE = await Http.GetAsync<HttpResponseMessage>(imageUri, MAIN_CLIENT, HttpCompletionOption.ResponseContentRead);
             IMAGE_MESSAGE.EnsureSuccessStatusCode();
 
             if (IS_ACTIVE)
@@ -541,7 +542,7 @@ namespace Ona_Pix
             Title = "图片读取完成";
         }
 
-        //切换输入框和按钮的IsEnabled属性
+        //切换输入框和按钮的 IsEnabled 属性
         private void SearchBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             //输入框中无内容时禁用搜索和下载按钮，否则启用
@@ -574,7 +575,8 @@ namespace Ona_Pix
         {
             Title = "操作执行失败";
 
-            MessageBox.Show("Error: " + ex.Message);
+            if (!Define.BEHAVIOR_PAGE.DisableExceptionToggle.IS_TOGGLED)
+                MessageBox.Show("Error: " + ex.Message);
 
             SetControlsEnabled();
         }

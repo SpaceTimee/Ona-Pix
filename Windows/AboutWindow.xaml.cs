@@ -110,7 +110,8 @@ namespace Ona_Pix
         {
             Title = "操作执行失败";
 
-            MessageBox.Show("Error: " + ex.Message);
+            if (!Define.BEHAVIOR_PAGE.DisableExceptionToggle.IS_TOGGLED)
+                MessageBox.Show("Error: " + ex.Message);
         }
     }
 }

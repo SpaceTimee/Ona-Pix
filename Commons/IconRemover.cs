@@ -5,7 +5,7 @@ using System.Windows.Interop;
 
 namespace Ona_Pix
 {
-    //定义IconRemover
+    //定义图标移除类
     internal static class IconRemover
     {
         private const int GWL_EXSTYLE = -20;
@@ -27,10 +27,10 @@ namespace Ona_Pix
 
         internal static void RemoveIcon(Window window)
         {
-            //获取该窗口句柄
+            //获取该窗口的句柄
             IntPtr hwnd = new WindowInteropHelper(window).Handle;
 
-            //将窗口更改为不显示窗口图标
+            //设置该窗口为不显示图标
             _ = SetWindowLong(hwnd, GWL_EXSTYLE, GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_DLGMODALFRAME);
 
             //更新窗口的非客户区域来显示更改
@@ -42,7 +42,7 @@ namespace Ona_Pix
         }
     }
 
-    //使用IconRemover
+    //使用图标移除类
     public partial class MainWindow
     {
         protected override void OnSourceInitialized(EventArgs e) => IconRemover.RemoveIcon(this);
