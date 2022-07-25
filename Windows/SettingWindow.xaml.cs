@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace Ona_Pix
@@ -15,7 +16,7 @@ namespace Ona_Pix
         }
 
         //菜单切换事件
-        private void PaneListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void PaneListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //随菜单栏选项变化切换显示页面
             PageBorder.Child = PaneListBox.SelectedIndex switch
@@ -35,7 +36,7 @@ namespace Ona_Pix
         }
 
         //窗口热键
-        private void SettingWin_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void SettingWin_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
                 Close();    //关闭窗口

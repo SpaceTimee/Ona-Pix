@@ -1,4 +1,5 @@
 ﻿using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Ona_Pix.Pages
 {
@@ -6,8 +7,8 @@ namespace Ona_Pix.Pages
     {
         public BehaviorPage() => InitializeComponent();
 
-        //Toggle点击事件
-        internal void DisableR18Toggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        //Toggle 点击事件
+        internal void DisableR18Toggle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //禁用瑟瑟
             if (DisableR18Toggle.IS_TOGGLED)
@@ -23,9 +24,9 @@ namespace Ona_Pix.Pages
 
             Properties.Settings.Default.Save();
         }
-        internal void PixivCatToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        internal void PixivCatToggle_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            //使用PixivCat接口
+            //使用 PixivCat 接口
             if (PixivCatToggle.IS_TOGGLED)
                 Properties.Settings.Default.IsPixivCat = true;
             else
@@ -33,7 +34,7 @@ namespace Ona_Pix.Pages
 
             Properties.Settings.Default.Save();
         }
-        internal void DisableExceptionToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        internal void DisableExceptionToggle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //禁用报错
             if (DisableExceptionToggle.IS_TOGGLED)
@@ -43,7 +44,7 @@ namespace Ona_Pix.Pages
 
             Properties.Settings.Default.Save();
         }
-        internal void DisableTipsToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        internal void DisableTipsToggle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //禁用一言
             if (DisableTipsToggle.IS_TOGGLED)

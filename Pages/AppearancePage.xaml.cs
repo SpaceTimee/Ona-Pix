@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using MaterialDesignThemes.Wpf;
@@ -11,8 +12,8 @@ namespace Ona_Pix.Pages
     {
         public AppearancePage() => InitializeComponent();
 
-        //Toggle点击事件
-        internal void DarkModeToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        //Toggle 点击事件
+        internal void DarkModeToggle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //暗色模式
             if (DarkModeToggle.IS_TOGGLED)
@@ -30,7 +31,7 @@ namespace Ona_Pix.Pages
 
             SetButtonContent();
         }
-        internal void IconButtonToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        internal void IconButtonToggle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //按钮图标
             if (IconButtonToggle.IS_TOGGLED)
@@ -42,7 +43,7 @@ namespace Ona_Pix.Pages
 
             SetButtonContent();
         }
-        internal void LockAnimationToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        internal void LockAnimationToggle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //固定菜单
             if (LockAnimationToggle.IS_TOGGLED)
@@ -58,7 +59,7 @@ namespace Ona_Pix.Pages
 
             Properties.Settings.Default.Save();
         }
-        private void HideBorderToggle_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void HideBorderToggle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //隐藏边框
             Define.MAIN_WINDOW!.SizeToContent = SizeToContent.Manual;
@@ -77,9 +78,7 @@ namespace Ona_Pix.Pages
         {
             if (Define.MAIN_WINDOW != null)
             {
-                double opacity = 1 - OpacitySlider.Value / 100;
-                Define.MAIN_WINDOW!.ActiveRightBorder.Opacity = opacity;
-                Define.MAIN_WINDOW!.ActiveTopBorder.Opacity = opacity;
+                Define.MAIN_WINDOW!.ActiveRightBorder.Opacity = 1 - OpacitySlider.Value / 100; ;
 
                 Properties.Settings.Default.MenuOpacity = OpacitySlider.Value;
                 Properties.Settings.Default.Save();

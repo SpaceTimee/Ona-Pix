@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Net.Http;
 using System.Windows;
+using System.Windows.Controls;
 using Newtonsoft.Json.Linq;
 using OnaCore;
 
@@ -15,8 +16,8 @@ namespace Ona_Pix
 
         private void PartialAboutWindow()
         {
-            GITHUB_CLIENT.DefaultRequestHeaders.Add("Accept", Define.ACCEPT_HEADER);
-            GITHUB_CLIENT.DefaultRequestHeaders.Add("User-Agent", Define.USER_AGENT_HEADER);
+            GITHUB_CLIENT.DefaultRequestHeaders.Add("Accept", Define.GITHUB_RELEASE_API_ACCEPT_HEADER);
+            GITHUB_CLIENT.DefaultRequestHeaders.Add("User-Agent", Define.GITHUB_RELEASE_API_USER_AGENT_HEADER);
         }
 
         //更新交互事件
@@ -36,16 +37,14 @@ namespace Ona_Pix
                     MessageBoxResult messageBoxResult = MessageBox.Show("有可用更新，是否自动更新 (否: 手动更新)", string.Empty, MessageBoxButton.YesNoCancel);
                     if (messageBoxResult == MessageBoxResult.Yes)
                     {
-                        foreach (var releaseList in releaseJObject["assets"]!)
+                        //记录最新版的 Github Release 中的所有文件并列出
+                        foreach (JObject releaseList in releaseJObject["assets"]!)
                             RELEASE_LIST.Add(releaseList["name"]!.ToString(), releaseList["browser_download_url"]!.ToString());
 
                         ReleaseListBox.ItemsSource = RELEASE_LIST.Keys;
 
                         //调整窗口最小宽度
-                        Dispatcher.Invoke(new Action(() =>
-                        {
-                            MinWidth = 250 + ReleaseListBoxColumn.ActualWidth;
-                        }), System.Windows.Threading.DispatcherPriority.Loaded);
+                        Dispatcher.Invoke(new Action(() => { MinWidth = 250 + ReleaseListBoxColumn.ActualWidth; }), System.Windows.Threading.DispatcherPriority.Loaded);
 
                         Title = "请选择更新文件";
 
@@ -59,26 +58,24 @@ namespace Ona_Pix
             }
             catch (Exception ex) { HandleException(ex); Close(); }
         }
-        private async void ReleaseListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private async void ReleaseListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             //用户选择需要下载的文件后触发
             try
             {
                 Title = "正在下载更新";
 
-                ReleaseListBox.IsEnabled = false;
-                UpdateLink.IsEnabled = false;
+                ReleaseListBox.IsEnabled = UpdateLink.IsEnabled = false;
 
                 byte[] ReleaseBytes = await Http.GetAsync<byte[]>(RELEASE_LIST[(string)ReleaseListBox.SelectedItem], GITHUB_CLIENT);
 
                 Title = "正在保存更新";
 
-                new DirectoryInfo(Define.CACHE_PATH).Create();
-                FileStream fileStream = new(
+                new DirectoryInfo(Define.CACHE_PATH).Create();  //创建文件夹
+                using FileStream fileStream = new(
                     Path.Combine(Define.CACHE_PATH, (string)ReleaseListBox.SelectedItem),
                     FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite | FileShare.Delete);
                 fileStream.Write(ReleaseBytes, 0, ReleaseBytes.Length);
-                fileStream.Close();
 
                 Title = "正在打开更新";
 

@@ -46,7 +46,7 @@ namespace Ona_Pix
                     ImageBehavior.SetAnimatedSource(TanImage, bitmapImage);
                 }
 
-                //显示随机一言(Tips)
+                //显示随机一言 (Tips)
                 if (!Define.BEHAVIOR_PAGE.DisableTipsToggle.IS_TOGGLED)
                 {
                     Random random = new(Convert.ToInt32(DateTime.Now.Ticks & 0x0000FFFF));
@@ -99,7 +99,7 @@ namespace Ona_Pix
         //private async void UpdateLink_Click(object sender, RoutedEventArgs e) 位于Updater.cs
 
         //窗口热键
-        private void AboutWin_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void AboutWin_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
                 Close();    //关闭窗口
