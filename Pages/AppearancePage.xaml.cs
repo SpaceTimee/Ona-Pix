@@ -78,7 +78,7 @@ namespace Ona_Pix.Pages
         {
             if (Define.MAIN_WINDOW != null)
             {
-                Define.MAIN_WINDOW!.ActiveRightBorder.Opacity = 1 - OpacitySlider.Value / 100; ;
+                Define.MAIN_WINDOW!.ActiveRightBorder.Opacity = Define.MAIN_WINDOW!.ActiveTopBorder.Opacity = 1 - OpacitySlider.Value / 100;
 
                 Properties.Settings.Default.MenuOpacity = OpacitySlider.Value;
                 Properties.Settings.Default.Save();
@@ -161,11 +161,11 @@ namespace Ona_Pix.Pages
                 Define.MAIN_WINDOW!.ActiveSettingButton.Content = "设置";
                 Define.MAIN_WINDOW!.ActiveAboutButton.Content = "关于";
 
-                Define.MAIN_WINDOW!.ActiveViewButton.ToolTip = null;
-                Define.MAIN_WINDOW!.ActiveSearchButton.ToolTip = null;
-                Define.MAIN_WINDOW!.ActiveDownloadButton.ToolTip = null;
-                Define.MAIN_WINDOW!.ActiveLuckyButton.ToolTip = null;
-                Define.MAIN_WINDOW!.ActiveSettingButton.ToolTip = null;
+                Define.MAIN_WINDOW!.ActiveViewButton.ToolTip =
+                Define.MAIN_WINDOW!.ActiveSearchButton.ToolTip =
+                Define.MAIN_WINDOW!.ActiveDownloadButton.ToolTip =
+                Define.MAIN_WINDOW!.ActiveLuckyButton.ToolTip =
+                Define.MAIN_WINDOW!.ActiveSettingButton.ToolTip =
                 Define.MAIN_WINDOW!.ActiveAboutButton.ToolTip = null;
             }
         }

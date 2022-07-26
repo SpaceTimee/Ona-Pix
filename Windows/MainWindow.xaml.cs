@@ -426,44 +426,30 @@ namespace Ona_Pix
             Title = "关键词解析完成";
         }
 
-        //将URL的参数分离成键值对集合 (待优化)
+        //将URL的参数分离成键值对集合
         private static NameValueCollection GetParamCollection(string queryString)
         {
-            queryString = queryString.Replace("?", string.Empty);
+            //去掉开头的'?'字符并在末尾添加一个'&'字符标志结束
+            queryString = queryString.Replace("?", string.Empty) + '&';
+
+            //分离所有参数并记录
             NameValueCollection paramCollection = new(StringComparer.OrdinalIgnoreCase);
             if (!string.IsNullOrWhiteSpace(queryString))
             {
-                for (int i = 0; i < queryString.Length; ++i)
+                int startIndex = 0, equalIndex = 0;
+                for (int endIndex = 0; endIndex < queryString.Length; ++endIndex)
                 {
-                    int startIndex = i, index = -1;
-                    while (i < queryString.Length)
+                    if (queryString[endIndex] == '=')
+                        equalIndex = endIndex;
+                    else if (queryString[endIndex] == '&')
                     {
-                        if (queryString[i] == '=' && index < 0)
-                            index = i;
-                        else if (queryString[i] == '&')
-                            break;
-
-                        ++i;
+                        paramCollection[HttpUtility.UrlDecode(queryString[startIndex..equalIndex], Encoding.UTF8)] = HttpUtility.UrlDecode(queryString[(equalIndex + 1)..endIndex], Encoding.UTF8);
+                        startIndex = endIndex + 1;
                     }
-
-                    string key;
-                    string value = null!;
-                    if (index >= 0)
-                    {
-                        key = queryString[startIndex..index];
-                        value = queryString.Substring(index + 1, i - index - 1);
-                    }
-                    else
-                    {
-                        key = queryString[startIndex..i];
-                    }
-
-                    paramCollection[HttpUtility.UrlDecode(key, Encoding.UTF8)] = HttpUtility.UrlDecode(value, Encoding.UTF8);
-                    if (i == queryString.Length - 1 && queryString[i] == '&')
-                        paramCollection[key] = string.Empty;
                 }
             }
 
+            //返回包含所有被分离的参数的键值对集合
             return paramCollection;
         }
 
@@ -516,7 +502,7 @@ namespace Ona_Pix
             bitmapImage.BeginInit();
             bitmapImage.StreamSource = responseMessage.Content.ReadAsStream();
             try { bitmapImage.EndInit(); }
-            catch (NotSupportedException) { throw new NotSupportedException("文件格式不合法"); }
+            catch (NotSupportedException) { throw new NotSupportedException("无法显示该结果"); }
 
             CURRENT_IMAGE = bitmapImage;
 
@@ -538,7 +524,6 @@ namespace Ona_Pix
             Title = "正在读取图片";
 
             ImageBehavior.SetAnimatedSource(ShowImage, CURRENT_IMAGE);
-
             SetControlsEnabled();
 
             Title = "图片读取完成";

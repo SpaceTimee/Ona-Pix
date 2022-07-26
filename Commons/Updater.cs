@@ -72,10 +72,9 @@ namespace Ona_Pix
                 Title = "正在保存更新";
 
                 new DirectoryInfo(Define.CACHE_PATH).Create();  //创建文件夹
-                using FileStream fileStream = new(
-                    Path.Combine(Define.CACHE_PATH, (string)ReleaseListBox.SelectedItem),
-                    FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite | FileShare.Delete);
-                fileStream.Write(ReleaseBytes, 0, ReleaseBytes.Length);
+                using (FileStream fileStream = new(Path.Combine(Define.CACHE_PATH, (string)ReleaseListBox.SelectedItem),
+                    FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite | FileShare.Delete))
+                    fileStream.Write(ReleaseBytes, 0, ReleaseBytes.Length);
 
                 Title = "正在打开更新";
 
