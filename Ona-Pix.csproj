@@ -8,10 +8,10 @@
     <PackageReleaseNotes>Yet Another Pixiv Tool</PackageReleaseNotes>
     <Authors>Space Time</Authors>
     <Company>Space Time</Company>
-    <AssemblyVersion>1.1.5</AssemblyVersion>
-    <Version>1.1.5</Version>
-    <FileVersion>1.1.5</FileVersion>
-    <InformationalVersion>1.1.5</InformationalVersion>
+    <AssemblyVersion>1.1.6</AssemblyVersion>
+    <Version>1.1.6</Version>
+    <FileVersion>1.1.6</FileVersion>
+    <InformationalVersion>1.1.6</InformationalVersion>
     <PackageTags>Tool;Pixiv;Ona;Pix</PackageTags>
     <ApplicationIcon>Ona-Pix-Logo.ico</ApplicationIcon>
     <PackageIcon>Ona Pix Logo.png</PackageIcon>
@@ -69,7 +69,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MaterialDesignThemes" Version="4.5.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.6.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="SauceNET" Version="1.1.1" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />

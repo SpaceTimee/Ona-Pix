@@ -43,7 +43,7 @@ namespace Ona_Pix
                 //填充被拖入到图标打开的文件的路径
                 if (args.Length >= 1 && File.Exists(args[0]))
                 {
-                    if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(args[0])) != -1)
+                    if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(args[0]).ToLower()) != -1)
                         InactiveSearchBox.Text = args[0];
                     else
                         throw new Exception("里面被塞入了奇怪的东西...");
@@ -185,7 +185,7 @@ namespace Ona_Pix
                 {
                     string[] path = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-                    if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(path[0])) != -1)
+                    if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(path[0]).ToLower()) != -1)
                         ActiveSearchBox.Text = InactiveSearchBox.Text = path[0];
                     else
                         throw new Exception("里面被塞入了奇怪的东西...");
@@ -473,7 +473,7 @@ namespace Ona_Pix
             memoryStream.Write(endBoundaryBytes, 0, endBoundaryBytes.Length);
 
             //配置图片上传请求的参数
-            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create("https://sm.ms/api/v2/upload");
+            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create("https://smms.app/api/v2/upload");
             webRequest.Method = "POST";
             webRequest.Headers.Add("Authorization", Secret.GetSmmsApiKey());
             webRequest.ContentType = "multipart/form-data; boundary=" + boundary;
