@@ -351,14 +351,14 @@ namespace Ona_Pix
             Title = "正在解析链接";
 
             if ((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Contains(@"www.pixiv.net/artworks")) //Pixiv Url
-                await GetImage((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Replace(@"www.pixiv.net/artworks", @"pixiv.re") + ".png");
+                await GetImage((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Replace(@"www.pixiv.net/artworks", @"pixiv.nl") + ".png");
             else if ((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Contains(@"www.pixiv.net/member_illust.php?") && (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Contains("illust_id"))  //Pixiv Illust Url
             {
                 NameValueCollection paramCollection = GetParamCollection(new Uri((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text).Query);
-                await GetImage(@"https://pixiv.re/" + paramCollection["illust_id"]! + ".png");
+                await GetImage(@"https://pixiv.nl/" + paramCollection["illust_id"]! + ".png");
             }
             else    //其他 Uri (包括 Pximg Url)
-                await GetImage((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Replace(@"i.pximg.net", Define.BEHAVIOR_PAGE.PixivCatToggle.IS_TOGGLED ? @"i.pixiv.re" : @"pximg.moezx.cc"));
+                await GetImage((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Replace(@"i.pximg.net", Define.BEHAVIOR_PAGE.PixivCatToggle.IS_TOGGLED ? @"i.pixiv.nl" : @"pximg.moezx.cc"));
 
             Title = "链接解析完成";
         }
@@ -366,7 +366,7 @@ namespace Ona_Pix
         {
             Title = "正在解析 PixivID";
 
-            await GetImage(@"https://pixiv.re/" + (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text + ".png");
+            await GetImage(@"https://pixiv.nl/" + (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text + ".png");
 
             Title = "PixivID 解析完成";
         }
