@@ -30,6 +30,7 @@
     <IsPublishable>True</IsPublishable>
     <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
     <ErrorReport>none</ErrorReport>
+    <NeutralLanguage>zh</NeutralLanguage>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

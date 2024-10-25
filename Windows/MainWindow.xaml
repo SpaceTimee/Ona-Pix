@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Style="{DynamicResource CommonWindow}"
-        AllowDrop="True" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" MinWidth="250" Title="Ona Pix" Loaded="MainWin_Loaded" DragEnter="ReveivingSpace_DragEnter" Drop="ReveivingSpace_Drop" KeyDown="MainWin_KeyDown">
-    <Grid Margin="10,10,10,10">
+        AllowDrop="True" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" MinWidth="250" Title="Ona Pix" Loaded="MainWin_Loaded" DragEnter="ReceivingSpace_DragEnter" Drop="ReceivingSpace_Drop" KeyDown="MainWin_KeyDown">
+    <Grid Margin="10">
         <Rectangle MouseDown="InactiveSpace_MouseDown" Opacity="0" Fill="#0000" />
         <Image MouseDown="InactiveSpace_MouseDown" x:Name="ShowImage" MaxWidth="1080" />
 
@@ -21,7 +21,7 @@
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <TextBox x:Name="InactiveSearchBox" Grid.Column="0" MaxWidth="1080" Margin="0,0,10,0" TextChanged="SearchBox_TextChanged" PreviewDragOver="ReveivingSpace_DragEnter" TabIndex="0" />
+                <TextBox x:Name="InactiveSearchBox" Grid.Column="0" MaxWidth="1080" Margin="0,0,10,0" TextChanged="SearchBox_TextChanged" PreviewDragOver="ReceivingSpace_DragEnter" TabIndex="0" />
                 <Button x:Name="InactiveViewButton" Style="{StaticResource InactiveButton}" Margin="0,0,0,0" Grid.Column="1" Click="ViewButton_Click" Content="浏览" TabIndex="1" HorizontalAlignment="Right" />
             </Grid>
 
@@ -56,7 +56,7 @@
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
                     <Border x:Name="ActiveTopBorder" Background="#FFA0A0A0" Grid.ColumnSpan="2" Opacity="0.5" CornerRadius="0,0,27,27" />
-                    <TextBox x:Name="ActiveSearchBox" Grid.Column="0" MaxWidth="1080" Margin="20,10,0,10" TextChanged="SearchBox_TextChanged" TabIndex="0" PreviewMouseDown="ActiveSearchBox_PreviewMouseDown" PreviewDragOver="ReveivingSpace_DragEnter" VerticalContentAlignment="Center" />
+                    <TextBox x:Name="ActiveSearchBox" Grid.Column="0" MaxWidth="1080" Margin="20,10,0,10" TextChanged="SearchBox_TextChanged" TabIndex="0" PreviewMouseDown="ActiveSearchBox_PreviewMouseDown" PreviewDragOver="ReceivingSpace_DragEnter" VerticalContentAlignment="Center" />
                     <Button x:Name="ActiveViewButton" Style="{StaticResource ActiveButton}" Grid.Column="1" Margin="10,10,10,10" Click="ViewButton_Click" Content="浏览" TabIndex="1" />
                 </Grid>
             </Grid>

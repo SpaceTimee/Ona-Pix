@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Windows;
 using System.Windows.Controls;
@@ -11,7 +12,7 @@ namespace Ona_Pix
 {
     public partial class AboutWindow
     {
-        private readonly NameValueCollection RELEASE_LIST = new();
+        private readonly NameValueCollection RELEASE_LIST = [];
         private readonly HttpClient GITHUB_CLIENT = new();
 
         private void PartialAboutWindow()
@@ -38,7 +39,7 @@ namespace Ona_Pix
                     if (messageBoxResult == MessageBoxResult.Yes)
                     {
                         //记录最新版的 Github Release 中的所有文件并列出
-                        foreach (JObject releaseList in releaseJObject["assets"]!)
+                        foreach (JObject releaseList in releaseJObject["assets"]!.Cast<JObject>())
                             RELEASE_LIST.Add(releaseList["name"]!.ToString(), releaseList["browser_download_url"]!.ToString());
 
                         ReleaseListBox.ItemsSource = RELEASE_LIST.Keys;

@@ -51,6 +51,7 @@ namespace Ona_Pix
             }
             catch (Exception ex) { HandleException(ex); }
         }
+        protected override void OnSourceInitialized(EventArgs e) => IconRemover.RemoveIcon(this);
         private void MainWin_Loaded(object sender, RoutedEventArgs e)
         {
             try
@@ -122,7 +123,7 @@ namespace Ona_Pix
                 {
                     if (MessageBox.Show("主人，我被困在 " + AppDomain.CurrentDomain.SetupInformation.ApplicationBase + " 临时文件夹里了，主人能帮我离开这个地方吗?", "求助", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                     {
-                        Process.Start("explorer", "/select," + Process.GetCurrentProcess().MainModule!.FileName);
+                        Process.Start("explorer", "/select," + Environment.ProcessPath);
                         Environment.Exit(0);
                     }
                 }
@@ -162,7 +163,7 @@ namespace Ona_Pix
         }
 
         //文件拖入事件
-        private void ReveivingSpace_DragEnter(object sender, DragEventArgs e)
+        private void ReceivingSpace_DragEnter(object sender, DragEventArgs e)
         {
             //文件拖入主窗口时的鼠标变化
             try
@@ -176,7 +177,7 @@ namespace Ona_Pix
             }
             catch (Exception ex) { HandleException(ex); }
         }
-        private void ReveivingSpace_Drop(object sender, DragEventArgs e)
+        private void ReceivingSpace_Drop(object sender, DragEventArgs e)
         {
             //文件拖入主窗口后的文件路径处理
             try
@@ -246,7 +247,7 @@ namespace Ona_Pix
                 saveDialog.RestoreDirectory = true; //自动填充用户上次选择的目录
                 saveDialog.FileName = "无题" + DateTime.Now.ToString("yMdHms")[1..];   //默认文件名
                 saveDialog.Filter = "PNG (*.png)|*.png|JPG (*.jpg)|*.jpg|GIF (*.gif)|*.gif";
-                saveDialog.FilterIndex = 1; //默认png
+                saveDialog.FilterIndex = 1; //默认 png
                 saveDialog.AddExtension = true; //无后缀时自动增加后缀
                 saveDialog.CheckFileExists = false;  //不检查文件是否正确
                 saveDialog.CheckPathExists = true;  //检查路径是否正确
@@ -358,7 +359,7 @@ namespace Ona_Pix
                 await GetImage(@"https://pixiv.nl/" + paramCollection["illust_id"]! + ".png");
             }
             else    //其他 Uri (包括 Pximg Url)
-                await GetImage((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Replace(@"i.pximg.net", Define.BEHAVIOR_PAGE.PixivCatToggle.IS_TOGGLED ? @"i.pixiv.nl" : @"pximg.moezx.cc"));
+                await GetImage((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Replace(@"i.pximg.net", Define.BEHAVIOR_PAGE.PixivCatToggle.IS_TOGGLED ? @"i.pixiv.nl" : @"prox.spacetimee.xyz"));
 
             Title = "链接解析完成";
         }

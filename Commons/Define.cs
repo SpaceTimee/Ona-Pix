@@ -19,7 +19,7 @@ namespace Ona_Pix
         //常量
         internal static readonly string CURRENT_VERSION = Assembly.GetExecutingAssembly().GetName().Version!.ToString()[0..^2];
         internal static readonly string CACHE_PATH = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Ona Pix Cache");
-        internal static readonly string[] FILE_SUFFIXES = { ".png", ".jpg", ".gif" };
+        internal static readonly string[] FILE_SUFFIXES = [".png", ".jpg", ".gif"];
         internal const string GITHUB_RELEASE_API_URL = @"https://api.github.com/repos/SpaceTimee/Ona-Pix/releases/latest";
         internal const string GITHUB_RELEASE_API_ACCEPT_HEADER = @"application/vnd.github.v3+json";
         internal const string GITHUB_RELEASE_API_USER_AGENT_HEADER = @"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36";

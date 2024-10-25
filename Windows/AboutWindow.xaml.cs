@@ -10,20 +10,20 @@ namespace Ona_Pix
 {
     public partial class AboutWindow : Window
     {
-        public static readonly string[] TIPS = new string[]
-        {
+        public static readonly string[] TIPS =
+        [
             "主人","主...主人?","好的，主人","是，主人","收到，主人",
             "主人累了吗","休息一下吧，主人","注意休息，主人","注意身体，主人",
-            "女仆的工作★","一起喝咖啡吧，主人","咖啡Suki★","咖啡Daisuki★",
+            "女仆的工作★","一起喝咖啡吧，主人","咖啡 Suki★","咖啡 Daisuki★",
             "那里不可以，主人","啊，主人好棒","主人，❤",
-            "不可以瑟瑟","瑟瑟打咩!","H是不可以的!",
-            "Ona Pix","Ona Piksu?","Ona Piku★","Ona...阿嚏!",
+            "不可以瑟瑟","瑟瑟打咩!","H 是不可以的!",
+            "Ona Pix","Ona Piksu?","Ona Piku ★","Ona...阿嚏!",
             "A B C D","A C G N","S S S S","Y A P T","L O V E",
             "关于: 关于:",
             "❤","✨","★",
             "(｡･ω･｡)ﾉ♡","(๑• . •๑)","•ᴗ•",
             "Esc?","Ctrl+W?"
-        };
+        ];
 
         public AboutWindow(bool isDarkMode)
         {
@@ -69,6 +69,7 @@ namespace Ona_Pix
             }
             catch (Exception ex) { HandleException(ex); }
         }
+        protected override void OnSourceInitialized(EventArgs e) => IconRemover.RemoveIcon(this);
         private void AboutWin_Loaded(object sender, RoutedEventArgs e)
         {
             try { UpdateRun.Text = "版本号: " + Define.CURRENT_VERSION; }

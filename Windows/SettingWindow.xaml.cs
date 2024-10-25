@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -8,6 +9,7 @@ namespace Ona_Pix
     public partial class SettingWindow : Window
     {
         public SettingWindow() => InitializeComponent();
+        protected override void OnSourceInitialized(EventArgs e) => IconRemover.RemoveIcon(this);
         private void SettingWin_Loaded(object sender, RoutedEventArgs e)
         {
             //打开时默认选中菜单栏的第1个选项
