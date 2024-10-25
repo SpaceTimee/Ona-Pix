@@ -21,7 +21,7 @@
     <RepositoryType>git</RepositoryType>
     <Copyright>Copyright ©  2077</Copyright>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net8.0-windows10.0.22000.0</TargetFramework>
+    <TargetFramework>net8.0-windows10.0.26100.0</TargetFramework>
     <SupportedOSPlatformVersion>10.0.17763.0</SupportedOSPlatformVersion>
     <RootNamespace>Ona_Pix</RootNamespace>
     <Nullable>enable</Nullable>
@@ -69,7 +69,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="MaterialDesignThemes" Version="4.9.0" />
+    <PackageReference Include="MaterialDesignThemes" Version="5.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SauceNET" Version="1.1.1" />
     <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
@@ -77,7 +77,7 @@
 
   <ItemGroup>
     <Reference Include="Ona-Core">
-      <HintPath>..\Ona-Core\bin\Release\net5.0-windows10.0.22000.0\Ona-Core.dll</HintPath>
+      <HintPath>..\Ona-Core\bin\Release\net8.0-windows10.0.26100.0\Ona-Core.dll</HintPath>
     </Reference>
     <Reference Include="Ona-Pix-Secret">
       <HintPath>Ona-Pix-Secret\bin\Release\Ona-Pix-Secret.dll</HintPath>

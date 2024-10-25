@@ -207,7 +207,7 @@ namespace Ona_Pix
                 openDialog.RestoreDirectory = true; //自动填充用户上次选择的目录
                 openDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
                 openDialog.Filter = "PNG (*.png)|*.png|JPG (*.jpg)|*.jpg|GIF (*.gif)|*.gif";
-                openDialog.FilterIndex = 1; //默认png
+                openDialog.FilterIndex = 1; //默认 png
                 openDialog.AddExtension = true; //无后缀时自动增加后缀
                 openDialog.CheckFileExists = true;  //检查文件是否正确
                 openDialog.CheckPathExists = true;  //检查路径是否正确

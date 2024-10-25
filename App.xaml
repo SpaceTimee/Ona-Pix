@@ -6,8 +6,8 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <materialDesign:BundledTheme BaseTheme="Light" PrimaryColor="Blue" SecondaryColor="Pink" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <materialDesign:BundledTheme BaseTheme="Inherit" PrimaryColor="Blue" SecondaryColor="Pink" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesign3.Defaults.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style BasedOn="{StaticResource MaterialDesignLabel}" TargetType="{x:Type Label}">
@@ -40,7 +40,7 @@
                 <Setter Property="HorizontalAlignment" Value="Right" />
                 <Setter Property="Grid.Column" Value="1" />
             </Style>
-            <Style x:Key="SettingSlider" BasedOn="{StaticResource MaterialDesignSlider}" TargetType="{x:Type Slider}">
+            <Style x:Key="SettingSlider" BasedOn="{StaticResource MaterialDesign3.MaterialDesignSlider}" TargetType="{x:Type Slider}">
                 <Setter Property="Grid.Column" Value="2" />
                 <Setter Property="AutoToolTipPlacement" Value="BottomRight" />
             </Style>
