@@ -3,7 +3,6 @@ using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -235,9 +234,9 @@ namespace Ona_Pix
 
             if (ShowImage.Source == null)
                 await PickInput();
-
-            dynamic bitmapEncoder = null!;
             string imageExtension = Path.GetExtension(saveDialog.FileName);
+
+            dynamic bitmapEncoder;
             if (imageExtension == ".png")
                 bitmapEncoder = new PngBitmapEncoder();
             else if (imageExtension == ".jpg")
@@ -415,38 +414,18 @@ namespace Ona_Pix
         //上传图片文件至 smms
         public static async Task<string> UploadFile(string filePath)
         {
-            //将数据写入数据流
-            string boundary = "------WebKitFormBoundary" + DateTime.Now.Ticks.ToString("x");
-            string header = $"Content-Disposition: form-data; name=\"smfile\"; filename=\"{filePath}\"\r\n" + "Content-Type: application/octet-stream\r\n\r\n";
-            byte[] boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
-            byte[] headerBytes = Encoding.UTF8.GetBytes(header);
-            byte[] fileBytes = new byte[81920];    //最优 80kb 文件读取缓存
-            byte[] endBoundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "--");
-            int fileBytesLength;
+            using HttpClient client = new();
+            using MultipartFormDataContent form = [];
             using FileStream fileStream = new(filePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite | FileShare.Delete);
-            using MemoryStream memoryStream = new();
-            memoryStream.Write(boundaryBytes, 0, boundaryBytes.Length);
-            memoryStream.Write(headerBytes, 0, headerBytes.Length);
-            while ((fileBytesLength = fileStream.Read(fileBytes, 0, fileBytes.Length)) != 0)
-                memoryStream.Write(fileBytes, 0, fileBytesLength);
-            memoryStream.Write(endBoundaryBytes, 0, endBoundaryBytes.Length);
+            using StreamContent streamContent = new(fileStream);
+            streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/octet-stream");
+            form.Add(streamContent, "smfile", Path.GetFileName(filePath));
 
-            //配置图片上传请求的参数
-            HttpWebRequest webRequest = (HttpWebRequest)WebRequest.Create("https://smms.app/api/v2/upload");
-            webRequest.Method = "POST";
-            webRequest.Headers.Add("Authorization", Secret.GetSmmsApiKey());
-            webRequest.ContentType = "multipart/form-data; boundary=" + boundary;
-            webRequest.ContentLength = memoryStream.Length;
+            client.DefaultRequestHeaders.Add("Authorization", Secret.GetSmmsApiKey());
+            HttpResponseMessage response = await client.PostAsync("https://smms.app/api/v2/upload", form);
+            response.EnsureSuccessStatusCode();
 
-            //将数据流写入图片上传请求
-            byte[] tempBytes = new byte[memoryStream.Length];
-            using Stream requestStream = webRequest.GetRequestStream();
-            memoryStream.Position = 0;
-            memoryStream.Read(tempBytes, 0, tempBytes.Length);
-            requestStream.Write(tempBytes, 0, tempBytes.Length);
-
-            //返回 smms 响应结果
-            return new StreamReader((await webRequest.GetResponseAsync()).GetResponseStream()).ReadToEnd();
+            return await response.Content.ReadAsStringAsync();
         }
 
         //获取和显示图片
@@ -519,24 +498,13 @@ namespace Ona_Pix
         }
 
         //窗口关闭事件
-        protected override void OnClosing(CancelEventArgs e) => Environment.Exit(0);    //强制关闭
+        protected override void OnClosing(CancelEventArgs e) => Application.Current.Shutdown();
 
         //窗口热键
         private void MainWin_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyboardDevice.Modifiers == ModifierKeys.Control && e.Key == Key.W)
                 Environment.Exit(0);
-        }
-
-        //处理异常
-        private void HandleException(Exception ex)
-        {
-            Title = "操作执行失败";
-
-            if (!Define.BEHAVIOR_PAGE.DisableExceptionToggle.IS_TOGGLED)
-                MessageBox.Show("Error: " + ex.Message);
-
-            SetControlsEnabled();
         }
     }
 }
