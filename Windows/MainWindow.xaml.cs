@@ -29,9 +29,9 @@ namespace Ona_Pix
 {
     public partial class MainWindow : Window
     {
-        private readonly HttpClient MAIN_CLIENT = new();    //当前窗口使用的唯一的 HttpClient
-        private BitmapImage? CURRENT_IMAGE; //当前窗口显示的图片 (便于以后改为图片缓存形式)
-        private bool IS_ACTIVE = false, IS_FIXED = false;   //当前窗口的状态信息
+        private readonly HttpClient MainClient = new();    //当前窗口使用的唯一的 HttpClient
+        private BitmapImage? CurrentImage; //当前窗口显示的图片 (便于以后改为图片缓存形式)
+        private bool IsActivated = false, IsFixed = false;   //当前窗口的状态信息
 
         public MainWindow(string[] args)
         {
@@ -129,11 +129,11 @@ namespace Ona_Pix
             AnimateActiveGrid(new Thickness(0, 60, -10, 0), new Thickness(0, -10, 0, 0));
             ActiveSearchBox.Focus();
         }
-        private void ActiveSearchBox_PreviewMouseDown(object sender, MouseButtonEventArgs e) => IS_FIXED = true;
+        private void ActiveSearchBox_PreviewMouseDown(object sender, MouseButtonEventArgs e) => IsFixed = true;
         internal void ActiveSpace_MouseOut(object sender, MouseEventArgs e)
         {
             //悬浮菜单栏收回
-            if (!Define.APPEARANCE_PAGE.LockAnimationToggle.IS_TOGGLED && !IS_FIXED)
+            if (!Define.APPEARANCE_PAGE.LockAnimationToggle.IS_TOGGLED && !IsFixed)
                 AnimateActiveGrid(new Thickness(0, 60, -65, 0), new Thickness(0, -65, 0, 0));
         }
         private void InactiveSpace_MouseDown(object sender, MouseButtonEventArgs e)
@@ -142,7 +142,7 @@ namespace Ona_Pix
             if (!Define.APPEARANCE_PAGE.LockAnimationToggle.IS_TOGGLED)
             {
                 AnimateActiveGrid(new Thickness(0, 60, -65, 0), new Thickness(0, -65, 0, 0));
-                IS_FIXED = false;
+                IsFixed = false;
             }
         }
 
@@ -267,7 +267,7 @@ namespace Ona_Pix
             }
 
             //将 Lolicon 响应的 Json 数据转换为 JObject
-            JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@$"https://api.lolicon.app/setu/v2?r18={Define.R18}&proxy=null", MAIN_CLIENT));
+            JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@$"https://api.lolicon.app/setu/v2?r18={Define.R18}&proxy=null", MainClient));
 
             //提取并运行
             ActiveSearchBox.Text = InactiveSearchBox.Text = LuckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
@@ -287,14 +287,14 @@ namespace Ona_Pix
             ActiveSearchBox.IsEnabled = ActiveSearchButton.IsEnabled = ActiveDownloadButton.IsEnabled =
             InactiveSearchBox.IsEnabled = InactiveSearchButton.IsEnabled = InactiveDownloadButton.IsEnabled = false;
 
-            if (File.Exists((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text))
+            if (File.Exists((IsActivated ? ActiveSearchBox : InactiveSearchBox).Text))
                 await IsFilePath(); //图片路径
-            else if (Regex.IsMatch((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text, "^([0-9]*)-?[0-9]*$"))
+            else if (Regex.IsMatch((IsActivated ? ActiveSearchBox : InactiveSearchBox).Text, "^([0-9]*)-?[0-9]*$"))
                 await IsPixivID();  //Pixiv ID
-            else if (new Regex(Define.URL_REGEX).IsMatch((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text))
+            else if (new Regex(Define.URL_REGEX).IsMatch((IsActivated ? ActiveSearchBox : InactiveSearchBox).Text))
             {
-                if (!(IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.StartsWith("https://") && !(IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.StartsWith("http://"))
-                    (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text = "https://" + (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text;
+                if (!(IsActivated ? ActiveSearchBox : InactiveSearchBox).Text.StartsWith("https://") && !(IsActivated ? ActiveSearchBox : InactiveSearchBox).Text.StartsWith("http://"))
+                    (IsActivated ? ActiveSearchBox : InactiveSearchBox).Text = "https://" + (IsActivated ? ActiveSearchBox : InactiveSearchBox).Text;
                 await IsUri();  //Uri
             }
             else
@@ -308,15 +308,15 @@ namespace Ona_Pix
         {
             Title = "正在解析链接";
 
-            if ((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Contains(@"www.pixiv.net/artworks")) //Pixiv Url
-                await GetImage((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Replace(@"www.pixiv.net/artworks", @"pixiv.nl") + ".png");
-            else if ((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Contains(@"www.pixiv.net/member_illust.php?") && (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Contains("illust_id"))  //Pixiv Illust Url
+            if ((IsActivated ? ActiveSearchBox : InactiveSearchBox).Text.Contains(@"www.pixiv.net/artworks")) //Pixiv Url
+                await GetImage((IsActivated ? ActiveSearchBox : InactiveSearchBox).Text.Replace(@"www.pixiv.net/artworks", @"pixiv.nl") + ".png");
+            else if ((IsActivated ? ActiveSearchBox : InactiveSearchBox).Text.Contains(@"www.pixiv.net/member_illust.php?") && (IsActivated ? ActiveSearchBox : InactiveSearchBox).Text.Contains("illust_id"))  //Pixiv Illust Url
             {
-                NameValueCollection paramCollection = GetParamCollection(new Uri((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text).Query);
+                NameValueCollection paramCollection = GetParamCollection(new Uri((IsActivated ? ActiveSearchBox : InactiveSearchBox).Text).Query);
                 await GetImage(@"https://pixiv.nl/" + paramCollection["illust_id"]! + ".png");
             }
             else    //其他 Uri (包括 Pximg Url)
-                await GetImage((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text.Replace(@"i.pximg.net", Define.BEHAVIOR_PAGE.PixivCatToggle.IS_TOGGLED ? @"i.pixiv.nl" : @"prox.spacetimee.xyz"));
+                await GetImage((IsActivated ? ActiveSearchBox : InactiveSearchBox).Text.Replace(@"i.pximg.net", Define.BEHAVIOR_PAGE.PixivCatToggle.IS_TOGGLED ? @"i.pixiv.nl" : @"prox.spacetimee.xyz"));
 
             Title = "链接解析完成";
         }
@@ -324,7 +324,7 @@ namespace Ona_Pix
         {
             Title = "正在解析 PixivID";
 
-            await GetImage(@"https://pixiv.nl/" + (IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text + ".png");
+            await GetImage(@"https://pixiv.nl/" + (IsActivated ? ActiveSearchBox : InactiveSearchBox).Text + ".png");
 
             Title = "PixivID 解析完成";
         }
@@ -332,7 +332,7 @@ namespace Ona_Pix
         {
             Title = "正在解析图片";
 
-            string smmsJson = await UploadFile((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text);
+            string smmsJson = await UploadFile((IsActivated ? ActiveSearchBox : InactiveSearchBox).Text);
             if (string.IsNullOrWhiteSpace(smmsJson))
                 throw new Exception("未接收到有效响应");
 
@@ -360,7 +360,7 @@ namespace Ona_Pix
             catch { throw; }
             finally
             {
-                try { (await Http.GetAsync<HttpResponseMessage>(deleteUrl, MAIN_CLIENT)).EnsureSuccessStatusCode(); }
+                try { (await Http.GetAsync<HttpResponseMessage>(deleteUrl, MainClient)).EnsureSuccessStatusCode(); }
                 catch { MessageBox.Show("Error: 图片清理失败，该图片可能暂时无法再次解析"); }
             }
 
@@ -371,7 +371,7 @@ namespace Ona_Pix
             Title = "正在解析关键词";
 
             //将 Lolicon 响应的 Json 数据转换为 JObject
-            JObject luckyImageJObject = JObject.Parse(await Http.GetAsync<string>($@"https://api.lolicon.app/setu/v2?r18=2&proxy=null&tag={(IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text}", MAIN_CLIENT));
+            JObject luckyImageJObject = JObject.Parse(await Http.GetAsync<string>($@"https://api.lolicon.app/setu/v2?r18=2&proxy=null&tag={(IsActivated ? ActiveSearchBox : InactiveSearchBox).Text}", MainClient));
 
             //判断是否有查找到的结果
             if (!luckyImageJObject["data"]!.HasValues)
@@ -433,7 +433,7 @@ namespace Ona_Pix
         {
             Title = "正在获取图片";
 
-            HttpResponseMessage responseMessage = await Http.GetAsync<HttpResponseMessage>(imageUri, MAIN_CLIENT, HttpCompletionOption.ResponseContentRead);
+            HttpResponseMessage responseMessage = await Http.GetAsync<HttpResponseMessage>(imageUri, MainClient, HttpCompletionOption.ResponseContentRead);
             responseMessage.EnsureSuccessStatusCode();
 
             BitmapImage bitmapImage = new();
@@ -442,9 +442,9 @@ namespace Ona_Pix
             try { bitmapImage.EndInit(); }
             catch (NotSupportedException) { throw new NotSupportedException("无法显示该结果"); }
 
-            CURRENT_IMAGE = bitmapImage;
+            CurrentImage = bitmapImage;
 
-            if (IS_ACTIVE)
+            if (IsActivated)
                 SetImage();
             else
             {
@@ -461,7 +461,7 @@ namespace Ona_Pix
         {
             Title = "正在读取图片";
 
-            ImageBehavior.SetAnimatedSource(ShowImage, CURRENT_IMAGE);
+            ImageBehavior.SetAnimatedSource(ShowImage, CurrentImage);
             SetControlsEnabled();
 
             Title = "图片读取完成";
@@ -476,14 +476,14 @@ namespace Ona_Pix
             InactiveGrid.Visibility = Visibility.Collapsed;
             ActiveGrid.Visibility = Visibility.Visible;
 
-            IS_ACTIVE = true;
+            IsActivated = true;
         }
 
         //切换输入框和按钮的 IsEnabled 属性
         private void SearchBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             //输入框中无内容时禁用搜索和下载按钮，否则启用
-            if (string.IsNullOrWhiteSpace((IS_ACTIVE ? ActiveSearchBox : InactiveSearchBox).Text))
+            if (string.IsNullOrWhiteSpace((IsActivated ? ActiveSearchBox : InactiveSearchBox).Text))
                 ActiveSearchButton.IsEnabled = ActiveDownloadButton.IsEnabled =
                 InactiveSearchButton.IsEnabled = InactiveDownloadButton.IsEnabled = false;
             else

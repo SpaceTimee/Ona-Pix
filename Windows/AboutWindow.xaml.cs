@@ -10,7 +10,7 @@ namespace Ona_Pix
 {
     public partial class AboutWindow : Window
     {
-        public static readonly string[] TIPS =
+        public static readonly string[] Tips =
         [
             "主人","主...主人?","好的，主人","是，主人","收到，主人",
             "主人累了吗","休息一下吧，主人","注意休息，主人","注意身体，主人",
@@ -48,7 +48,7 @@ namespace Ona_Pix
             if (!Define.BEHAVIOR_PAGE.DisableTipsToggle.IS_TOGGLED)
             {
                 Random random = new(Convert.ToInt32(DateTime.Now.Ticks & 0x0000FFFF));
-                Title = $"关于: {TIPS[random.Next(0, TIPS.Length)]}";
+                Title = $"关于: {Tips[random.Next(0, Tips.Length)]}";
 
                 #region Tips 测试代码
                 //System.Threading.Tasks.Task.Run(() =>
