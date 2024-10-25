@@ -36,36 +36,28 @@ namespace Ona_Pix
 
         public MainWindow(string[] args)
         {
-            try
-            {
-                InitializeComponent();
+            InitializeComponent();
 
-                //填充被拖入到图标打开的文件的路径
-                if (args.Length >= 1 && File.Exists(args[0]))
-                {
-                    if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(args[0]).ToLower()) != -1)
-                        InactiveSearchBox.Text = args[0];
-                    else
-                        throw new Exception("里面被塞入了奇怪的东西...");
-                }
+            //填充被拖入到图标打开的文件的路径
+            if (args.Length >= 1 && File.Exists(args[0]))
+            {
+                if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(args[0]).ToLower()) != -1)
+                    InactiveSearchBox.Text = args[0];
+                else
+                    throw new Exception("里面被塞入了奇怪的东西...");
             }
-            catch (Exception ex) { HandleException(ex); }
         }
         protected override void OnSourceInitialized(EventArgs e) => IconRemover.RemoveIcon(this);
         private void MainWin_Loaded(object sender, RoutedEventArgs e)
         {
-            try
-            {
-                //检查是否是第一次运行
-                if (Properties.Settings.Default.IsFirstRun)
-                    Welcome();
-                else
-                    PickSettings();
+            //检查是否是第一次运行
+            if (Properties.Settings.Default.IsFirstRun)
+                Welcome();
+            else
+                PickSettings();
 
-                //清理自动更新留下的安装包
-                ClearCache();
-            }
-            catch (Exception ex) { HandleException(ex); }
+            //清理自动更新留下的安装包
+            ClearCache();
         }
         private static void Welcome()
         {
@@ -166,161 +158,127 @@ namespace Ona_Pix
         private void ReceivingSpace_DragEnter(object sender, DragEventArgs e)
         {
             //文件拖入主窗口时的鼠标变化
-            try
-            {
-                e.Handled = true;
+            e.Handled = true;
 
-                if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                    e.Effects = DragDropEffects.Copy;
-                else
-                    e.Effects = DragDropEffects.None;
-            }
-            catch (Exception ex) { HandleException(ex); }
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
+                e.Effects = DragDropEffects.Copy;
+            else
+                e.Effects = DragDropEffects.None;
         }
         private void ReceivingSpace_Drop(object sender, DragEventArgs e)
         {
             //文件拖入主窗口后的文件路径处理
-            try
+            if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                if (e.Data.GetDataPresent(DataFormats.FileDrop))
-                {
-                    string[] path = (string[])e.Data.GetData(DataFormats.FileDrop);
+                string[] path = (string[])e.Data.GetData(DataFormats.FileDrop);
 
-                    if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(path[0]).ToLower()) != -1)
-                        ActiveSearchBox.Text = InactiveSearchBox.Text = path[0];
-                    else
-                        throw new Exception("里面被塞入了奇怪的东西...");
-                }
+                if (Array.IndexOf(Define.FILE_SUFFIXES, Path.GetExtension(path[0]).ToLower()) != -1)
+                    ActiveSearchBox.Text = InactiveSearchBox.Text = path[0];
+                else
+                    throw new Exception("里面被塞入了奇怪的东西...");
             }
-            catch (Exception ex) { HandleException(ex); }
         }
 
         //按钮点击事件
         private void ViewButton_Click(object sender, RoutedEventArgs e)
         {
             //浏览
-            try
-            {
-                OpenFileDialog openDialog = new();
-                #region 配置openDialog的参数
-                openDialog.Title = "Ona Importer";
-                openDialog.Multiselect = false; //不允许选择多个文件
-                openDialog.RestoreDirectory = true; //自动填充用户上次选择的目录
-                openDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-                openDialog.Filter = "PNG (*.png)|*.png|JPG (*.jpg)|*.jpg|GIF (*.gif)|*.gif";
-                openDialog.FilterIndex = 1; //默认 png
-                openDialog.AddExtension = true; //无后缀时自动增加后缀
-                openDialog.CheckFileExists = true;  //检查文件是否正确
-                openDialog.CheckPathExists = true;  //检查路径是否正确
-                openDialog.ReadOnlyChecked = true; //设定只读
-                openDialog.ShowReadOnly = false;    //不向用户显示只读选项
-                #endregion 配置openDialog的参数
+            OpenFileDialog openDialog = new();
+            #region 配置openDialog的参数
+            openDialog.Title = "Ona Importer";
+            openDialog.Multiselect = false; //不允许选择多个文件
+            openDialog.RestoreDirectory = true; //自动填充用户上次选择的目录
+            openDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            openDialog.Filter = "PNG (*.png)|*.png|JPG (*.jpg)|*.jpg|GIF (*.gif)|*.gif";
+            openDialog.FilterIndex = 1; //默认 png
+            openDialog.AddExtension = true; //无后缀时自动增加后缀
+            openDialog.CheckFileExists = true;  //检查文件是否正确
+            openDialog.CheckPathExists = true;  //检查路径是否正确
+            openDialog.ReadOnlyChecked = true; //设定只读
+            openDialog.ShowReadOnly = false;    //不向用户显示只读选项
+            #endregion 配置openDialog的参数
 
-                if (openDialog.ShowDialog() == true)
-                    ActiveSearchBox.Text = InactiveSearchBox.Text = openDialog.FileName.ToString();
-            }
-            catch (Exception ex) { HandleException(ex); }
+            if (openDialog.ShowDialog() == true)
+                ActiveSearchBox.Text = InactiveSearchBox.Text = openDialog.FileName.ToString();
         }
         private async void SearchButton_Click(object sender, RoutedEventArgs e)
         {
             //搜索
-            try
-            {
-                Title = "正在搜索图片";
+            Title = "正在搜索图片";
 
-                await PickInput();
+            await PickInput();
 
-                Title = "图片搜索完成";
-            }
-            catch (Exception ex) { HandleException(ex); }
+            Title = "图片搜索完成";
         }
         private async void DownloadButton_Click(object sender, RoutedEventArgs e)
         {
             //下载
-            try
+            Title = "正在下载图片";
+
+            SaveFileDialog saveDialog = new();
+            #region 配置saveDialog的参数
+            saveDialog.Title = "Ona Saver";
+            saveDialog.RestoreDirectory = true; //自动填充用户上次选择的目录
+            saveDialog.FileName = "无题" + DateTime.Now.ToString("yMdHms")[1..];   //默认文件名
+            saveDialog.Filter = "PNG (*.png)|*.png|JPG (*.jpg)|*.jpg|GIF (*.gif)|*.gif";
+            saveDialog.FilterIndex = 1; //默认 png
+            saveDialog.AddExtension = true; //无后缀时自动增加后缀
+            saveDialog.CheckFileExists = false;  //不检查文件是否正确
+            saveDialog.CheckPathExists = true;  //检查路径是否正确
+            #endregion 配置saveDialog的参数
+
+            if (saveDialog.ShowDialog() != true)
             {
-                Title = "正在下载图片";
-
-                SaveFileDialog saveDialog = new();
-                #region 配置saveDialog的参数
-                saveDialog.Title = "Ona Saver";
-                saveDialog.RestoreDirectory = true; //自动填充用户上次选择的目录
-                saveDialog.FileName = "无题" + DateTime.Now.ToString("yMdHms")[1..];   //默认文件名
-                saveDialog.Filter = "PNG (*.png)|*.png|JPG (*.jpg)|*.jpg|GIF (*.gif)|*.gif";
-                saveDialog.FilterIndex = 1; //默认 png
-                saveDialog.AddExtension = true; //无后缀时自动增加后缀
-                saveDialog.CheckFileExists = false;  //不检查文件是否正确
-                saveDialog.CheckPathExists = true;  //检查路径是否正确
-                #endregion 配置saveDialog的参数
-
-                if (saveDialog.ShowDialog() != true)
-                {
-                    Title = "操作正常取消";
-                    return;
-                }
-
-                if (ShowImage.Source == null)
-                    await PickInput();
-
-                dynamic bitmapEncoder = null!;
-                string imageExtension = Path.GetExtension(saveDialog.FileName);
-                if (imageExtension == ".png")
-                    bitmapEncoder = new PngBitmapEncoder();
-                else if (imageExtension == ".jpg")
-                    bitmapEncoder = new JpegBitmapEncoder();
-                else if (imageExtension == ".gif")
-                    bitmapEncoder = new GifBitmapEncoder();
-                else
-                    throw new Exception("图片保存后缀不合法");
-
-                bitmapEncoder.Frames.Add(BitmapFrame.Create((BitmapSource)ShowImage.Source!));
-                using FileStream imageFileStream = new(saveDialog.FileName.ToString(), FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite | FileShare.Delete);
-                bitmapEncoder.Save(imageFileStream);
-
-                Title = "图片下载完成";
+                Title = "操作正常取消";
+                return;
             }
-            catch (Exception ex) { HandleException(ex); }
+
+            if (ShowImage.Source == null)
+                await PickInput();
+
+            dynamic bitmapEncoder = null!;
+            string imageExtension = Path.GetExtension(saveDialog.FileName);
+            if (imageExtension == ".png")
+                bitmapEncoder = new PngBitmapEncoder();
+            else if (imageExtension == ".jpg")
+                bitmapEncoder = new JpegBitmapEncoder();
+            else if (imageExtension == ".gif")
+                bitmapEncoder = new GifBitmapEncoder();
+            else
+                throw new Exception("图片保存后缀不合法");
+
+            bitmapEncoder.Frames.Add(BitmapFrame.Create((BitmapSource)ShowImage.Source!));
+            using FileStream imageFileStream = new(saveDialog.FileName.ToString(), FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite | FileShare.Delete);
+            bitmapEncoder.Save(imageFileStream);
+
+            Title = "图片下载完成";
         }
         private async void LuckyButton_Click(object sender, RoutedEventArgs e)
         {
             //一图
-            try
+            Title = "正在获取图片";
+
+            //触发瑟瑟彩蛋
+            if (InactiveSearchBox.Text == "只要瑟瑟" || InactiveSearchBox.Text == "只要色色" && MessageBox.Show("啊...真的要这样吗...", "彩蛋: ONLY R18", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                Title = "正在获取图片";
+                if (Define.BEHAVIOR_PAGE.DisableR18Toggle.IS_TOGGLED)
+                    RestoreSettings(Define.BEHAVIOR_PAGE.DisableR18Toggle, Define.BEHAVIOR_PAGE.DisableR18Toggle_MouseDown);
 
-                //触发瑟瑟彩蛋
-                if (InactiveSearchBox.Text == "只要瑟瑟" || InactiveSearchBox.Text == "只要色色" && MessageBox.Show("啊...真的要这样吗...", "彩蛋: ONLY R18", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
-                {
-                    if (Define.BEHAVIOR_PAGE.DisableR18Toggle.IS_TOGGLED)
-                        RestoreSettings(Define.BEHAVIOR_PAGE.DisableR18Toggle, Define.BEHAVIOR_PAGE.DisableR18Toggle_MouseDown);
-
-                    Define.R18 = '1';
-                }
-
-                //将 Lolicon 响应的 Json 数据转换为 JObject
-                JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@$"https://api.lolicon.app/setu/v2?r18={Define.R18}&proxy=null", MAIN_CLIENT));
-
-                //提取并运行
-                ActiveSearchBox.Text = InactiveSearchBox.Text = LuckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
-
-                await PickInput();
-
-                Title = "图片获取完成";
+                Define.R18 = '1';
             }
-            catch (Exception ex) { HandleException(ex); }
+
+            //将 Lolicon 响应的 Json 数据转换为 JObject
+            JObject LuckyImageJObject = JObject.Parse(await Http.GetAsync<string>(@$"https://api.lolicon.app/setu/v2?r18={Define.R18}&proxy=null", MAIN_CLIENT));
+
+            //提取并运行
+            ActiveSearchBox.Text = InactiveSearchBox.Text = LuckyImageJObject["data"]![0]!["urls"]!["original"]!.ToString();
+
+            await PickInput();
+
+            Title = "图片获取完成";
         }
-        private void SettingButton_Click(object sender, RoutedEventArgs e)
-        {
-            //设置
-            try { Define.SETTING_WINDOW.ShowDialog(); }
-            catch (Exception ex) { HandleException(ex); }
-        }
-        private void AboutButton_Click(object sender, RoutedEventArgs e)
-        {
-            //关于
-            try { new AboutWindow(Define.APPEARANCE_PAGE.DarkModeToggle.IS_TOGGLED).ShowDialog(); }
-            catch (Exception ex) { HandleException(ex); }
-        }
+        private void SettingButton_Click(object sender, RoutedEventArgs e) => Define.SETTING_WINDOW.ShowDialog();
+        private void AboutButton_Click(object sender, RoutedEventArgs e) => new AboutWindow(Define.APPEARANCE_PAGE.DarkModeToggle.IS_TOGGLED).ShowDialog();
 
         //判断输入内容
         private async Task PickInput()
@@ -553,7 +511,7 @@ namespace Ona_Pix
                 ActiveSearchButton.IsEnabled = ActiveDownloadButton.IsEnabled =
                 InactiveSearchButton.IsEnabled = InactiveDownloadButton.IsEnabled = true;
         }
-        private void SetControlsEnabled()
+        public void SetControlsEnabled()
         {
             //启用在搜索时被临时禁用的搜索框和按钮
             ActiveSearchBox.IsEnabled = ActiveSearchButton.IsEnabled = ActiveDownloadButton.IsEnabled =
