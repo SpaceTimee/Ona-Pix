@@ -3,7 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace Ona_Pix.Controls
+namespace Ona_Pix.Ctrls
 {
     public partial class ToggleSwitch : UserControl
     {

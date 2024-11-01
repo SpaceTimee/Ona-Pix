@@ -1,5 +1,7 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Input;
+using Ona_Pix.Props;
+using Ona_Pix.Utils;
 
 namespace Ona_Pix.Pages
 {
@@ -14,45 +16,45 @@ namespace Ona_Pix.Pages
             if (DisableR18Toggle.IS_TOGGLED)
             {
                 Define.R18 = '0';
-                Properties.Settings.Default.IsR18Disabled = true;
+                Settings.Default.IsR18Disabled = true;
             }
             else
             {
                 Define.R18 = '2';
-                Properties.Settings.Default.IsR18Disabled = false;
+                Settings.Default.IsR18Disabled = false;
             }
 
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
         }
         internal void PixivCatToggle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //使用 PixivCat 接口
             if (PixivCatToggle.IS_TOGGLED)
-                Properties.Settings.Default.IsPixivCat = true;
+                Settings.Default.IsPixivCat = true;
             else
-                Properties.Settings.Default.IsPixivCat = false;
+                Settings.Default.IsPixivCat = false;
 
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
         }
         internal void DisableExceptionToggle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //禁用报错
             if (DisableExceptionToggle.IS_TOGGLED)
-                Properties.Settings.Default.IsExceptionDisabled = true;
+                Settings.Default.IsExceptionDisabled = true;
             else
-                Properties.Settings.Default.IsExceptionDisabled = false;
+                Settings.Default.IsExceptionDisabled = false;
 
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
         }
         internal void DisableTipsToggle_MouseDown(object sender, MouseButtonEventArgs e)
         {
             //禁用一言
             if (DisableTipsToggle.IS_TOGGLED)
-                Properties.Settings.Default.IsTipsDisabled = true;
+                Settings.Default.IsTipsDisabled = true;
             else
-                Properties.Settings.Default.IsTipsDisabled = false;
+                Settings.Default.IsTipsDisabled = false;
 
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
         }
     }
 }

@@ -5,6 +5,9 @@ using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using MaterialDesignThemes.Wpf;
+using Ona_Pix.Props;
+using Ona_Pix.Utils;
+using static Ona_Pix.Props.Resources;
 
 namespace Ona_Pix.Pages
 {
@@ -19,15 +22,15 @@ namespace Ona_Pix.Pages
             if (DarkModeToggle.IS_TOGGLED)
             {
                 ((BundledTheme)Application.Current.Resources.MergedDictionaries[0]).BaseTheme = BaseTheme.Dark;
-                Properties.Settings.Default.IsDarkMode = true;
+                Settings.Default.IsDarkMode = true;
             }
             else
             {
                 ((BundledTheme)Application.Current.Resources.MergedDictionaries[0]).BaseTheme = BaseTheme.Light;
-                Properties.Settings.Default.IsDarkMode = false;
+                Settings.Default.IsDarkMode = false;
             }
 
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
 
             SetButtonContent();
         }
@@ -35,11 +38,11 @@ namespace Ona_Pix.Pages
         {
             //按钮图标
             if (IconButtonToggle.IS_TOGGLED)
-                Properties.Settings.Default.IsIconButton = true;
+                Settings.Default.IsIconButton = true;
             else
-                Properties.Settings.Default.IsIconButton = false;
+                Settings.Default.IsIconButton = false;
 
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
 
             SetButtonContent();
         }
@@ -49,15 +52,15 @@ namespace Ona_Pix.Pages
             if (LockAnimationToggle.IS_TOGGLED)
             {
                 Define.MAIN_WINDOW!.ActiveSpace_MouseIn(this, null!);
-                Properties.Settings.Default.IsAnimationLocked = true;
+                Settings.Default.IsAnimationLocked = true;
             }
             else
             {
                 Define.MAIN_WINDOW!.ActiveSpace_MouseOut(this, null!);
-                Properties.Settings.Default.IsAnimationLocked = false;
+                Settings.Default.IsAnimationLocked = false;
             }
 
-            Properties.Settings.Default.Save();
+            Settings.Default.Save();
         }
         private void HideBorderToggle_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -80,8 +83,8 @@ namespace Ona_Pix.Pages
             {
                 Define.MAIN_WINDOW!.ActiveRightBorder.Opacity = Define.MAIN_WINDOW!.ActiveTopBorder.Opacity = 1 - OpacitySlider.Value / 100;
 
-                Properties.Settings.Default.MenuOpacity = OpacitySlider.Value;
-                Properties.Settings.Default.Save();
+                Settings.Default.MenuOpacity = OpacitySlider.Value;
+                Settings.Default.Save();
             }
         }
 
@@ -94,54 +97,54 @@ namespace Ona_Pix.Pages
                 {
                     Define.MAIN_WINDOW!.ActiveViewButton.Content = new Image()
                     {
-                        Source = Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.View.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
+                        Source = Imaging.CreateBitmapSourceFromHBitmap(View.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
                     };
                     Define.MAIN_WINDOW!.ActiveSearchButton.Content = new Image()
                     {
-                        Source = Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.Search.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
+                        Source = Imaging.CreateBitmapSourceFromHBitmap(Search.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
                     };
                     Define.MAIN_WINDOW!.ActiveDownloadButton.Content = new Image()
                     {
-                        Source = Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.Download.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
+                        Source = Imaging.CreateBitmapSourceFromHBitmap(Download.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
                     };
                     Define.MAIN_WINDOW!.ActiveLuckyButton.Content = new Image()
                     {
-                        Source = Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.Lucky.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
+                        Source = Imaging.CreateBitmapSourceFromHBitmap(Lucky.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
                     };
                     Define.MAIN_WINDOW!.ActiveSettingButton.Content = new Image()
                     {
-                        Source = Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.Setting.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
+                        Source = Imaging.CreateBitmapSourceFromHBitmap(Setting.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
                     };
                     Define.MAIN_WINDOW!.ActiveAboutButton.Content = new Image()
                     {
-                        Source = Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.About.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
+                        Source = Imaging.CreateBitmapSourceFromHBitmap(About.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
                     };
                 }
                 else
                 {
                     Define.MAIN_WINDOW!.ActiveViewButton.Content = new Image()
                     {
-                        Source = Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.View_Dark.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
+                        Source = Imaging.CreateBitmapSourceFromHBitmap(View_Dark.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
                     };
                     Define.MAIN_WINDOW!.ActiveSearchButton.Content = new Image()
                     {
-                        Source = Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.Search_Dark.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
+                        Source = Imaging.CreateBitmapSourceFromHBitmap(Search_Dark.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
                     };
                     Define.MAIN_WINDOW!.ActiveDownloadButton.Content = new Image()
                     {
-                        Source = Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.Download_Dark.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
+                        Source = Imaging.CreateBitmapSourceFromHBitmap(Download_Dark.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
                     };
                     Define.MAIN_WINDOW!.ActiveLuckyButton.Content = new Image()
                     {
-                        Source = Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.Lucky_Dark.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
+                        Source = Imaging.CreateBitmapSourceFromHBitmap(Lucky_Dark.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
                     };
                     Define.MAIN_WINDOW!.ActiveSettingButton.Content = new Image()
                     {
-                        Source = Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.Setting_Dark.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
+                        Source = Imaging.CreateBitmapSourceFromHBitmap(Setting_Dark.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
                     };
                     Define.MAIN_WINDOW!.ActiveAboutButton.Content = new Image()
                     {
-                        Source = Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.About_Dark.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
+                        Source = Imaging.CreateBitmapSourceFromHBitmap(About_Dark.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions())
                     };
                 }
 

@@ -15,7 +15,9 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
-using Ona_Pix.Controls;
+using Ona_Pix.Ctrls;
+using Ona_Pix.Props;
+using Ona_Pix.Utils;
 using OnaCore;
 using OnaPixSecret;
 using SauceNET;
@@ -50,7 +52,7 @@ namespace Ona_Pix.Wins
         private void MainWin_Loaded(object sender, RoutedEventArgs e)
         {
             //检查是否是第一次运行
-            if (Properties.Settings.Default.IsFirstRun)
+            if (Settings.Default.IsFirstRun)
                 Welcome();
             else
                 PickSettings();
@@ -70,28 +72,28 @@ namespace Ona_Pix.Wins
 
             new AboutWin(false).ShowDialog();
 
-            Properties.Settings.Default.IsFirstRun = false;
-            Properties.Settings.Default.Save();
+            Settings.Default.IsFirstRun = false;
+            Settings.Default.Save();
         }
         private void PickSettings()
         {
             //检查是否需要还原设置
-            if (Properties.Settings.Default.IsDarkMode)
+            if (Settings.Default.IsDarkMode)
                 RestoreSettings(Define.APPEARANCE_PAGE.DarkModeToggle, Define.APPEARANCE_PAGE.DarkModeToggle_MouseDown);
-            if (Properties.Settings.Default.IsIconButton)
+            if (Settings.Default.IsIconButton)
                 RestoreSettings(Define.APPEARANCE_PAGE.IconButtonToggle, Define.APPEARANCE_PAGE.IconButtonToggle_MouseDown);
-            if (Properties.Settings.Default.IsAnimationLocked)
+            if (Settings.Default.IsAnimationLocked)
                 RestoreSettings(Define.APPEARANCE_PAGE.LockAnimationToggle, Define.APPEARANCE_PAGE.LockAnimationToggle_MouseDown);
-            if (Properties.Settings.Default.IsR18Disabled)
+            if (Settings.Default.IsR18Disabled)
                 RestoreSettings(Define.BEHAVIOR_PAGE.DisableR18Toggle, Define.BEHAVIOR_PAGE.DisableR18Toggle_MouseDown);
-            if (Properties.Settings.Default.IsPixivCat)
+            if (Settings.Default.IsPixivCat)
                 RestoreSettings(Define.BEHAVIOR_PAGE.PixivCatToggle, Define.BEHAVIOR_PAGE.PixivCatToggle_MouseDown);
-            if (Properties.Settings.Default.IsExceptionDisabled)
+            if (Settings.Default.IsExceptionDisabled)
                 RestoreSettings(Define.BEHAVIOR_PAGE.DisableExceptionToggle, Define.BEHAVIOR_PAGE.DisableExceptionToggle_MouseDown);
-            if (Properties.Settings.Default.IsTipsDisabled)
+            if (Settings.Default.IsTipsDisabled)
                 RestoreSettings(Define.BEHAVIOR_PAGE.DisableTipsToggle, Define.BEHAVIOR_PAGE.DisableTipsToggle_MouseDown);
 
-            Define.APPEARANCE_PAGE.OpacitySlider.Value = Properties.Settings.Default.MenuOpacity;
+            Define.APPEARANCE_PAGE.OpacitySlider.Value = Settings.Default.MenuOpacity;
         }
         private void RestoreSettings(ToggleSwitch toggle, Action<object, MouseButtonEventArgs> Toggle_MouseDown)
         {

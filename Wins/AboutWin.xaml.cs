@@ -4,7 +4,9 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using Ona_Pix.Utils;
 using WpfAnimatedGif;
+using static Ona_Pix.Props.Resources;
 
 namespace Ona_Pix.Wins
 {
@@ -34,7 +36,7 @@ namespace Ona_Pix.Wins
             if (isDarkMode)
             {
                 MemoryStream memoryStream = new();
-                Properties.Resources.Pixiv_Tan_Dark.Save(memoryStream, Properties.Resources.Pixiv_Tan_Dark.RawFormat);
+                Pixiv_Tan_Dark.Save(memoryStream, Pixiv_Tan_Dark.RawFormat);
 
                 BitmapImage bitmapImage = new();
                 bitmapImage.BeginInit();

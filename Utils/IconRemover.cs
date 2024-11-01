@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
 
-namespace Ona_Pix
+namespace Ona_Pix.Utils
 {
     internal static partial class IconRemover
     {

@@ -5,7 +5,7 @@ using System.Reflection;
 using Ona_Pix.Pages;
 using Ona_Pix.Wins;
 
-namespace Ona_Pix
+namespace Ona_Pix.Utils
 {
     internal static class Define
     {
