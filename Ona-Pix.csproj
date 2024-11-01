@@ -55,6 +55,7 @@
     <None Remove="Ona-Pix-Smms\**" />
     <None Remove="Ona-Smms\**" />
     <None Remove="x64\**" />
+    <None Remove="x64\**" />
     <Page Remove="Ona-Pix-Secret\**" />
     <Page Remove="Ona-Pix-Smms\**" />
     <Page Remove="Ona-Smms\**" />
@@ -67,7 +68,37 @@
     <None Remove=".gitignore" />
     <None Remove="Ona-Pix-Logo.ico" />
     <None Remove="README.md" />
-    <None Remove="Resources\Pixiv-Tan.png" />
+    <None Remove="Rsces\About-Dark.png" />
+    <None Remove="Rsces\About.png" />
+    <None Remove="Rsces\Download-Dark.png" />
+    <None Remove="Rsces\Download.png" />
+    <None Remove="Rsces\Lucky-Dark.png" />
+    <None Remove="Rsces\Lucky.png" />
+    <None Remove="Rsces\Pixiv-Tan-Dark.png" />
+    <None Remove="Rsces\Pixiv-Tan.png" />
+    <None Remove="Rsces\Search-Dark.png" />
+    <None Remove="Rsces\Search.png" />
+    <None Remove="Rsces\Setting-Dark.png" />
+    <None Remove="Rsces\Setting.png" />
+    <None Remove="Rsces\View-Dark.png" />
+    <None Remove="Rsces\View.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Rsces\About-Dark.png" />
+    <Resource Include="Rsces\About.png" />
+    <Resource Include="Rsces\Download-Dark.png" />
+    <Resource Include="Rsces\Download.png" />
+    <Resource Include="Rsces\Lucky-Dark.png" />
+    <Resource Include="Rsces\Lucky.png" />
+    <Resource Include="Rsces\Pixiv-Tan-Dark.png" />
+    <Resource Include="Rsces\Pixiv-Tan.png" />
+    <Resource Include="Rsces\Search-Dark.png" />
+    <Resource Include="Rsces\Search.png" />
+    <Resource Include="Rsces\Setting-Dark.png" />
+    <Resource Include="Rsces\Setting.png" />
+    <Resource Include="Rsces\View-Dark.png" />
+    <Resource Include="Rsces\View.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -85,12 +116,6 @@
     <Reference Include="Ona-Pix-Secret">
       <HintPath>Ona-Pix-Secret\bin\Release\Ona-Pix-Secret.dll</HintPath>
     </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Resources\Pixiv-Tan.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
   </ItemGroup>
 
   <ItemGroup>

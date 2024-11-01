@@ -40,7 +40,7 @@
         <Label Style="{StaticResource AboutLabel}" Content="身份: 女仆" Grid.Row="3" Grid.Column="1" />
         <Label Style="{StaticResource AboutLabel}" Content="Piku★" Grid.Row="4" Grid.Column="1" />
         <Label Style="{StaticResource AboutLabel}" Content="生日: 9.10" Grid.Row="5" Grid.Column="1" />
-        <Image x:Name="TanImage" Grid.Row="3" Grid.Column="1" Grid.RowSpan="3" gif:ImageBehavior.AnimatedSource="/Resources/Pixiv-Tan.png" />
+        <Image x:Name="TanImage" Grid.Row="3" Grid.Column="1" Grid.RowSpan="3" gif:ImageBehavior.AnimatedSource="/Rsces/Pixiv-Tan.png" />
         <Label Style="{StaticResource AboutLabel}" Grid.Row="6" Grid.Column="1">
             <Hyperlink x:Name="PrivacyLink" NavigateUri="https://thoughts.teambition.com/share/621ddd42c6a7bc00410f6e20#title=Ona_Pix_隐私政策" Click="HyperLink_Click">
                 <Run Text="[隐私政策]" />
