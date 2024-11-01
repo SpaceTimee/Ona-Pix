@@ -8,9 +8,9 @@ using System.Windows.Controls;
 using Newtonsoft.Json.Linq;
 using OnaCore;
 
-namespace Ona_Pix
+namespace Ona_Pix.Wins
 {
-    public partial class AboutWindow
+    public partial class AboutWin
     {
         private readonly NameValueCollection RELEASE_LIST = [];
         private readonly HttpClient GITHUB_CLIENT = new();

@@ -4,8 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:gif="http://wpfanimatedgif.codeplex.com"
-    x:Name="AboutWin"
-    x:Class="Ona_Pix.AboutWindow"
+    x:Class="Ona_Pix.Wins.AboutWin"
     mc:Ignorable="d"
     Style="{DynamicResource CommonWindow}"
     WindowStartupLocation="CenterScreen" Height="300" Width="250" MinWidth="250" Title="关于" Loaded="AboutWin_Loaded" KeyDown="AboutWin_KeyDown">

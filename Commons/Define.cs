@@ -3,14 +3,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using Ona_Pix.Pages;
+using Ona_Pix.Wins;
 
 namespace Ona_Pix
 {
     internal static class Define
     {
         //窗口
-        internal static MainWindow? MAIN_WINDOW;
-        internal static readonly SettingWindow SETTING_WINDOW = new();
+        internal static MainWin? MAIN_WINDOW;
+        internal static readonly SettingWin SETTING_WINDOW = new();
 
         //页面
         internal static readonly AppearancePage APPEARANCE_PAGE = (AppearancePage)SETTING_WINDOW.Resources["appearancePage"];

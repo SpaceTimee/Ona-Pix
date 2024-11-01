@@ -4,8 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pages="clr-namespace:Ona_Pix.Pages"
-    x:Name="SettingWin"
-    x:Class="Ona_Pix.SettingWindow"
+    x:Class="Ona_Pix.Wins.SettingWin"
     mc:Ignorable="d"
     Style="{DynamicResource CommonWindow}"
     WindowStartupLocation="CenterScreen" Height="300" Width="250" MinWidth="250" Title="设置" Loaded="SettingWin_Loaded" KeyDown="SettingWin_KeyDown">

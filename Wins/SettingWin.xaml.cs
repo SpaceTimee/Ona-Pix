@@ -4,11 +4,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Ona_Pix
+namespace Ona_Pix.Wins
 {
-    public partial class SettingWindow : Window
+    public partial class SettingWin : Window
     {
-        public SettingWindow() => InitializeComponent();
+        public SettingWin() => InitializeComponent();
         protected override void OnSourceInitialized(EventArgs e) => IconRemover.RemoveIcon(this);
         private void SettingWin_Loaded(object sender, RoutedEventArgs e)
         {

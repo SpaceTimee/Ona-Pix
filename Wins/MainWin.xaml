@@ -1,4 +1,4 @@
-﻿<Window x:Name="MainWin" x:Class="Ona_Pix.MainWindow"
+﻿<Window x:Class="Ona_Pix.Wins.MainWin"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"

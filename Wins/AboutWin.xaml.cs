@@ -6,9 +6,9 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using WpfAnimatedGif;
 
-namespace Ona_Pix
+namespace Ona_Pix.Wins
 {
-    public partial class AboutWindow : Window
+    public partial class AboutWin : Window
     {
         public static readonly string[] Tips =
         [
@@ -25,7 +25,7 @@ namespace Ona_Pix
             "Esc?","Ctrl+W?"
         ];
 
-        public AboutWindow(bool isDarkMode)
+        public AboutWin(bool isDarkMode)
         {
             InitializeComponent();
             PartialAboutWindow();

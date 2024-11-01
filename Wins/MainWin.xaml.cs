@@ -25,15 +25,15 @@ using DataFormats = System.Windows.DataFormats;
 using DragDropEffects = System.Windows.DragDropEffects;
 using MessageBox = System.Windows.MessageBox;
 
-namespace Ona_Pix
+namespace Ona_Pix.Wins
 {
-    public partial class MainWindow : Window
+    public partial class MainWin : Window
     {
         private readonly HttpClient MainClient = new();    //当前窗口使用的唯一的 HttpClient
         private BitmapImage? CurrentImage; //当前窗口显示的图片 (便于以后改为图片缓存形式)
         private bool IsActivated = false, IsFixed = false;   //当前窗口的状态信息
 
-        public MainWindow(string[] args)
+        public MainWin(string[] args)
         {
             InitializeComponent();
 
@@ -68,7 +68,7 @@ namespace Ona_Pix
 参观结束后就可以关闭关于窗口啦，我在主窗口等你!"
             );
 
-            new AboutWindow(false).ShowDialog();
+            new AboutWin(false).ShowDialog();
 
             Properties.Settings.Default.IsFirstRun = false;
             Properties.Settings.Default.Save();
@@ -277,7 +277,7 @@ namespace Ona_Pix
             Title = "图片获取完成";
         }
         private void SettingButton_Click(object sender, RoutedEventArgs e) => Define.SETTING_WINDOW.ShowDialog();
-        private void AboutButton_Click(object sender, RoutedEventArgs e) => new AboutWindow(Define.APPEARANCE_PAGE.DarkModeToggle.IS_TOGGLED).ShowDialog();
+        private void AboutButton_Click(object sender, RoutedEventArgs e) => new AboutWin(Define.APPEARANCE_PAGE.DarkModeToggle.IS_TOGGLED).ShowDialog();
 
         //判断输入内容
         private async Task PickInput()
