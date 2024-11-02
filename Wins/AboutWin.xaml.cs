@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
+using Ona_Pix.Preses;
 using Ona_Pix.Utils;
 using WpfAnimatedGif;
 using static Ona_Pix.Props.Resources;
@@ -12,6 +13,7 @@ namespace Ona_Pix.Wins;
 
 public partial class AboutWin : Window
 {
+    private static AboutPres? AboutPres;
     public static readonly string[] Tips =
     [
         "主人","主...主人?","好的，主人","是，主人","收到，主人",
@@ -31,6 +33,8 @@ public partial class AboutWin : Window
     {
         InitializeComponent();
         PartialAboutWindow();
+
+        DataContext = AboutPres = new();
 
         //检查暗色模式
         if (isDarkMode)

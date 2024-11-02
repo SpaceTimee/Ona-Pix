@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using Microsoft.Win32;
 using Newtonsoft.Json.Linq;
 using Ona_Pix.Ctrls;
+using Ona_Pix.Preses;
 using Ona_Pix.Props;
 using Ona_Pix.Utils;
 using OnaCore;
@@ -31,6 +32,7 @@ namespace Ona_Pix.Wins;
 
 public partial class MainWin : Window
 {
+    private static MainPres? MainPres;
     private readonly HttpClient MainClient = new();    //当前窗口使用的唯一的 HttpClient
     private BitmapImage? CurrentImage; //当前窗口显示的图片 (便于以后改为图片缓存形式)
     private bool IsActivated = false, IsFixed = false;   //当前窗口的状态信息
@@ -38,6 +40,8 @@ public partial class MainWin : Window
     public MainWin(string[] args)
     {
         InitializeComponent();
+
+        DataContext = MainPres = new();
 
         //填充被拖入到图标打开的文件的路径
         if (args.Length >= 1 && File.Exists(args[0]))

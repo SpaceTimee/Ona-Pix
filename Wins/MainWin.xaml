@@ -3,9 +3,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:preses="clr-namespace:Ona_Pix.Preses"
         mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance preses:MainPres}"
         Style="{DynamicResource CommonWindow}"
-        AllowDrop="True" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" MinWidth="250" Title="Ona Pix" Loaded="MainWin_Loaded" DragEnter="ReceivingSpace_DragEnter" Drop="ReceivingSpace_Drop" KeyDown="MainWin_KeyDown">
+        AllowDrop="True" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" MinWidth="250" Title="{Binding MainTip}" Loaded="MainWin_Loaded" DragEnter="ReceivingSpace_DragEnter" Drop="ReceivingSpace_Drop" KeyDown="MainWin_KeyDown">
     <Grid Margin="10">
         <Rectangle MouseDown="InactiveSpace_MouseDown" Opacity="0" Fill="#0000" />
         <Image MouseDown="InactiveSpace_MouseDown" x:Name="ShowImage" MaxWidth="1080" />
